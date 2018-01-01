@@ -12,16 +12,14 @@ public class Bishop extends Piece {
 	 * sum or difference of (row, col) of current and 
 	 * destination cell must be the same.
 	 */
-	public boolean moveTo(Cell dest)
+	public boolean canMoveTo(Cell dest)
 	{
 		char dr =dest.row, dc= dest.col;
 		char cr =currentPos.row, cc= currentPos.col;
 		if(	( ((dr + dc) == (cr + cc)) || Math.abs(dr-dc)== Math.abs(cr-cc) ) 
 			&& (dest.getPiece() == null || dest.getPiece().getColour() != this.colour)
 		  )
-		{	currentPos.setPiece(null);
-			dest.setPiece(this);
-			currentPos = dest;
+		{	
 			return true;
 		}
 		else

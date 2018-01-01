@@ -16,11 +16,28 @@ public abstract class Piece
 	
 	/* Checks whether the Piece can be moved into cell dest or not.
 	 * If it can be moved to dest, it moves itself, changes occupant Piece of the cells,
-	 * and returns true.
-	 * returns false otherwise, without any modification to anything.
+	 * and returns true. (It calls canMoveTo method to decide this.)
+	 * returns false otherwise, without any modifying anything.
 	 * */
-	protected abstract boolean moveTo(Cell dest);
-	protected String getColour() 
+	protected boolean moveTo(Cell dest)
+	{
+		if(canMoveTo(dest))
+		{	currentPos.setPiece(null);
+			dest.setPiece(this);
+			currentPos = dest;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	/* This method returns true if this piece can move to cell dest,
+	 * returns false otherwise.
+	 * This method doesn't modify anything.
+	 * */
+	public abstract boolean canMoveTo(Cell dest);
+	
+	public String getColour() 
 	{
 		return colour;
 	}
