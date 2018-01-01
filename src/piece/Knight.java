@@ -1,6 +1,6 @@
 package piece;
 
-import chess.Cell;
+import chess.*;
 
 public class Knight extends Piece {
 	
@@ -8,10 +8,15 @@ public class Knight extends Piece {
 	{	super(col, cell);
 	}
 	
+	public String toString()
+	{
+		return colour.charAt(0)+"N";
+	}
+	
 	/* A knight can move only 2 in one dimension and 1 in the other.
 	 * i.e. it can move only by 5 in squared Euclidean distance.
 	 * */
-	public boolean canMoveTo(Cell dest)
+	public boolean canMoveTo(Cell dest, Board board)
 	{
 		char dr = dest.row, 		dc= dest.col;
 		char cr = currentPos.row, 	cc= currentPos.col;

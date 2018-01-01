@@ -3,17 +3,20 @@ import chess.*;
 
 public class Rook extends Piece 
 {
-	private Board board;
-	public Rook(String col, Cell cell, Board b)
+	public Rook(String col, Cell cell)
 	{	super(col, cell);
-		this.board = b;
+	}
+	
+	public String toString()
+	{
+		return colour.charAt(0)+"R";
 	}
 	
 	/* A rook can move only in same row/ column.
 	 * A piece can move to dest cell only if 
 	 * 1. it's either empty or
 	 * 2. occupied by a piece of opposite color.*/
-	public boolean canMoveTo(Cell dest)
+	public boolean canMoveTo(Cell dest, Board board)
 	{
 		
 		if((dest.row == currentPos.row || dest.col == currentPos.col) 
@@ -30,6 +33,11 @@ public class Rook extends Piece
 						{	return false;
 						}
 						//if rook is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, currentPos.col) != null)
+						{	return false;
+						}
+						//if rook is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 				else
@@ -40,12 +48,18 @@ public class Rook extends Piece
 						{	return false;
 						}
 						//if rook is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, currentPos.col) != null)
+						{	return false;
+						}
+						//if rook is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 			}
 			
 			//If the desired cell is in the same row, check whether
 			//there is any intruding piece of the same color as this rook.
+			//or any piece of opposite color.
 			if(dest.row == currentPos.row)
 			{	if(dest.col > currentPos.col)
 				{	for(int i=currentPos.col+1; i<=Board.colMax; i++)
@@ -55,6 +69,11 @@ public class Rook extends Piece
 						{	return false;
 						}
 						//if rook is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt(currentPos.row, (char)i) != null)
+						{	return false;
+						}
+						//if rook is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 				else
@@ -62,6 +81,10 @@ public class Rook extends Piece
 					{	if(dest.col == i)
 							return true;
 						if(board.colourAt(currentPos.row, (char)i) == this.colour)
+						{	return false;
+						}
+						
+						if(board.colourAt(currentPos.row, (char)i) != null)
 						{	return false;
 						}
 					}

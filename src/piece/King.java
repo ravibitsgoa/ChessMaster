@@ -4,13 +4,13 @@ import chess.*;
 
 public class King extends Piece {
 	
-	private Board board;
-	//King needs to know whole board so that it can call 
-	//isUnderAttack method of the board while moving around.
-	
-	public King(String col, Cell cell, Board b)
+	public King(String col, Cell cell)
 	{	super(col, cell);
-		this.board = b;
+	}
+	
+	public String toString()
+	{
+		return colour.charAt(0)+"K";
 	}
 	
 	/* A King can move only to immediately adjacent (at most 8) cells.
@@ -18,7 +18,10 @@ public class King extends Piece {
 	 * Also, the dest cell must not be under attack, now.
 	 * (King doesn't want himself to be killed :P
 	 * */
-	public boolean canMoveTo(Cell dest)
+	//King needs to know whole board so that it can call 
+	//isUnderAttack method of the board while moving around.
+		
+	public boolean canMoveTo(Cell dest, Board board)
 	{
 		char dr = dest.row, 		dc= dest.col;
 		char cr = currentPos.row, 	cc= currentPos.col;

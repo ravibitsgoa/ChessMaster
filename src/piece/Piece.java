@@ -1,5 +1,5 @@
 package piece;
-import chess.Cell;
+import chess.*;
 
 public abstract class Piece 
 {
@@ -10,19 +10,23 @@ public abstract class Piece
 	 * in child classes, whose constructor does mainly this.
 	 */
 	public Piece(String col, Cell cell)
-	{	this.colour = col;
+	{	
+		this.colour = col;
 		this.currentPos = cell;
 	}
+	
+	public abstract String toString();
 	
 	/* Checks whether the Piece can be moved into cell dest or not.
 	 * If it can be moved to dest, it moves itself, changes occupant Piece of the cells,
 	 * and returns true. (It calls canMoveTo method to decide this.)
 	 * returns false otherwise, without any modifying anything.
 	 * */
-	protected boolean moveTo(Cell dest)
+	protected boolean moveTo(Cell dest, Board board)
 	{
-		if(canMoveTo(dest))
-		{	currentPos.setPiece(null);
+		if(canMoveTo(dest, board))
+		{	
+			currentPos.setPiece(null);
 			dest.setPiece(this);
 			currentPos = dest;
 			return true;
@@ -35,7 +39,7 @@ public abstract class Piece
 	 * returns false otherwise.
 	 * This method doesn't modify anything.
 	 * */
-	public abstract boolean canMoveTo(Cell dest);
+	public abstract boolean canMoveTo(Cell dest, Board board);
 	
 	public String getColour() 
 	{

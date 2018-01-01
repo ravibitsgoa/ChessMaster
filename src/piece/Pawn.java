@@ -5,17 +5,21 @@ import java.util.Scanner;
 import chess.*;
 
 public class Pawn extends Piece {
-	private Board board;
+	
 	private short dir;
 	private final Cell orig;	//The original cell of the pawn.
-	public Pawn(String col, Cell cell, Board board)
+	public Pawn(String col, Cell cell)
 	{	super(col, cell);
 		if(col == "White")		//White pawns can move only forward.
 			dir = 1;
 		else					//Black pawns can move only backwards.
 			dir = -1;
 		this.orig = cell;
-		this.board = board;
+	}
+	
+	public String toString()
+	{
+		return colour.charAt(0)+"P";
 	}
 	
 	/* A pawn can move only to a direction 'dir' fixed by its color, 
@@ -24,7 +28,7 @@ public class Pawn extends Piece {
 	 * 
 	 * It can also move 2 steps in an initial move.
 	 * */
-	public boolean canMoveTo(Cell dest)
+	public boolean canMoveTo(Cell dest, Board board)
 	{	
 		//System.out.println(dest.col+" "+dest.row);
 		//Case 1: Normal move or killing move.
@@ -37,9 +41,11 @@ public class Pawn extends Piece {
 			return true;
 		}
 		//Case 2: initial move.
+		//Both, destination and middle cell should be empty.
 		else if(dest.col == currentPos.col && currentPos == orig 
 				&& dest.row == (char)(orig.row + 2*this.dir)
-				&& dest.getPiece() == null)
+				&& dest.getPiece() == null 
+				&& board.colourAt((char)(orig.row + this.dir), orig.col)==null)
 		{	
 			return true;
 		}
@@ -51,7 +57,7 @@ public class Pawn extends Piece {
 	 * or Rook or Bishop) if it reaches the terminal cell of any column.
 	 * */
 	@Override
-	protected boolean moveTo(Cell dest)
+	protected boolean moveTo(Cell dest, Board board)
 	{
 		if(dest.row == orig.row+6)
 		{
@@ -69,7 +75,7 @@ public class Pawn extends Piece {
 			
 			if(newPiece == 'Q')
 			{	
-				dest.setPiece(new Queen(this.colour, dest, this.board));
+				dest.setPiece(new Queen(this.colour, dest));
 			}
 			else if(newPiece == 'K')
 			{	
@@ -77,17 +83,17 @@ public class Pawn extends Piece {
 			}
 			else if(newPiece == 'R')
 			{	
-				dest.setPiece(new Rook(this.colour, dest, this.board));
+				dest.setPiece(new Rook(this.colour, dest));
 			}
 			else if(newPiece == 'B')
 			{	
-				dest.setPiece(new Bishop(this.colour, dest, this.board));
+				dest.setPiece(new Bishop(this.colour, dest));
 			}
 			currentPos = null;
 			return true;
 		}
 		else
-			return super.moveTo(dest);
+			return super.moveTo(dest, board);
 	}
 	
 }

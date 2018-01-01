@@ -4,10 +4,14 @@ import chess.Board;
 import chess.Cell;
 
 public class Queen extends Piece {
-	private Board board;
-	public Queen(String col, Cell cell, Board b)
+	
+	public Queen(String col, Cell cell)
 	{	super(col, cell);
-		this.board = b;
+	}
+	
+	public String toString()
+	{
+		return colour.charAt(0)+"Q";
 	}
 	
 	/* A queen can move only where a rook or a bishop can move.
@@ -16,7 +20,7 @@ public class Queen extends Piece {
 	 * I.e. it can go to dest if sum(row, column) or diff(row, column) of 
 	 * its current cell and dest are same.
 	 * */
-	public boolean canMoveTo(Cell dest)
+	public boolean canMoveTo(Cell dest, Board board)
 	{
 		final char dr =dest.row, dc= dest.col;
 		final char cr =currentPos.row, cc= currentPos.col;
@@ -24,7 +28,7 @@ public class Queen extends Piece {
 			&& (dest.getPiece() == null || dest.getPiece().getColour() != this.colour)
 		  )
 		{	
-			//If the queen is to be moved along a constant sum diagonal.
+			//If the bishop is to be moved along a constant sum diagonal.
 			if((dc+dr) == (cr+cc))
 			{	final int sum = dr+dc;
 				if(dest.row > currentPos.row)
@@ -36,7 +40,12 @@ public class Queen extends Piece {
 						if(board.colourAt((char)i, (char)(sum-i)) == this.colour)
 						{	return false;
 						}
-						//if queen is blocked by a piece of its own color, it can't move ahead.
+						//if bishop is blocked by a piece of its own color, it can't move ahead.
+						
+						if(board.colourAt((char)i, (char)(sum-i)) != null)
+						{	return false;
+						}
+						//if bishop is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 				else
@@ -49,11 +58,16 @@ public class Queen extends Piece {
 						if(board.colourAt((char)i, (char)(sum-i)) == this.colour)
 						{	return false;
 						}
-						//if queen is blocked by a piece of its own color, it can't move ahead.
+						//if bishop is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, (char)(sum-i)) != null)
+						{	return false;
+						}
+						//if bishop is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 			}
-			//If the queen is to be moved along a constant difference diagonal.
+			//If the bishop is to be moved along a constant difference diagonal.
 			else
 			{	final int diff = dr-dc;
 				if(dest.row > currentPos.row)
@@ -65,7 +79,12 @@ public class Queen extends Piece {
 						if(board.colourAt((char)i, (char)(i-diff)) == this.colour)
 						{	return false;
 						}
-						//if queen is blocked by a piece of its own color, it can't move ahead.
+						//if bishop is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, (char)(i-diff)) != null)
+						{	return false;
+						}
+						//if bishop is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 				else
@@ -78,7 +97,12 @@ public class Queen extends Piece {
 						if(board.colourAt((char)i, (char)(i-diff)) == this.colour)
 						{	return false;
 						}
-						//if queen is blocked by a piece of its own color, it can't move ahead.
+						//if bishop is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, (char)(i-diff)) != null)
+						{	return false;
+						}
+						//if bishop is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 			}
@@ -87,10 +111,10 @@ public class Queen extends Piece {
 		}
 		//move like a rook.
 		else if((dest.row == currentPos.row || dest.col == currentPos.col) 
-				&& (dest.getPiece()==null || dest.getPiece().getColour() != this.colour))
+			&& (dest.getPiece()==null || dest.getPiece().getColour() != this.colour))
 		{	
 			//If the desired cell is in the same column, check whether
-			//there is any intruding piece of the same color as this queen.
+			//there is any intruding piece of the same color as this rook.
 			if(dest.col == currentPos.col)
 			{	if(dest.row > currentPos.row)
 				{	for(int i=currentPos.row+1; i<=Board.rowMax; i++)
@@ -99,7 +123,12 @@ public class Queen extends Piece {
 						if(board.colourAt((char)i, currentPos.col) == this.colour)
 						{	return false;
 						}
-						//if queen is blocked by a piece of its own color, it can't move ahead.
+						//if rook is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, currentPos.col) != null)
+						{	return false;
+						}
+						//if rook is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 				else
@@ -109,13 +138,19 @@ public class Queen extends Piece {
 						if(board.colourAt((char)i, currentPos.col) == this.colour)
 						{	return false;
 						}
-						//if queen is blocked by a piece of its own color, it can't move ahead.
+						//if rook is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, currentPos.col) != null)
+						{	return false;
+						}
+						//if rook is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 			}
 			
 			//If the desired cell is in the same row, check whether
-			//there is any intruding piece of the same color as this queen.
+			//there is any intruding piece of the same color as this rook.
+			//or any piece of opposite color.
 			if(dest.row == currentPos.row)
 			{	if(dest.col > currentPos.col)
 				{	for(int i=currentPos.col+1; i<=Board.colMax; i++)
@@ -124,7 +159,12 @@ public class Queen extends Piece {
 						if(board.colourAt(currentPos.row, (char)i) == this.colour)
 						{	return false;
 						}
-						//if queen is blocked by a piece of its own color, it can't move ahead.
+						//if rook is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt(currentPos.row, (char)i) != null)
+						{	return false;
+						}
+						//if rook is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 				else
@@ -134,8 +174,12 @@ public class Queen extends Piece {
 						if(board.colourAt(currentPos.row, (char)i) == this.colour)
 						{	return false;
 						}
+						
+						if(board.colourAt(currentPos.row, (char)i) != null)
+						{	return false;
+						}
 					}
-					//if queen is blocked by a piece of its own color, it can't move ahead.
+					//if rook is blocked by a piece of its own color, it can't move ahead.
 				}	
 			}
 			

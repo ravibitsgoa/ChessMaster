@@ -3,17 +3,21 @@ package piece;
 import chess.*;
 
 public class Bishop extends Piece {
-	private Board board;
-	public Bishop(String col, Cell cell, Board b)
+	
+	public Bishop(String col, Cell cell)
 	{	super(col, cell);
-		this.board = b;
+	}
+	
+	public String toString()
+	{
+		return colour.charAt(0)+"B";
 	}
 	
 	/* A bishop can move only diagonally, hence
 	 * sum or difference of (row, col) of current and 
 	 * destination cell must be the same.
 	 */
-	public boolean canMoveTo(Cell dest)
+	public boolean canMoveTo(Cell dest, Board board)
 	{
 		final char dr =dest.row, dc= dest.col;
 		final char cr =currentPos.row, cc= currentPos.col;
@@ -34,6 +38,11 @@ public class Bishop extends Piece {
 						{	return false;
 						}
 						//if bishop is blocked by a piece of its own color, it can't move ahead.
+						
+						if(board.colourAt((char)i, (char)(sum-i)) != null)
+						{	return false;
+						}
+						//if bishop is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 				else
@@ -47,6 +56,11 @@ public class Bishop extends Piece {
 						{	return false;
 						}
 						//if bishop is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, (char)(sum-i)) != null)
+						{	return false;
+						}
+						//if bishop is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 			}
@@ -63,6 +77,11 @@ public class Bishop extends Piece {
 						{	return false;
 						}
 						//if bishop is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, (char)(i-diff)) != null)
+						{	return false;
+						}
+						//if bishop is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 				else
@@ -76,6 +95,11 @@ public class Bishop extends Piece {
 						{	return false;
 						}
 						//if bishop is blocked by a piece of its own color, it can't move ahead.
+					
+						if(board.colourAt((char)i, (char)(i-diff)) != null)
+						{	return false;
+						}
+						//if bishop is blocked by a piece of opposite color, it can't move ahead.
 					}
 				}
 			}
