@@ -1,5 +1,6 @@
 package piece;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import chess.*;
@@ -28,29 +29,45 @@ public class Pawn extends Piece {
 	 * 
 	 * It can also move 2 steps in an initial move.
 	 * */
-	public boolean canMoveTo(Cell dest, Board board)
-	{	
-		//System.out.println(dest.col+" "+dest.row);
-		//Case 1: Normal move or killing move.
-		if(  (dest.row == (char)(currentPos.row + this.dir)) && 
-			((dest.col == currentPos.col && dest.getPiece()==null)
-			|| ((dest.col == currentPos.col -1 || dest.col == currentPos.col +1)
-			 && dest.getPiece()!=null && dest.getPiece().getColour()!=this.colour))
-		  )
+	
+	protected ArrayList<Cell> getAllMoves(Board board) 
+	{
+		this.moves = new ArrayList<Cell>();
+		//Case 1: Normal move 
+		if(board.colourAt((char)(currentPos.row + this.dir), 
+			currentPos.col)	== null)
 		{	
-			return true;
+			moves.add(board.getCellAt((char)(currentPos.row + this.dir), 
+				currentPos.col));
 		}
-		//Case 2: initial move.
+		
+		//Case 2: killing move.
+		if(board.colourAt((char)(currentPos.row + this.dir), 
+			(char)(currentPos.col-1))	!= this.colour)
+		{	
+			moves.add(board.getCellAt((char)(currentPos.row + this.dir), 
+				(char)(currentPos.col-1)));
+		}
+		if(board.colourAt((char)(currentPos.row + this.dir), 
+			(char)(currentPos.col+1))	!= this.colour)
+		{	
+			moves.add(board.getCellAt((char)(currentPos.row + this.dir), 
+				(char)(currentPos.col+1)));
+		}
+		
+		//Case 3: initial move.
 		//Both, destination and middle cell should be empty.
-		else if(dest.col == currentPos.col && currentPos == orig 
-				&& dest.row == (char)(orig.row + 2*this.dir)
-				&& dest.getPiece() == null 
-				&& board.colourAt((char)(orig.row + this.dir), orig.col)==null)
+		if( currentPos.equals(orig) && 
+			board.colourAt((char)(currentPos.row + 2*this.dir), 
+				currentPos.col)	== null &&
+			board.colourAt((char)(currentPos.row + this.dir), 
+				currentPos.col)	== null)
 		{	
-			return true;
+			moves.add(board.getCellAt((char)(currentPos.row + 2*this.dir), 
+				currentPos.col));
 		}
-		else
-			return false;
+	
+		return this.moves;
 	}
 	
 	/* A pawn can get upgraded to a higher piece (Queen or Knight 
@@ -59,7 +76,7 @@ public class Pawn extends Piece {
 	@Override
 	protected boolean moveTo(Cell dest, Board board)
 	{
-		if(dest.row == orig.row+6)
+		if(dest.row == Board.rowMax)
 		{
 			currentPos.setPiece(null);
 			

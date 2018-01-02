@@ -1,4 +1,6 @@
 package piece;
+import java.util.ArrayList;
+
 import chess.*;
 
 public class Rook extends Piece 
@@ -16,87 +18,20 @@ public class Rook extends Piece
 	 * A piece can move to dest cell only if 
 	 * 1. it's either empty or
 	 * 2. occupied by a piece of opposite color.*/
-	public boolean canMoveTo(Cell dest, Board board)
+	
+	protected ArrayList<Cell> getAllMoves(Board board) 
 	{
+		this.moves = new ArrayList<Cell>();
 		
-		if((dest.row == currentPos.row || dest.col == currentPos.col) 
-			&& (dest.getPiece()==null || dest.getPiece().getColour() != this.colour))
-		{	
-			//If the desired cell is in the same column, check whether
-			//there is any intruding piece of the same color as this rook.
-			if(dest.col == currentPos.col)
-			{	if(dest.row > currentPos.row)
-				{	for(int i=currentPos.row+1; i<=Board.rowMax; i++)
-					{	if(dest.row == i)
-							return true;
-						if(board.colourAt((char)i, currentPos.col) == this.colour)
-						{	return false;
-						}
-						//if rook is blocked by a piece of its own color, it can't move ahead.
-					
-						if(board.colourAt((char)i, currentPos.col) != null)
-						{	return false;
-						}
-						//if rook is blocked by a piece of opposite color, it can't move ahead.
-					}
-				}
-				else
-				{	for(int i=currentPos.row-1; i>=Board.rowMin; i--)
-					{	if(dest.row == i)
-							return true;
-						if(board.colourAt((char)i, currentPos.col) == this.colour)
-						{	return false;
-						}
-						//if rook is blocked by a piece of its own color, it can't move ahead.
-					
-						if(board.colourAt((char)i, currentPos.col) != null)
-						{	return false;
-						}
-						//if rook is blocked by a piece of opposite color, it can't move ahead.
-					}
-				}
-			}
-			
-			//If the desired cell is in the same row, check whether
-			//there is any intruding piece of the same color as this rook.
-			//or any piece of opposite color.
-			if(dest.row == currentPos.row)
-			{	if(dest.col > currentPos.col)
-				{	for(int i=currentPos.col+1; i<=Board.colMax; i++)
-					{	if(dest.col == i)
-							return true;
-						if(board.colourAt(currentPos.row, (char)i) == this.colour)
-						{	return false;
-						}
-						//if rook is blocked by a piece of its own color, it can't move ahead.
-					
-						if(board.colourAt(currentPos.row, (char)i) != null)
-						{	return false;
-						}
-						//if rook is blocked by a piece of opposite color, it can't move ahead.
-					}
-				}
-				else
-				{	for(int i=currentPos.col-1; i>=Board.colMin; i--)
-					{	if(dest.col == i)
-							return true;
-						if(board.colourAt(currentPos.row, (char)i) == this.colour)
-						{	return false;
-						}
-						
-						if(board.colourAt(currentPos.row, (char)i) != null)
-						{	return false;
-						}
-					}
-					//if rook is blocked by a piece of its own color, it can't move ahead.
-				}	
-			}
-			
-			assert(false);
-			return false;
-		}
-		else
-			return false;
+		//If the rook is to be moved along a row.
+		moves.addAll(this.movesInDir(board, 1, 0));
+		moves.addAll(this.movesInDir(board, -1, 0));
+		
+		//If the rook is to be moved along a column.
+		moves.addAll(this.movesInDir(board, 0, 1));
+		moves.addAll(this.movesInDir(board, 0, -1));
+		
+		return this.moves;
 	}
 	
 }

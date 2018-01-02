@@ -1,5 +1,7 @@
 package piece;
 
+import java.util.ArrayList;
+
 import chess.*;
 
 public class Knight extends Piece {
@@ -16,17 +18,39 @@ public class Knight extends Piece {
 	/* A knight can move only 2 in one dimension and 1 in the other.
 	 * i.e. it can move only by 5 in squared Euclidean distance.
 	 * */
-	public boolean canMoveTo(Cell dest, Board board)
+	private boolean validMove(Cell dest, Board board)
 	{
-		char dr = dest.row, 		dc= dest.col;
-		char cr = currentPos.row, 	cc= currentPos.col;
-		
-		if( (((dr-cr)*(dr-cr) + (dc-cc)*(dc-cc)) == 5)
-			&& (dest.getPiece()==null || dest.getPiece().getColour()!=this.colour))
-		{	return true;
-		}
+		if(dest == null)
+			return false;
+		if(dest.getPiece().getColour() != this.colour)
+			return true;
 		else
 			return false;
 	}
-	
+
+	//Since knight doesn't move linearly, it can't use movesInDir().
+	protected ArrayList<Cell> getAllMoves(Board board) 
+	{
+		this.moves = new ArrayList<Cell>();
+		final char cr= currentPos.row, cc= currentPos.col;
+		Cell possibleCells[]= 
+		{	
+			board.getCellAt((char)(cr-2), (char)(cc-1)),
+			board.getCellAt((char)(cr-2), (char)(cc+1)),
+			board.getCellAt((char)(cr-1), (char)(cc-2)),
+			board.getCellAt((char)(cr-1), (char)(cc+2)),
+			board.getCellAt((char)(cr+1), (char)(cc-2)),
+			board.getCellAt((char)(cr+1), (char)(cc+2)),
+			board.getCellAt((char)(cr+2), (char)(cc-1)),
+			board.getCellAt((char)(cr+2), (char)(cc+1)),
+		};
+		
+		for(Cell dest : possibleCells)
+		{	if(validMove(dest, board))
+			{
+				moves.add(dest);
+			}
+		}
+		return moves;
+	}
 }
