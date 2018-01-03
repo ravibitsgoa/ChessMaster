@@ -6,7 +6,7 @@ import chess.*;
 
 public class Knight extends Piece {
 	
-	public Knight(String col, Cell cell)
+	public Knight(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
 	

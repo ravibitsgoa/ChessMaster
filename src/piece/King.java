@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 	
-	public King(String col, Cell cell)
+	public King(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
 	

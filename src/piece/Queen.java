@@ -7,7 +7,7 @@ import chess.Cell;
 
 public class Queen extends Piece {
 	
-	public Queen(String col, Cell cell)
+	public Queen(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
 	

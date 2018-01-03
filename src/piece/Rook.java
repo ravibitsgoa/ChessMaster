@@ -5,7 +5,7 @@ import chess.*;
 
 public class Rook extends Piece 
 {
-	public Rook(String col, Cell cell)
+	public Rook(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
 	

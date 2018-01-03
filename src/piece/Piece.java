@@ -5,17 +5,20 @@ import chess.*;
 
 public abstract class Piece 
 {
-	protected String colour;
+	protected final String colour;
 	protected Cell currentPos;
 	protected ArrayList<Cell> moves;
 	
 	/* Constructor of this abstract class to avoid repetition 
 	 * in child classes, whose constructor does mainly this.
 	 */
-	public Piece(String col, Cell cell)
+	public Piece(String col, Cell cell) throws Exception
 	{	
 		this.colour = col;
 		this.currentPos = cell;
+		if(cell.getPiece()!=null)
+			throw new Exception("Cell not empty exception");
+		cell.setPiece(this);
 		this.moves = null;
 	}
 	

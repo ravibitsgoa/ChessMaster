@@ -9,7 +9,7 @@ public class Pawn extends Piece {
 	
 	private short dir;
 	private final Cell orig;	//The original cell of the pawn.
-	public Pawn(String col, Cell cell)
+	public Pawn(String col, Cell cell)  throws Exception
 	{	super(col, cell);
 		if(col == "White")		//White pawns can move only forward.
 			dir = 1;
@@ -76,7 +76,7 @@ public class Pawn extends Piece {
 	@Override
 	protected boolean moveTo(Cell dest, Board board)
 	{
-		if(dest.row == Board.rowMax)
+		if(dest.row == Board.rowMax && dest.getPiece()==null)
 		{
 			currentPos.setPiece(null);
 			
@@ -89,24 +89,32 @@ public class Pawn extends Piece {
 				newPiece = sc.nextLine().charAt(0);
 			}
 			sc.close();
-			
-			if(newPiece == 'Q')
-			{	
-				dest.setPiece(new Queen(this.colour, dest));
+			try 
+			{
+				if(newPiece == 'Q')
+				{	
+					dest.setPiece(new Queen(this.colour, dest));
+				}
+				else if(newPiece == 'K')
+				{	
+					dest.setPiece(new Knight(this.colour, dest));
+				}
+				else if(newPiece == 'R')
+				{	
+					dest.setPiece(new Rook(this.colour, dest));
+				}
+				else if(newPiece == 'B')
+				{	
+					dest.setPiece(new Bishop(this.colour, dest));
+				}
 			}
-			else if(newPiece == 'K')
-			{	
-				dest.setPiece(new Knight(this.colour, dest));
-			}
-			else if(newPiece == 'R')
-			{	
-				dest.setPiece(new Rook(this.colour, dest));
-			}
-			else if(newPiece == 'B')
-			{	
-				dest.setPiece(new Bishop(this.colour, dest));
+			catch(Exception e)
+			{
+				System.out.println("Something went wrong while "
+					+ "upgrading the pawn to a higher piece.");
 			}
 			currentPos = null;
+			//i.e. this pawn is to be destructed.
 			return true;
 		}
 		else
