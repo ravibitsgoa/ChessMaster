@@ -11,14 +11,22 @@ public class Board {
 	//private ArrayList<Piece> pieces;
 	
 	private void emptyBoard()
-	{	cells = new Cell[8][8];
-		for(int i=0; i<8; i++)
-		{	for(int j=0; j<8; j++)
-			{	cells[i][j]= new Cell((char)(rowMin+i), (char)(colMin+j));
+	{	
+		try 
+		{
+			cells = new Cell[8][8];
+			for(int i=0; i<8; i++)
+			{	for(int j=0; j<8; j++)
+				{	cells[i][j]= new Cell((char)(rowMin+i), (char)(colMin+j));
+				}
 			}
+			//Columns are 'a' to 'h'.
+			//Rows are '1' to '8', with row 1 nearest to white.
 		}
-		//Columns are 'a' to 'h'.
-		//Rows are '1' to '8', with row 1 nearest to white.
+		catch(Exception e)
+		{
+			System.out.println("Exception in empty board constructor.");
+		}
 	}
 	
 	/* Constructor for an empty board.
@@ -126,15 +134,19 @@ public class Board {
 	 * */
 	public boolean isUnderAttack(char row, char col, Piece otherThanThis)
 	{
-		Cell dest = getCellAt((char)(row-rowMin), (char)(col-colMin));
+		Cell dest = getCellAt(row, col);
+		if(dest == null)
+			return false;
+		
 		for(int i=0; i<8; i++)
 		{	for(int j=0; j<8; j++)
 			{	Piece onThis = cells[i][j].getPiece();
+				//if(onThis != null)
+				//	System.out.println(onThis);
 				if((dest != cells[i][j]) && (onThis != null))
-				{	if( (onThis != otherThanThis) && (onThis.canMoveTo(dest, this)))
-					{	System.out.println(dest.row + " " + dest.col+
-							" is under attack by piece at " 
-							+ cells[i][j].row + " " + cells[i][j].col);
+				{	if( (onThis != otherThanThis) &&(onThis.canMoveTo(dest, this)))
+					{	//System.out.println(dest+" is under"
+						//	+ " attack by piece at "+ cells[i][j]);
 						return true;
 					}
 				}

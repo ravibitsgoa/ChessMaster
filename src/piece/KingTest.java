@@ -13,8 +13,9 @@ class KingTest {
 	
 	private Board board;
 	private King king;
+	
 	@BeforeEach
-	void setUp() throws Exception 
+	void setUp()
 	{	
 		board= new Board();	// b is a new empty board.
 		king = null;		
@@ -22,7 +23,7 @@ class KingTest {
 	}
 
 	@AfterEach
-	void tearDown() throws Exception 
+	void tearDown() 
 	{
 		board = null;
 		king = null;
@@ -33,19 +34,20 @@ class KingTest {
 	{
 		try 
 		{
-			king = new King(Board.White, new Cell(Board.rowMin, Board.colMin));
-			//Made a new white king at cell A1 of the board.
+			king = new King(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
+			//Made a new white king at cell a1 of the board.
 			assertEquals(Board.White.charAt(0)+"K", king.toString(),
 					"toString method of a white King object should return WK");
 			
-			king = new King(Board.Black, new Cell(Board.rowMin, Board.colMin));
-			//Made a new white king at cell A1 of the board.
+			king = new King(Board.Black, board.getCellAt(Board.rowMax, Board.colMax));
+			//Made a new white king at cell h8 of the board.
 			assertEquals(Board.Black.charAt(0)+"K", king.toString(),
 					"toString method of black King object should return BK");
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in toStringTest() method.");
+			System.out.println("Exception in toStringTest() "
+					+ "method of KingTest");
 		}
 	}
 	
@@ -54,22 +56,52 @@ class KingTest {
 	{
 		try
 		{
-			king = new King(Board.White, new Cell(Board.rowMin, Board.colMin));
+			king = new King(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
 			//Made a new white king at cell A1 of the board.
 			assertEquals(Board.White, king.getColour(),
 					"getColour method of a white King object should return White");
 			
-			king = new King(Board.Black, new Cell(Board.rowMax, Board.colMax));
+			king = new King(Board.Black, board.getCellAt(Board.rowMax, Board.colMax));
 			//Made a new black king at cell h8 of the board.
 			assertEquals(Board.Black, king.getColour(),
 					"getColour method of a black King object should return Black");
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in getColourTest() method.");
+			System.out.println("Exception in getColourTest() "
+					+ "method of KingTest.");
 		}
 	}
-
+	
+	@Test
+	void movesUnderAttackTest()
+	{
+		try 
+		{
+			king = new King(Board.White, 
+				board.getCellAt(Board.rowMin, Board.colMin));
+			//Made a new white king at cell a1 of the board.
+			//king.getAllMoves(board);
+			
+			Cell rookCell = board.getCellAt((char)(Board.rowMin+7), 
+					(char)(Board.colMin+1));
+			Rook rook = new Rook(Board.Black, rookCell);
+			
+			//king must be able to move to only the cell a2.
+			assertTrue(king.canMoveTo(
+				board.getCellAt((char)(Board.rowMin+1), Board.colMin), board));
+			//for(Cell c: king.moves)
+				//System.out.println(c);
+			assertEquals(1, king.moves.size());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("Exception in movesUnderAttackTest() "
+					+ "method of KingTest.");
+		}
+	}
+	
 	@Test
 	void movesFromCornerTest()
 	{
@@ -92,7 +124,8 @@ class KingTest {
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in movesFromCornerTest() method.");
+			System.out.println("Exception in movesFromCornerTest() "
+					+ "method of KingTest.");
 		}
 	}
 	
@@ -129,7 +162,8 @@ class KingTest {
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in movesFromTerminalRowTest() method.");	
+			System.out.println("Exception in movesFromTerminalRowTest() "
+					+ "method of KingTest.");	
 		}
 	}
 	
@@ -166,7 +200,8 @@ class KingTest {
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in movesFromTerminalColTest() method.");	
+			System.out.println("Exception in movesFromTerminalColTest() "
+					+ "method of KingTest.");	
 		}
 	}
 	
@@ -212,7 +247,8 @@ class KingTest {
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in movesFromNormalCellTest() method.");	
+			System.out.println("Exception in movesFromNormalCellTest() "
+					+ "method of KingTest.");	
 		}
 	}
 

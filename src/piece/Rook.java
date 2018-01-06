@@ -17,7 +17,7 @@ public class Rook extends Piece
 	/* A rook can move only in same row/ column.
 	 * A piece can move to dest cell only if 
 	 * 1. it's either empty or
-	 * 2. occupied by a piece of opposite color.*/
+	 * 2. occupied by a piece of opposite colour.*/
 	
 	protected ArrayList<Cell> getAllMoves(Board board) 
 	{

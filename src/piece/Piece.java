@@ -14,10 +14,18 @@ public abstract class Piece
 	 */
 	public Piece(String col, Cell cell) throws Exception
 	{	
+		if(cell == null)
+			throw new Exception("Cell null exception.");
+		
+		if(cell.getPiece() != null)
+			throw new Exception("Cell not empty exception");
+		
+		if(col == null)
+			throw new Exception("Colour null exception.");
+		
 		this.colour = col;
 		this.currentPos = cell;
-		if(cell.getPiece()!=null)
-			throw new Exception("Cell not empty exception");
+		
 		cell.setPiece(this);
 		this.moves = null;
 	}
@@ -30,7 +38,7 @@ public abstract class Piece
 	 * (It calls canMoveTo method to decide this.)
 	 * returns false otherwise, without any modifying anything.
 	 * */
-	protected boolean moveTo(Cell dest, Board board)
+	public boolean moveTo(Cell dest, Board board)
 	{
 		if(canMoveTo(dest, board))
 		{	
@@ -53,8 +61,13 @@ public abstract class Piece
 	 * */
 	public boolean canMoveTo(Cell dest, Board board)
 	{
-		if(this.moves == null)
+		if(this.moves == null || this instanceof King)
 			this.getAllMoves(board);
+		//If we don't know all the moves from this position or
+		//if this is a king, get all the moves.
+		//For king, moves can change possibly after each move of
+		//a piece on the board.
+		
 		return this.moves.contains(dest);
 	}
 	

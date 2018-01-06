@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
-import chess.Board;
-import chess.Cell;
+import chess.*;
 
 /**
  * @author Ravishankar P. Joshi
@@ -36,13 +36,52 @@ class PieceTest
 		board = null;
 	}
 
-
+	/**
+	 * Test method for the constructor of Piece class
+	 * piece.Piece()
+	 */
+	
+	@Test
+	void constructorTest() throws Exception
+	{
+		Cell a1= board.getCellAt(Board.rowMin, Board.colMin);
+		
+		try 
+		{
+			piece = new Rook(Board.Black, a1);
+			assertEquals(Board.Black, piece.colour);
+			assertEquals(a1, piece.currentPos);
+			assertEquals(piece, a1.getPiece());
+			assertEquals(null, piece.moves);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception in method constructorTest() "
+					+ "of PieceTest");
+		}
+		
+		Executable closureContainingCodeToTest = () -> piece = 
+				new Rook(Board.White, a1);
+		assertThrows(Exception.class, closureContainingCodeToTest, 
+				"Cell not empty exception should be thrown.");
+		
+		closureContainingCodeToTest = () -> piece = 
+				new Rook(Board.White, null);
+		assertThrows(Exception.class, closureContainingCodeToTest, 
+				"Null cell exception should be thrown.");
+	
+		closureContainingCodeToTest = () -> piece = 
+				new Rook(null, board.getCellAt(Board.rowMax, Board.colMax));
+		assertThrows(Exception.class, closureContainingCodeToTest, 
+				"Null colour exception should be thrown.");
+	}
+	
 	/**
 	 * Test method for concrete method
 	 * piece.Piece.moveTo(chess.Cell, chess.Board).
 	 */
 	@Test
-	void testMoveTo() 
+	void moveToTest() 
 	{
 		try
 		{
@@ -73,7 +112,8 @@ class PieceTest
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in testMoveTo() method");
+			System.out.println("Exception in testMoveTo() "
+					+ "method of PieceTest");
 		}
 	}
 
@@ -82,7 +122,7 @@ class PieceTest
 	 * piece.Piece.canMoveTo(chess.Cell, chess.Board).
 	 */
 	@Test
-	void testCanMoveTo1() 
+	void canMoveToTest1() 
 	{
 		try 
 		{
@@ -98,12 +138,13 @@ class PieceTest
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in testCanMoveTo1() method");
+			System.out.println("Exception in testCanMoveTo1() "
+					+ "method of PieceTest");
 		}
 	}
 	
 	@Test
-	void testCanMoveTo2()
+	void canMoveToTest2()
 	{
 		try 
 		{
@@ -123,7 +164,8 @@ class PieceTest
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in testCanMoveTo2() method");
+			System.out.println("Exception in testCanMoveTo2() "
+					+ "method PieceTest");
 		}
 	}
 
@@ -165,7 +207,7 @@ class PieceTest
 		catch(Exception e)
 		{
 			System.out.println("Exception in "
-					+ "rookMovesFromCornerTest() method");
+				+ "rookMovesFromCornerTest() method of PieceTest");
 		}
 	}
 
@@ -205,7 +247,8 @@ class PieceTest
 		catch(Exception e)
 		{
 			System.out.println("Exception in "
-					+ "bishopMovesFromCornerDiffConstantTest() method");
+				+ "bishopMovesFromCornerDiffConstantTest() "
+				+ "method of PieceTest");
 		}
 	}
 	
@@ -248,7 +291,8 @@ class PieceTest
 		catch(Exception e)
 		{
 			System.out.println("Exception in "
-					+ "bishopMovesFromCornerSumConstantTest() method");
+				+ "bishopMovesFromCornerSumConstantTest() "
+				+ "method of PieceTest");
 		}
 	}
 	
@@ -256,7 +300,7 @@ class PieceTest
 	 * Test method for {@link piece.Piece#getColour()}.
 	 */
 	@Test
-	void testGetColour()
+	void getColourTest()
 	{
 		try
 		{
@@ -270,7 +314,8 @@ class PieceTest
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in testGetColour() method");	
+			System.out.println("Exception in testGetColour() "
+					+ "method of PieceTest");	
 		}
 	}
 

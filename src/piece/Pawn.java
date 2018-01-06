@@ -74,7 +74,7 @@ public class Pawn extends Piece {
 	 * or Rook or Bishop) if it reaches the terminal cell of any column.
 	 * */
 	@Override
-	protected boolean moveTo(Cell dest, Board board)
+	public boolean moveTo(Cell dest, Board board)
 	{
 		if(dest.row == Board.rowMax && dest.getPiece()==null)
 		{
