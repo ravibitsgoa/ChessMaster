@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import chess.*;
 
-class KingTest {
+class KingTest 
+{
 	
 	private Board board;
 	private King king;
@@ -17,7 +18,7 @@ class KingTest {
 	@BeforeEach
 	void setUp()
 	{	
-		board= new Board();	// b is a new empty board.
+		board= new Board();	// this is a new empty board.
 		king = null;		
 		// king can't be constructed without an initial position.
 	}

@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 import chess.*;
 
-public class Pawn extends Piece {
-	
+public class Pawn extends Piece 
+{	
 	private short dir;
 	private final Cell orig;	//The original cell of the pawn.
 	public Pawn(String col, Cell cell)  throws Exception

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import chess.*;
 
-public class Knight extends Piece {
-	
+public class Knight extends Piece 
+{
 	public Knight(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
@@ -18,19 +18,26 @@ public class Knight extends Piece {
 	/* A knight can move only 2 in one dimension and 1 in the other.
 	 * i.e. it can move only by 5 in squared Euclidean distance.
 	 * */
-	private boolean validMove(Cell dest, Board board)
+	private boolean validMove(Cell dest, Board board) throws Exception
 	{
+		if(board == null)
+			throw new Exception("Empty board exception in validMove()");
+		
 		if(dest == null)
 			return false;
-		if(dest.getPiece().getColour() != this.colour)
+
+		if(board.colourAt(dest) != this.colour)
 			return true;
 		else
 			return false;
 	}
 
 	//Since knight doesn't move linearly, it can't use movesInDir().
-	protected ArrayList<Cell> getAllMoves(Board board) 
+	protected ArrayList<Cell> getAllMoves(Board board)
 	{
+		if(board == null)
+			return null;
+		
 		this.moves = new ArrayList<Cell>();
 		final char cr= currentPos.row, cc= currentPos.col;
 		Cell possibleCells[]= 
@@ -46,9 +53,18 @@ public class Knight extends Piece {
 		};
 		
 		for(Cell dest : possibleCells)
-		{	if(validMove(dest, board))
+		{	
+			try 
 			{
-				moves.add(dest);
+				if(validMove(dest, board))
+				{
+					moves.add(dest);
+				}
+			} 
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+				System.out.println("Exception in getAllMoves() of Knight");
 			}
 		}
 		return moves;
