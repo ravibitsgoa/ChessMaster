@@ -3,15 +3,22 @@ import java.util.ArrayList;
 
 import chess.*;
 
+/**
+ * @author Ravishankar P. Joshi
+ * */
 public abstract class Piece 
 {
 	protected final String colour;
 	protected Cell currentPos;
 	protected ArrayList<Cell> moves;
 	
-	/* Constructor of this abstract class to avoid repetition 
-	 * in child classes, whose constructor does mainly this.
-	 */
+	/**
+	 * Constructor of this abstract class to avoid repetition 
+	 * 
+	 * @throws null cell exception
+	 * @throws cell non-empty exception
+	 * @throws null colour exception
+	 **/
 	public Piece(String col, Cell cell) throws Exception
 	{	
 		if(cell == null)
@@ -30,16 +37,23 @@ public abstract class Piece
 		this.moves = null;
 	}
 	
+	/**
+	 * An abstract method to be over-ridden by child classes.
+	 * */
 	public abstract String toString();
 	
-	/* Checks whether the Piece can be moved into cell dest or not.
-	 * If it can be moved to dest, it moves itself, 
-	 * changes occupant Piece of the cells, and returns true.
+	/** 
+	 * Checks whether the Piece can be moved into cell dest or not.
+	 * @return True if it can be moved to dest, it moves itself, 
+	 * changes occupant Piece of the cells.
 	 * (It calls canMoveTo method to decide this.)
-	 * returns false otherwise, without any modifying anything.
+	 * Returns false otherwise, without any modifying anything.
+	 * Returns false if either of the arguments are null.
 	 * */
 	public boolean moveTo(Cell dest, Board board)
 	{
+		if(dest == null || board == null)
+			return false;
 		if(canMoveTo(dest, board))
 		{	
 			this.currentPos.setPiece(null);	//empty the current position.
@@ -52,15 +66,19 @@ public abstract class Piece
 			return false;
 	}
 	
-	/* Returns true if this piece can move to cell dest,
-	 * Returns false otherwise.
+	/** 
 	 * This method doesn't modify anything.
-	 * 
 	 * It just checks whether destination cell is contained in
 	 * the list of moves.
+	 * 
+	 * @return true if this piece can move to cell dest,
+	 * Returns false otherwise.
+	 * Returns false if either of the arguments are null.
 	 * */
 	public boolean canMoveTo(Cell dest, Board board)
 	{
+		if(dest == null || board == null)
+			return false;
 		//if(this.moves == null || this instanceof King)
 		this.getAllMoves(board);
 		//If we don't know all the moves from this position or
@@ -71,11 +89,19 @@ public abstract class Piece
 		return this.moves.contains(dest);
 	}
 	
+	/**
+	 * An abstract method to be over-ridden by child classes.
+	 * 
+	 * @return an ArrayList of Cells to which the piece can
+	 * move to, from current position.
+	 * */
 	protected abstract ArrayList<Cell> getAllMoves(Board board);
 	
-	/* movesInDir method returns a list of moves, by moving
-	 * from current cell, to the the direction of vector (rowDir, colDir).
-	 */
+	/** 
+	 * @return an ArrayList of Cells from current cell, 
+	 * in the the direction of the vector (rowDir, colDir),
+	 * to which this piece can move.
+	 * */
 	protected ArrayList<Cell> movesInDir(Board board, int rowDir, int colDir)
 	{
 		ArrayList<Cell> listOfMoves = new ArrayList<Cell>();
@@ -105,6 +131,9 @@ public abstract class Piece
 		return listOfMoves;
 	}
 	
+	/**
+	 * @return the colour of the piece as a string.
+	 * */
 	public String getColour() 
 	{
 		return colour;

@@ -1,6 +1,3 @@
-/**
- * jUnit test class for class piece.Rook
- */
 package piece;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import chess.*;
 
 /**
+ * jUnit test class for class {@link:piece.Rook}
  * @author Ravishankar P. Joshi
- *
  */
 
 class RookTest {

@@ -9,6 +9,9 @@ import org.junit.jupiter.api.function.Executable;
 
 import piece.*;
 
+/**
+ * @author Ravishankar P. Joshi
+ * */
 class CellTest 
 {
 	private Board board;

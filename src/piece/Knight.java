@@ -4,19 +4,29 @@ import java.util.ArrayList;
 
 import chess.*;
 
+/**
+ * @author Ravishankar P. Joshi
+ * */
 public class Knight extends Piece 
 {
 	public Knight(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
 	
+	/**
+	 * Returns the string representation of a Knight.
+	 * @return WN for white knight. BN for black knight.
+	 * */
+	@Override
 	public String toString()
 	{
 		return colour.charAt(0)+"N";
 	}
 	
-	/* A knight can move only 2 in one dimension and 1 in the other.
+	/**
+	 * A knight can move only 2 in one dimension and 1 in the other.
 	 * i.e. it can move only by 5 in squared Euclidean distance.
+	 * @throws empty board exception
 	 * */
 	private boolean validMove(Cell dest, Board board) throws Exception
 	{
@@ -32,7 +42,11 @@ public class Knight extends Piece
 			return false;
 	}
 
-	//Since knight doesn't move linearly, it can't use movesInDir().
+	/**
+	 * Returns all moves of the knight.
+	 * Since knight doesn't move linearly, it can't use movesInDir().
+	 * */
+	@Override
 	protected ArrayList<Cell> getAllMoves(Board board)
 	{
 		if(board == null)

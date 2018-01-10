@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import chess.*;
 
+/**
+ * @author Ravishankar P. Joshi
+ * */
 class KingTest 
 {
 	

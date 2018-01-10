@@ -3,6 +3,9 @@ package chess;
 
 import piece.*;
 
+/**
+ * @author Ravishankar P. Joshi
+ * */
 public class Board {
 	
 	private Cell cells[][];
@@ -29,14 +32,16 @@ public class Board {
 		}
 	}
 	
-	/* Constructor for an empty board.
-	 **/
+	/**
+	 * Constructor for an empty board.
+	 * */
 	public Board()
 	{
 		this.emptyBoard();
 	}
 	
-	/* Constructor for a filled board.
+	/** 
+	 * Constructor for a filled board.
 	 * */
 	public Board(Boolean x)
 	{	
@@ -118,6 +123,10 @@ public class Board {
 		
 	}
 	
+	/**
+	 * Returns the reference to the cell at (row, col) in the board.
+	 * Returns null if the row or column are not valid (out of bounds).
+	 * */
 	public Cell getCellAt(char row, char col)
 	{
 		if(row>=rowMin && col>=colMin && row<=rowMax && col<=colMax)
@@ -126,9 +135,11 @@ public class Board {
 			return null;
 	}
 
-	/* This method is used only by king piece, to check 
+	/**
+	 * This method is to be used only by king piece, to check 
 	 * whether cell dest is under attack by any piece or not.
-	 * This method returns true if the cell is under attack by 
+	 * 
+	 * @return true if the cell is under attack by 
 	 * any piece other than the king itself (passed as argument).
 	 * Returns false if this cells is free from threat.
 	 * */

@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import chess.Board;
 import chess.Cell;
 
+/**
+ * @author Ravishankar P. Joshi
+ * */
 class KnightTest 
 {
 	private Knight knight;

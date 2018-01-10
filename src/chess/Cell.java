@@ -1,6 +1,9 @@
 package chess;
 import piece.*;
 
+/**
+ * @author Ravishankar P. Joshi
+ * */
 public class Cell 
 {
 	private Piece piece;

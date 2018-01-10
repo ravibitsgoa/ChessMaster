@@ -5,23 +5,32 @@ import java.util.ArrayList;
 import chess.Board;
 import chess.Cell;
 
+/**
+ * @author Ravishankar P. Joshi
+ * */
 public class Queen extends Piece 
 {	
 	public Queen(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
 	
+	/**
+	 * Returns the queen as a string.
+	 * @return "WQ" for a white queen. Returns "BQ" otherwise.
+	 * */
+	@Override
 	public String toString()
 	{
 		return colour.charAt(0)+"Q";
 	}
 	
-	/* A queen can move only where a rook or a bishop can move.
+	/** 
+	 * A queen can move only where a rook or a bishop can move.
 	 * i.e. it can move in same row or column (like a rook)
 	 * or it can move in same diagonal (like a bishop)
 	 * I.e. it can go to dest if sum(row, column) or diff(row, column) of 
 	 * its current cell and dest are same.
-	 * */
+	 **/
 	protected ArrayList<Cell> getAllMoves(Board board) 
 	{
 		this.moves = new ArrayList<Cell>();
