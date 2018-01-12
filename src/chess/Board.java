@@ -166,7 +166,8 @@ public class Board
 		return false;
 	}
 	
-	/* This method returns the color of the piece,
+	/** 
+	 * @return the colour of the piece
 	 * on the cell with given (row, column).
 	 **/
 	public String colourAt(char row, char col)
@@ -182,14 +183,19 @@ public class Board
 			return onThisCell.getColour();
 	}
 	
+	/** 
+	 * @return the colour of the piece
+	 * on the cell equivalent to the parameter cell.
+	 **/
 	public String colourAt(Cell dest)
 	{
 		return this.colourAt(dest.row, dest.col);
 	}
 	
-	/* This method just prints current board situation to terminal.
+	/** 
+	 * This method just prints current board situation to terminal.
 	 * Used for debugging.
-	 */
+	 **/
 	public void print()
 	{	for(int i=0; i<8; i++)
 		{	for(int j=0; j<8; j++)
