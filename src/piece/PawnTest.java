@@ -13,7 +13,8 @@ import chess.*;
 /**
  * @author Ravishankar P. Joshi
  * */
-class PawnTest {
+class PawnTest 
+{
 	private Pawn pawn;
 	private Board board;
 	

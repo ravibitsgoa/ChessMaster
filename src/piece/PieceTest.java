@@ -88,7 +88,12 @@ class PieceTest
 			piece = new Rook(Board.Black, board.getCellAt(Board.rowMin, Board.colMin));
 			Cell dest= board.getCellAt((char)(Board.rowMin+2), Board.colMin);
 			
-			assertEquals(true, piece.moveTo(dest, board), 
+			assertFalse(piece.moveTo(dest, null),
+					"A piece must return false when board is null.");
+			assertFalse(piece.moveTo(null, board),
+					"A piece must return false when destination is null.");
+			
+			assertTrue(piece.moveTo(dest, board), 
 					"rook must be able to move to cell a3 from a1.");
 			
 			assertEquals(null, board.colourAt(Board.rowMin, Board.colMin), 
@@ -131,10 +136,16 @@ class PieceTest
 			//Creating a new black rook at the cell a1.
 			piece = new Rook(Board.Black, board.getCellAt(Board.rowMin, Board.colMin));
 			assertEquals(null, piece.moves);
+
+			Cell dest = board.getCellAt(Board.rowMax, Board.colMin);
+			assertFalse(piece.canMoveTo(dest, null),
+					"A piece must return false when board is null.");
+			assertFalse(piece.canMoveTo(null, board),
+					"A piece must return false when destination is null.");
+			
 			//Make sure that initially moves list is empty,
 			//and, on calling canMoveTo(), it fills the list.
-			Boolean x = piece.canMoveTo(
-					board.getCellAt(Board.rowMax, Board.colMin), board);
+			Boolean x = piece.canMoveTo(dest, board);
 			assertEquals(14, piece.moves.size());
 			assertEquals(true, x);	
 		}

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import chess.*;
 
 /**
- * jUnit test class for class {@link:piece.Rook}
+ * jUnit test class for class {@link piece.Rook}.
  * @author Ravishankar P. Joshi
  */
 
@@ -16,8 +16,7 @@ class RookTest {
 
 	private Board board;
 	private Rook rook;
-	/**
-	 */
+	
 	@BeforeEach
 	void setUp()
 	{

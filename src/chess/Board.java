@@ -6,8 +6,8 @@ import piece.*;
 /**
  * @author Ravishankar P. Joshi
  * */
-public class Board {
-	
+public class Board 
+{	
 	private Cell cells[][];
 	public static final char rowMax='8', colMax='h', rowMin='1', colMin='a';
 	public static final String White="White", Black = "Black";
