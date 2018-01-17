@@ -10,7 +10,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import piece.Piece;
@@ -20,6 +19,7 @@ import piece.Piece;
  * */
 public class GraphicsHandler extends JPanel
 {
+	private static final long serialVersionUID = 1L;
 	private Board board;
 	private final int x0, y0, rowLen, colLen, border;
 	private final Color HIGHLIGHT;

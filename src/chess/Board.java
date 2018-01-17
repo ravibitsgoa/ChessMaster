@@ -1,15 +1,7 @@
 package chess;
 //import java.util.ArrayList;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.LayoutManager;
-
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import piece.*;
 
 /**

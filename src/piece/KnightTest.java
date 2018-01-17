@@ -148,6 +148,7 @@ class KnightTest
 			
 			Cell c2 = board.getCellAt((char)(Board.rowMin+1), 
 					(char)(Board.colMin+2));
+			@SuppressWarnings("unused")
 			Bishop b = new Bishop(Board.White, c2);
 			//Creating a white bishop on c2, so that white knight can't attack it.
 			for(Cell c: validCells)

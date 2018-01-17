@@ -1,8 +1,6 @@
 package piece;
 
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import chess.*;
 
 /**

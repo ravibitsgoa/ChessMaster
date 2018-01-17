@@ -89,6 +89,7 @@ class KingTest
 			
 			Cell rookCell = board.getCellAt((char)(Board.rowMin+7), 
 					(char)(Board.colMin+1));
+			@SuppressWarnings("unused")
 			Rook rook = new Rook(Board.Black, rookCell);
 			
 			//king must be able to move to only the cell a2.

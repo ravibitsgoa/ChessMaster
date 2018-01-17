@@ -154,6 +154,7 @@ class CellTest
 		assertEquals("h8", h8.toString(), "h8 cell must return its id correctly.");
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	void testEqualsObject()
 	{

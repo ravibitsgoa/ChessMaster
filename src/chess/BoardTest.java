@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import piece.King;
-import piece.Pawn;
 import piece.Rook;
 
 /**
