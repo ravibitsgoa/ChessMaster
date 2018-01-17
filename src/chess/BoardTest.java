@@ -39,8 +39,7 @@ class BoardTest
     	for(int i=0; i<8; i++)
 		{	for(int j=0; j<8; j++)
 			{	
-				Cell temp = board.getCellAt((char)(Board.rowMin+i), 
-						(char)(Board.colMin+j));
+				Cell temp = board.getCellAt(Board.rowMin+i, Board.colMin+j);
 				assertNotSame(null, temp);
 				assertEquals((char)(Board.rowMin+i), temp.row);
 				assertEquals((char)(Board.colMin+j), temp.col);
@@ -58,8 +57,7 @@ class BoardTest
     	for(int i=0; i<8; i++)
 		{	for(int j=0; j<8; j++)
 			{	
-				Cell temp = board.getCellAt((char)(Board.rowMin+i), 
-						(char)(Board.colMin+j));
+				Cell temp = board.getCellAt(Board.rowMin+i, Board.colMin+j);
 				assertNotSame(null, temp);
 				assertEquals((char)(Board.rowMin+i), temp.row);
 				assertEquals((char)(Board.colMin+j), temp.col);
@@ -68,10 +66,10 @@ class BoardTest
     	
     	for(int j=0; j<8; j++)
 		{	
-			Cell c = board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+j));	
+			Cell c = board.getCellAt(Board.rowMin+1, Board.colMin+j);	
 			assertEquals(Board.White.charAt(0)+"P", c.getPiece().toString());
 			//the second nearest row to white is filled with white pawns
-			c = board.getCellAt((char)(Board.rowMin+6), (char)(Board.colMin+j));	
+			c = board.getCellAt(Board.rowMin+6, Board.colMin+j);	
 			assertEquals(Board.Black.charAt(0)+"P", c.getPiece().toString());
 			//the second nearest row to black is filled with black pawns.
 		}
@@ -91,44 +89,40 @@ class BoardTest
     	
     	//testing construction of knights:
     	{	
-    		Cell knightCell = board.getCellAt(Board.rowMin, (char)(Board.colMin+1));	
+    		Cell knightCell = board.getCellAt(Board.rowMin, Board.colMin+1);	
     		assertEquals(Board.White.charAt(0)+"N", knightCell.getPiece().toString());
-    		knightCell = board.getCellAt(Board.rowMin, (char)(Board.colMin+6));	
+    		knightCell = board.getCellAt(Board.rowMin, Board.colMin+6);	
 	    	assertEquals(Board.White.charAt(0)+"N", knightCell.getPiece().toString());
 			
-	    	knightCell = board.getCellAt((char)(Board.rowMin+7),
-	    			(char)(Board.colMin+1));	
+	    	knightCell = board.getCellAt(Board.rowMin+7, Board.colMin+1);	
 	    	assertEquals(Board.Black.charAt(0)+"N", knightCell.getPiece().toString());
-	    	knightCell = board.getCellAt((char)(Board.rowMin+7), 
-	    			(char)(Board.colMin+6));	
+	    	knightCell = board.getCellAt(Board.rowMin+7, Board.colMin+6);	
 	    	assertEquals(Board.Black.charAt(0)+"N", knightCell.getPiece().toString());
 		}
     	
     	//testing construction of bishops:
     	{	
-    		Cell bishopCell = board.getCellAt(Board.rowMin, (char)(Board.colMin+2));	
+    		Cell bishopCell = board.getCellAt(Board.rowMin, Board.colMin+2);	
     		assertEquals(Board.White.charAt(0)+"B", bishopCell.getPiece().toString());
-    		bishopCell = board.getCellAt(Board.rowMin, (char)(Board.colMin+5));	
+    		bishopCell = board.getCellAt(Board.rowMin, Board.colMin+5);	
 	    	assertEquals(Board.White.charAt(0)+"B", bishopCell.getPiece().toString());
 			
-	    	bishopCell = board.getCellAt((char)(Board.rowMin+7),
-	    			(char)(Board.colMin+2));	
+	    	bishopCell = board.getCellAt(Board.rowMin+7, Board.colMin+2);	
 	    	assertEquals(Board.Black.charAt(0)+"B", bishopCell.getPiece().toString());
-	    	bishopCell = board.getCellAt((char)(Board.rowMin+7), 
-	    			(char)(Board.colMin+5));	
+	    	bishopCell = board.getCellAt(Board.rowMin+7, Board.colMin+5);	
 	    	assertEquals(Board.Black.charAt(0)+"B", bishopCell.getPiece().toString());
 		}
     	
     	//testing construction of queens:
-    	Cell queenCell = board.getCellAt(Board.rowMin, (char)(Board.colMin+4));	
+    	Cell queenCell = board.getCellAt(Board.rowMin, Board.colMin+4);	
 		assertEquals(Board.White.charAt(0)+"Q", queenCell.getPiece().toString());
-		queenCell = board.getCellAt((char)(Board.rowMin+7), (char)(Board.colMin+4));	
+		queenCell = board.getCellAt(Board.rowMin+7, Board.colMin+4);	
     	assertEquals(Board.Black.charAt(0)+"Q", queenCell.getPiece().toString());
     	
     	//testing construction of queens:
-        Cell kingCell = board.getCellAt(Board.rowMin, (char)(Board.colMin+3));	
+        Cell kingCell = board.getCellAt(Board.rowMin, Board.colMin+3);	
 		assertEquals(Board.White.charAt(0)+"K", kingCell.getPiece().toString());
-		kingCell = board.getCellAt((char)(Board.rowMin+7), (char)(Board.colMin+3));	
+		kingCell = board.getCellAt(Board.rowMin+7, Board.colMin+3);	
     	assertEquals(Board.Black.charAt(0)+"K", kingCell.getPiece().toString());
 	
     }
@@ -144,13 +138,13 @@ class BoardTest
     	assertEquals(Board.rowMin, a1.row);
     	assertEquals(Board.colMin, a1.col);
     	
-    	Cell invalid= board.getCellAt((char)(Board.rowMin-1), Board.colMin);
+    	Cell invalid= board.getCellAt(Board.rowMin-1, Board.colMin);
     	assertEquals(null, invalid);
-    	invalid= board.getCellAt((char)(Board.rowMax+1), Board.colMin);
+    	invalid= board.getCellAt(Board.rowMax+1, Board.colMin);
     	assertEquals(null, invalid);
-    	invalid= board.getCellAt(Board.rowMin, (char)(Board.colMin-1));
+    	invalid= board.getCellAt(Board.rowMin, Board.colMin-1);
     	assertEquals(null, invalid);
-    	invalid= board.getCellAt(Board.rowMin, (char)(Board.colMax+1));
+    	invalid= board.getCellAt(Board.rowMin, Board.colMax+1);
     	assertEquals(null, invalid);
     	
     }
@@ -166,7 +160,7 @@ class BoardTest
 	     	board = new Board();
 	     	Cell a1= board.getCellAt(Board.rowMin, Board.colMin);
 	     	Rook rook = new Rook(Board.White, a1);
-	     	Cell b2= board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+1));
+	     	Cell b2= board.getCellAt(Board.rowMin+1, Board.colMin+1);
 	     	
 	     	King blackKing = new King(Board.Black, b2);
 	     	assertFalse(board.isUnderAttack(a1.row, a1.col, blackKing),
@@ -174,9 +168,9 @@ class BoardTest
 	     	assertFalse(board.isUnderAttack(b2.row, b2.col, blackKing),
 	     			"cell b2 is not under attack.");
 	     	
-	     	Cell b1= board.getCellAt(Board.rowMin, (char)(Board.colMin+1));
-	     	Cell a2= board.getCellAt((char)(Board.rowMin+1), Board.colMin);
-	     	Cell a3= board.getCellAt((char)(Board.rowMin+2), Board.colMin);
+	     	Cell b1= board.getCellAt(Board.rowMin, Board.colMin+1);
+	     	Cell a2= board.getCellAt(Board.rowMin+1, Board.colMin);
+	     	Cell a3= board.getCellAt(Board.rowMin+2, Board.colMin);
 	     	assertTrue(board.isUnderAttack(a2.row, a2.col, blackKing),
 	     			"cell a2 is under attack by the rook.");
 	     	assertFalse(board.isUnderAttack(a2.row, a2.col, rook),
@@ -210,14 +204,14 @@ class BoardTest
     		assertEquals(null, board.colourAt(Board.rowMin, Board.colMin),
     				"colourAt() should return null for an empty cell.");
     		
-    		Cell rookCell = board.getCellAt(Board.rowMin, (char)(Board.colMin+2));
+    		Cell rookCell = board.getCellAt(Board.rowMin, Board.colMin+2);
     		new Rook(Board.White, rookCell);
     		//Created a new white rook on cell c1.
     		assertEquals(Board.White, board.colourAt(rookCell),
     				"colourAt() method should return white for a cell "+
     				"containing a white rook.");
     		
-    		rookCell = board.getCellAt(Board.rowMin, (char)(Board.colMin+4));
+    		rookCell = board.getCellAt(Board.rowMin, Board.colMin+4);
     		new Rook(Board.Black, rookCell);
     		//Created a new black rook on cell e1.
     		assertEquals(Board.Black, board.colourAt(rookCell),

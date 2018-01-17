@@ -77,25 +77,25 @@ class BishopTest {
 		try 
 		{
 			bishop = new Bishop(Board.White, 
-					board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+3)));
+					board.getCellAt(Board.rowMin+2, Board.colMin+3));
 			//Made a new white bishop at cell d3 of the board.
 			
 			Cell expected[]=
 			{	
-				board.getCellAt((char)(Board.rowMin+3), (char)(Board.colMin+4)),//e4
-				board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+5)),//f5
-				board.getCellAt((char)(Board.rowMin+5), (char)(Board.colMin+6)),//g6
-				board.getCellAt((char)(Board.rowMin+6), (char)(Board.colMin+7)),//h7
+				board.getCellAt(Board.rowMin+3, Board.colMin+4),//e4
+				board.getCellAt(Board.rowMin+4, Board.colMin+5),//f5
+				board.getCellAt(Board.rowMin+5, Board.colMin+6),//g6
+				board.getCellAt(Board.rowMin+6, Board.colMin+7),//h7
 				
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+4)),//e2
-				board.getCellAt(Board.rowMin, (char)(Board.colMin+5)),			//f1
+				board.getCellAt(Board.rowMin+1, Board.colMin+4),//e2
+				board.getCellAt(Board.rowMin, Board.colMin+5),	//f1
 				
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+2)),//c2
-				board.getCellAt(Board.rowMin, (char)(Board.colMin+1)),			//b1
+				board.getCellAt(Board.rowMin+1, Board.colMin+2),//c2
+				board.getCellAt(Board.rowMin, Board.colMin+1),	//b1
 				
-				board.getCellAt((char)(Board.rowMin+3), (char)(Board.colMin+2)),//c4
-				board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+1)),//b5
-				board.getCellAt((char)(Board.rowMin+5), Board.colMin)			//a6
+				board.getCellAt(Board.rowMin+3, Board.colMin+2),//c4
+				board.getCellAt(Board.rowMin+4, Board.colMin+1),//b5
+				board.getCellAt(Board.rowMin+5, Board.colMin)	//a6
 			};
 			assertEquals(expected.length, bishop.getAllMoves(board).size());
 			//Bishop must be able to move to only these cells.
@@ -103,7 +103,7 @@ class BishopTest {
 				assertTrue(bishop.canMoveTo(move, board),
 						"Bishop must be able to move to all these cells.");
 			
-			Cell queenCell = board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+5));
+			Cell queenCell = board.getCellAt(Board.rowMin+4, Board.colMin+5);
 			new Queen(Board.Black, queenCell);
 			//Made a new black queen at cell f5 of the board.
 			assertEquals(expected.length-2, bishop.getAllMoves(board).size());
