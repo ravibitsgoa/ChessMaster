@@ -9,7 +9,7 @@ public class Cell
 	private Piece piece;
 	public final char row;
 	public final char col;
-	private boolean active;
+	private boolean highlighted;
 	
 	/** Throws an exception if given row and column character
 	 * are outside bounds(1-8, a-h) specified in Board class.
@@ -22,11 +22,11 @@ public class Cell
 		row = r;
 		col = c;
 		piece = null;
-		active = false;
+		highlighted = false;
 	}
 	
 	/**
-	 * Sets the activate flag of the cell to parameter x.
+	 * Sets the highlighted flag of the cell to parameter x.
 	 * @return true iff the playerColour is the same as the colour of the 
 	 * piece on this cell.
 	 * Return false if the cell is empty or contains an opponent cell.
@@ -37,7 +37,7 @@ public class Cell
 			return false;
 		if(playerColour == this.getPiece().getColour())
 		{	
-			active = x;
+			highlighted = x;
 			return true;
 		}
 		else
@@ -45,11 +45,11 @@ public class Cell
 	}
 	
 	/**
-	 * @return the activation state of the cell.
+	 * @return the highlighted state of the cell.
 	 * */
-	public boolean getState()
+	public boolean isHighlighted()
 	{
-		return active;
+		return highlighted;
 	}
 
 	/** 

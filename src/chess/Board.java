@@ -1,7 +1,5 @@
 package chess;
-//import java.util.ArrayList;
 
-import javax.swing.JFrame;
 import piece.*;
 
 /**
@@ -12,7 +10,6 @@ public class Board
 	private Cell cells[][];
 	public static final char rowMax='8', colMax='h', rowMin='1', colMin='a';
 	public static final String White="White", Black = "Black";
-	//private ArrayList<Piece> pieces;
 	
 	private void emptyBoard()
 	{	
@@ -215,18 +212,4 @@ public class Board
 		}
 	}
 	
-	public static void main(String args[])
-	{
-		Board b = new Board(true);
-		b.print();
-
-		JFrame frame = new JFrame("title");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		GraphicsHandler g= new GraphicsHandler(b, 0, 0, 75, 75, 1);
-		frame.add(g);
-		frame.setSize(1000, 1000);
-		frame.setVisible(true);
-		//System.out.print(b.getClass().getSimpleName());
-		//System.out.println(b.isUnderAttack((char)(rowMin+2), (char)(colMin+1), null));
-	}
 }

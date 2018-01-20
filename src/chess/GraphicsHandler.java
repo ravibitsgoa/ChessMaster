@@ -49,19 +49,26 @@ public class GraphicsHandler extends JPanel
 				
 				graphics.drawRect(x, y, colLen, rowLen);
 				//Draw the border of the cell.
-				if(thisCell.getState())	
+				
+				//paint the cell LIGHT_GRAY if it's even numbered.
+				if((i+j) % 2 ==0)
+				{	graphics.setColor(Color.LIGHT_GRAY);
+					graphics.fillRect(x+border, y+border, colLen-border,
+						rowLen-border);
+				}
+				//otherwise paint it white.
+				else
+				{	graphics.setColor(Color.WHITE);
+					graphics.fillRect(x+border, y+border, colLen-border,
+						rowLen-border);
+				}
+				
+				if(thisCell.isHighlighted())	
 				{
 					//If the cell is in highlighted state, paint it
 					//with HIGHLIGHT colour.
 					graphics.setColor(HIGHLIGHT);
-					graphics.fillRect(x+border, y+border, colLen-border,
-							rowLen-border);
-				}
-				else
-				{	
-					graphics.setColor(Color.WHITE);
-					graphics.fillRect(x+border, y+border, colLen-border,
-							rowLen-border);
+					graphics.drawRect(x, y, colLen, rowLen);
 				}
 				Piece thisPiece = thisCell.getPiece();
 				//draw the image of the piece contained by this cell.
