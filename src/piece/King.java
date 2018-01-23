@@ -22,6 +22,14 @@ public class King extends Piece
 		return colour.charAt(0)+"K";
 	}
 	
+	/**
+	 * @return the cell containing this king.
+	 * */
+	public Cell getCell()
+	{
+		return this.currentPos;
+	}
+	
 	/** 
 	 * A King can move only to immediately adjacent (at most 8) cells.
 	 * Also, the destination cell must not be under attack, right now.

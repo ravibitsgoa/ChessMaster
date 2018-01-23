@@ -9,7 +9,8 @@ public class Cell
 	private Piece piece;
 	public final char row;
 	public final char col;
-	private boolean highlighted;
+	private boolean selected;
+	private boolean nextMove;
 	
 	/** Throws an exception if given row and column character
 	 * are outside bounds(1-8, a-h) specified in Board class.
@@ -22,7 +23,8 @@ public class Cell
 		row = r;
 		col = c;
 		piece = null;
-		highlighted = false;
+		selected = false;
+		nextMove = false;
 	}
 	
 	/**
@@ -31,13 +33,13 @@ public class Cell
 	 * piece on this cell.
 	 * Return false if the cell is empty or contains an opponent cell.
 	 * */
-	public boolean setState(String playerColour, boolean x)
+	public boolean select(String playerColour, boolean x)
 	{
 		if(this.getPiece() == null)
 			return false;
 		if(playerColour == this.getPiece().getColour())
 		{	
-			highlighted = x;
+			selected = x;
 			return true;
 		}
 		else
@@ -45,11 +47,27 @@ public class Cell
 	}
 	
 	/**
-	 * @return the highlighted state of the cell.
+	 * Sets the nextMove attribute of the cell equal to the method parameter.
 	 * */
-	public boolean isHighlighted()
+	public void setNextMove(boolean x)
 	{
-		return highlighted;
+		nextMove = x;
+	}
+	
+	/**
+	 * @return the selected state of the cell.
+	 * */
+	public boolean isSelected()
+	{
+		return selected;
+	}
+	
+	/**
+	 * @return true iff this cell is the next move of the selected piece.
+	 * */
+	public boolean isNextMove()
+	{
+		return nextMove;
 	}
 
 	/** 
@@ -76,11 +94,19 @@ public class Cell
 		return true;
 	}
 	
+	/**
+	 * @return piece on this cell.
+	 * */
 	public Piece getPiece()
 	{
 		return this.piece;
 	}
 	
+	/**
+	 * string representation of the cell.
+	 * @return a1 etc. if a is the column and 1 is the row number.
+	 * */
+	@Override
 	public String toString()
 	{
 		return this.col+""+this.row;

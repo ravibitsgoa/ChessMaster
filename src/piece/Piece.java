@@ -79,7 +79,7 @@ public abstract class Piece
 	{
 		if(dest == null || board == null)
 			return false;
-		//if(this.moves == null || this instanceof King)
+		
 		this.getAllMoves(board);
 		//If we don't know all the moves from this position or
 		//if this is a king, get all the moves.
@@ -95,7 +95,7 @@ public abstract class Piece
 	 * @return an ArrayList of Cells to which the piece can
 	 * move to, from current position.
 	 * */
-	protected abstract ArrayList<Cell> getAllMoves(Board board);
+	public abstract ArrayList<Cell> getAllMoves(Board board);
 	
 	/** 
 	 * @return an ArrayList of Cells from current cell, 

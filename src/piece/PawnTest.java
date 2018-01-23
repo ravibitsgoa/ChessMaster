@@ -116,9 +116,11 @@ class PawnTest
 					+ "from a6 to a8.");
 			
 			assertTrue(pawn.moveTo(a7, board));
-			
 			assertTrue(pawn.moveTo(a8, board));
 			
+			assertEquals("WQ", a8.getPiece().toString(),
+					"A pawn should be upgraded to a queen on reaching the"+
+					"terminal row");
 		}
 		catch(Exception e)
 		{

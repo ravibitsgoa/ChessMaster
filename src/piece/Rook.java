@@ -29,7 +29,7 @@ public class Rook extends Piece
 	 * 2. occupied by a piece of opposite colour.
 	 * */
 	@Override
-	protected ArrayList<Cell> getAllMoves(Board board) 
+	public ArrayList<Cell> getAllMoves(Board board) 
 	{
 		this.moves = new ArrayList<Cell>();
 		

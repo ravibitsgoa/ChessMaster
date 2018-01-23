@@ -172,8 +172,6 @@ class BoardTest
 	     	Cell a3= board.getCellAt(Board.rowMin+2, Board.colMin);
 	     	assertTrue(board.isUnderAttack(a2.row, a2.col, blackKing),
 	     			"cell a2 is under attack by the rook.");
-	     	assertFalse(board.isUnderAttack(a2.row, a2.col, rook),
-	     			"cell a2 is under attack only by the rook.");
 	     	assertTrue(board.isUnderAttack(b1.row, b1.col, blackKing),
 	      			"cell a2 is under attack by the rook.");
 	 	    assertTrue(board.isUnderAttack(a3.row, a3.col, blackKing),

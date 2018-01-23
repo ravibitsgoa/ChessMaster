@@ -53,7 +53,7 @@ public class Pawn extends Piece
 	 * It can also move 2 steps in an initial move.
 	 * */
 	@Override
-	protected ArrayList<Cell> getAllMoves(Board board) 
+	public ArrayList<Cell> getAllMoves(Board board) 
 	{
 		this.moves = new ArrayList<Cell>();
 		//Case 1: Normal move 
@@ -111,10 +111,9 @@ public class Pawn extends Piece
 			return false;
 		
 		// If the destination cell is one of the terminal cells of a row,
-		// and, it is empty, and pawn can move to it,
+		// and, it is empty or has opponent piece, and pawn can move to it,
 		// prompt the user for the piece it can upgrade to.
 		if((dest.row == Board.rowMax || dest.row == Board.rowMin)
-			&& dest.getPiece() == null
 			&& this.canMoveTo(dest, board))
 		{
 			currentPos.setPiece(null);
@@ -135,8 +134,14 @@ public class Pawn extends Piece
 			{
 				if(newPiece == 'Q')
 				{	
+					//If destination cell contains anything,
+					//make it empty.
+					dest.setPiece(null);
 					new Queen(this.colour, dest);
+					//System.out.println(dest.getPiece());
 				}
+				else
+					System.out.println("hmm");
 				/*else if(newPiece == 'K')
 				{	
 					new Knight(this.colour, dest);

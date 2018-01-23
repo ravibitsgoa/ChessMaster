@@ -12,10 +12,12 @@ import javax.swing.*;
  */
 public class Main 
 {
-	private JFrame chessWindow;
-	private SelectPlayerWindow selectPlayerWindow;
 	private GameModeWindow gameModeWindow;
+	private SelectPlayerWindow selectPlayerWindow;
+	private SelectColourWindow selectColourWindow;
+	private JFrame chessWindow;
 	private Player player, player2;
+	private String colour, colour2;
 	
 	private int gameMode;
 	private JFrame[] windowList;
@@ -62,7 +64,10 @@ public class Main
 			selectPlayerWindow = new SelectPlayerWindow(1);
 			selectPlayerWindow.setSize(300, 300);
 			
-			JFrame[] arr = {selectPlayerWindow, chessWindow};
+			selectColourWindow = new SelectColourWindow();
+			selectColourWindow.setSize(300, 300);
+			
+			JFrame[] arr = {selectPlayerWindow, selectColourWindow, chessWindow};
 			windowList = arr;
 		}
 		else
@@ -74,6 +79,53 @@ public class Main
 			windowList = arr;
 		}	
 		windowList[0].setVisible(true);
+	}
+	
+	private class SelectColourWindow extends JFrame
+	{
+		private static final long serialVersionUID = 1L;
+		private ButtonGroup colourChoice;
+		
+		public SelectColourWindow()
+		{
+			super("Select colour");
+			setLayout(new FlowLayout());
+			
+			colourChoice = new ButtonGroup();
+			
+			JRadioButton whiteButton = new JRadioButton(Board.White);
+			JRadioButton blackButton = new JRadioButton(Board.Black);
+			add(whiteButton);
+			add(blackButton);
+			colourChoice.add(whiteButton);
+			colourChoice.add(blackButton);
+			
+			whiteButton.addItemListener(new ColourHandler(Board.White));
+			blackButton.addItemListener(new ColourHandler(Board.Black));
+		}
+		
+		public void CloseFrame()
+		{
+			Main.this.nextWindow(this);
+			super.dispose();
+		}
+		
+		private class ColourHandler implements ItemListener
+		{
+			private String color;
+			
+			public ColourHandler(String s)
+			{
+				color = s;
+			}
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) 
+			{
+				Main.this.colour = this.color;
+				CloseFrame();
+			}
+		}
 	}
 	
 	private class SelectPlayerWindow extends JFrame
@@ -97,10 +149,18 @@ public class Main
 	
 			if(mode == 2)
 			{
+				JLabel white = new JLabel("White");
+				add(white);
+				
 				selectPlayer2 = new JComboBox<>(Player.getPlayerList());
 				selectPlayer2.setEditable(true);
 				add(selectPlayer2);
 				selectPlayer2.addActionListener(handler);
+				JLabel black = new JLabel("Black");
+				add(black);
+				
+				colour = "White";
+				colour2 = "Black";
 			}
 		}
 		
@@ -131,6 +191,7 @@ public class Main
 					if(player2 == null)
 						player2 = new Player(name2);
 				}
+				
 				CloseFrame();
 			}
 		}
@@ -179,4 +240,5 @@ public class Main
 			}
 		}
 	}
+	
 }

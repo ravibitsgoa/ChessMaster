@@ -47,7 +47,7 @@ public class Knight extends Piece
 	 * Since knight doesn't move linearly, it can't use movesInDir().
 	 * */
 	@Override
-	protected ArrayList<Cell> getAllMoves(Board board)
+	public ArrayList<Cell> getAllMoves(Board board)
 	{
 		if(board == null)
 			return null;

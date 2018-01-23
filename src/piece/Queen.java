@@ -31,7 +31,7 @@ public class Queen extends Piece
 	 * I.e. it can go to dest if sum(row, column) or diff(row, column) of 
 	 * its current cell and dest are same.
 	 **/
-	protected ArrayList<Cell> getAllMoves(Board board) 
+	public ArrayList<Cell> getAllMoves(Board board) 
 	{
 		this.moves = new ArrayList<Cell>();
 		

@@ -30,7 +30,7 @@ public class Bishop extends Piece
 	 * destination cell must be the same.
 	 * */
 	@Override
-	protected ArrayList<Cell> getAllMoves(Board board) 
+	public ArrayList<Cell> getAllMoves(Board board) 
 	{
 		this.moves = new ArrayList<Cell>();
 		

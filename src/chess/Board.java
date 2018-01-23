@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 import piece.*;
 
 /**
@@ -10,9 +12,16 @@ public class Board
 	private Cell cells[][];
 	public static final char rowMax='8', colMax='h', rowMin='1', colMin='a';
 	public static final String White="White", Black = "Black";
+	private String currentPlayerColour;
+	private boolean selected;
+	private King whiteKing, blackKing;
+	private Cell selectedCell;
 	
 	private void emptyBoard()
 	{	
+		currentPlayerColour = Board.White;
+		selected = false;
+		selectedCell = null;
 		try 
 		{
 			cells = new Cell[8][8];
@@ -111,8 +120,8 @@ public class Board
 		try
 		{
 			//giving a king to both players on cells just beside the queen.
-			new King(White, cells[0][3]);
-			new King(Black, cells[7][3]);
+			whiteKing = new King(White, cells[0][3]);
+			blackKing = new King(Black, cells[7][3]);
 		}
 		catch(Exception e)
 		{
@@ -146,7 +155,7 @@ public class Board
 	 * any piece other than the king itself (passed as argument).
 	 * Returns false if this cells is free from threat.
 	 * */
-	public boolean isUnderAttack(char row, char col, Piece otherThanThis)
+	public boolean isUnderAttack(char row, char col, King otherThanThis)
 	{
 		Cell dest = getCellAt(row, col);
 		if(dest == null)
@@ -158,7 +167,10 @@ public class Board
 				//if(onThis != null)
 				//	System.out.println(onThis);
 				if((dest != cells[i][j]) && (onThis != null))
-				{	if( (onThis != otherThanThis) &&(onThis.canMoveTo(dest, this)))
+				{	
+					if( !(onThis instanceof King) &&
+						(onThis.getColour() != otherThanThis.getColour()) &&
+						onThis.canMoveTo(dest, this) )
 					{	//System.out.println(dest+" is under"
 						//	+ " attack by piece at "+ cells[i][j]);
 						return true;
@@ -212,4 +224,121 @@ public class Board
 		}
 	}
 	
+	/**
+	 * @return true iff current player has got a check-mate.
+	 * Returns false if the king of this player has at least one move,
+	 * or it is not under check.
+	 * */
+	public boolean isCheckMate(String colourOfPlayer)
+	{
+		if(!this.isUnderCheck(colourOfPlayer))
+			return false;
+	
+		King king;
+		if(colourOfPlayer == White)
+		{	
+			king = whiteKing;
+		}
+		else
+		{
+			king = blackKing;
+		}
+		int size = king.getAllMoves(this).size();
+		
+		if(size==0)
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * @return true iff the king of given colour is under check.
+	 * Returns false otherwise.
+	 * */
+	public boolean isUnderCheck(String colourOfPlayer)
+	{
+		King king;
+		if(colourOfPlayer == White)
+		{	
+			king = whiteKing;
+		}
+		else
+		{
+			king = blackKing;
+		}
+		Cell kingCell = king.getCell();
+		if(!this.isUnderAttack(kingCell.row, kingCell.col, king))
+			return false;
+		else
+			return true;
+	}
+	
+	/**
+	 * This function is called whenever the user clicks on the cell 
+	 * having this (row,col)
+	 * @return true if a move is made,
+	 * Returns false if either the cell is empty, or contains an opponent
+	 * piece or is not a valid destination.
+	 * */
+	public boolean clicked(int row, int col)
+	{
+		return this.clicked((char)row, (char)col);
+	}
+	
+	public boolean clicked(char row, char col)
+	{
+		/*ArrayList<Cell> temp = blackKing.getAllMoves(this);
+		System.out.println(temp.size());
+		for(Cell c: temp)
+			System.out.println(c);*/
+		
+		Cell thisCell = this.getCellAt(row, col);
+		if(thisCell == null)
+			System.out.println("Invalid cell in clicked() of Board");
+		Piece piece = thisCell.getPiece();
+		
+		if(!selected)
+		{	
+			//if player clicks on his own piece, mark it as selected.
+			if(piece!=null && piece.getColour() == currentPlayerColour)
+			{	
+				selectedCell = thisCell;
+				selected = true;
+				thisCell.select(currentPlayerColour, true);
+				ArrayList<Cell> allMoves = piece.getAllMoves(this);
+				for(Cell c: allMoves)
+				{
+					c.setNextMove(true);
+				}
+				return true;
+			}
+			//If he clicks on an opponent piece, don't do anything.
+			else
+				return false;
+		}
+		else 
+		{
+			selected = false;
+			selectedCell.select(currentPlayerColour, false);
+			if(selectedCell != null && selectedCell.getPiece() != null)
+			{	
+				ArrayList<Cell> allMoves = selectedCell.getPiece().getAllMoves(this);
+				for(Cell c: allMoves)
+				{
+					c.setNextMove(false);
+				}
+				
+				boolean move = selectedCell.getPiece().moveTo(thisCell, this);
+				if(move)//the player has made a move.
+				{
+					if(currentPlayerColour == White)
+						currentPlayerColour = Black;
+					else
+						currentPlayerColour = White;
+				}
+			}	
+			selectedCell = null;
+			return true;
+		}
+	}
 }
