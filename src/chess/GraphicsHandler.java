@@ -126,22 +126,39 @@ public class GraphicsHandler extends JPanel
 		message.setSize(300, 300);
 	}
 	
+	public void check(String playerColour)
+	{
+		JFrame message = new JFrame("Check !!");
+		message.add(new JLabel(playerColour+", you are given a check! :O"));
+		message.setVisible(true);
+		message.setSize(300, 300);
+	}
+	
 	/**
 	 * Calls board.clicked() with the row and column of the clicked cell.
 	 * Redraws all the graphics of the window.
 	 * Checks whether the game has ended, and shows a message if that is true.
+	 * if either of the player is under check, shows a message.
 	 * */
 	private void clicked(int x, int y)
 	{
 		int col = (x-x0) / rowLen;
 		int row = (y-y0) / colLen;
 		
-		board.clicked(row +Board.rowMin, col +Board.colMin);
+		boolean moveHappend = board.clicked(row +Board.rowMin, 
+											col +Board.colMin);
 		this.repaint();
-		if(board.isCheckMate(Board.White))
-			this.checkMate(Board.White);
-		if(board.isCheckMate(Board.Black))
-			this.checkMate(Board.Black);
+		if(moveHappend)
+		{
+			if(board.isCheckMate(Board.White))
+				this.checkMate(Board.White);
+			else if(board.isUnderCheck(Board.White))
+				this.check(Board.White);
+			if(board.isCheckMate(Board.Black))
+				this.checkMate(Board.Black);
+			else if(board.isUnderCheck(Board.Black))
+				this.check(Board.Black);
+		}
 	}
 	
 	/**

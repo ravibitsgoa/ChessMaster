@@ -50,10 +50,22 @@ public class King extends Piece
 				if(dest == null || dest.equals(currentPos))
 					continue;
 			
-				if( board.colourAt(dest.row, dest.col) != this.colour 
-					&& !board.isUnderAttack(dest.row, dest.col, this) ) 
+				if( board.colourAt(dest.row, dest.col) != this.colour )
 				{
-					moves.add(dest);
+					Cell thisCell = this.getCell();
+					thisCell.setPiece(null);
+					
+					//Store the piece on the cell in a temporary variable.
+					Piece currentlyOnDest = dest.getPiece();
+					dest.setPiece(this);
+					
+					if(!board.isUnderAttack(dest.row, dest.col, this))
+					{
+						moves.add(dest);
+					}
+
+					thisCell.setPiece(this);
+					dest.setPiece(currentlyOnDest);
 				}
 			}
 		}

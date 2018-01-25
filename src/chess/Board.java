@@ -163,10 +163,10 @@ public class Board
 		
 		for(int i=0; i<8; i++)
 		{	for(int j=0; j<8; j++)
-			{	Piece onThis = cells[i][j].getPiece();
-				//if(onThis != null)
-				//	System.out.println(onThis);
-				if((dest != cells[i][j]) && (onThis != null))
+			{	Cell thisCell = cells[i][j]; 
+				Piece onThis = thisCell.getPiece();
+				
+				if((dest != thisCell) && (onThis != null))
 				{	
 					if( !(onThis instanceof King) &&
 						(onThis.getColour() != otherThanThis.getColour()) &&
@@ -174,6 +174,16 @@ public class Board
 					{	//System.out.println(dest+" is under"
 						//	+ " attack by piece at "+ cells[i][j]);
 						return true;
+					}
+					else if(onThis instanceof King && onThis!=otherThanThis)
+					{	//if this cell contains the other king.
+						int distSquared =0;
+						distSquared = (thisCell.row-dest.row)*(thisCell.row-dest.row) +
+								(thisCell.col-dest.col)*(thisCell.col-dest.col);
+						if(distSquared <= 2)
+						{
+							return true;
+						}
 					}
 				}
 			}
@@ -245,10 +255,41 @@ public class Board
 		}
 		int size = king.getAllMoves(this).size();
 		
-		if(size==0)
-			return true;
-		else
+		if(size!=0)
 			return false;
+		else
+		{
+			//Try moving some piece of current player to see if it can
+			//avoid the check.
+			//If there is any such move, return false.
+			//Otherwise return true.
+			for(int i=0; i<8; i++)
+			{	for(int j=0; j<8; j++)
+				{	
+					Cell thisCell = cells[i][j]; 
+					Piece onThis = thisCell.getPiece();
+					
+					if(onThis != null && !(onThis instanceof King) &&
+						onThis.getColour() == colourOfPlayer)
+					{	
+						ArrayList<Cell> moves = onThis.getAllMoves(this);
+						for(Cell c: moves)
+						{
+							Piece currentlyOnC = c.getPiece();
+							c.setPiece(onThis);
+							thisCell.setPiece(null);
+							boolean lifeSavingMove =
+								!(this.isUnderCheck(colourOfPlayer));
+							c.setPiece(currentlyOnC);
+							thisCell.setPiece(onThis);
+							if(lifeSavingMove == true)
+								return false;
+						}
+					}
+				}
+			}
+			return true;
+		}
 	}
 	
 	/**
@@ -257,6 +298,7 @@ public class Board
 	 * */
 	public boolean isUnderCheck(String colourOfPlayer)
 	{
+		//System.out.println(colourOfPlayer);
 		King king;
 		if(colourOfPlayer == White)
 		{	
@@ -270,12 +312,22 @@ public class Board
 		if(!this.isUnderAttack(kingCell.row, kingCell.col, king))
 			return false;
 		else
+		{	
+			//if(highlight)
+				//this.clicked(kingCell.row, kingCell.col);
 			return true;
+		}
 	}
 	
 	/**
 	 * This function is called whenever the user clicks on the cell 
-	 * having this (row,col)
+	 * having this (row, col).
+	 * 
+	 * It highlights the clicked cell if none is highlighted currently.
+	 * 
+	 * If some cell is highlighted, it moves the piece on that cell to
+	 * this cell.
+	 * 
 	 * @return true if a move is made,
 	 * Returns false if either the cell is empty, or contains an opponent
 	 * piece or is not a valid destination.
@@ -287,34 +339,55 @@ public class Board
 	
 	public boolean clicked(char row, char col)
 	{
-		/*ArrayList<Cell> temp = blackKing.getAllMoves(this);
-		System.out.println(temp.size());
-		for(Cell c: temp)
-			System.out.println(c);*/
-		
 		Cell thisCell = this.getCellAt(row, col);
 		if(thisCell == null)
+		{	
 			System.out.println("Invalid cell in clicked() of Board");
+			return false;
+		}
+		
 		Piece piece = thisCell.getPiece();
 		
 		if(!selected)
 		{	
 			//if player clicks on his own piece, mark it as selected.
-			if(piece!=null && piece.getColour() == currentPlayerColour)
+			if(piece != null && piece.getColour() == currentPlayerColour)
 			{	
 				selectedCell = thisCell;
 				selected = true;
 				thisCell.select(currentPlayerColour, true);
+				
+				//pinning: a piece can't move if it makes 
+				//it's own king vulnerable in the immediate next move.
+				
 				ArrayList<Cell> allMoves = piece.getAllMoves(this);
 				for(Cell c: allMoves)
 				{
-					c.setNextMove(true);
+					if(!(piece instanceof King))
+					{	thisCell.setPiece(null);
+					
+						//Store the piece on the cell in a temporary variable.
+						Piece currentlyOnDest = c.getPiece();
+						c.setPiece(piece);
+						if(!isUnderCheck(currentPlayerColour))
+						{
+							c.setNextMove(true);
+						}
+						else
+						{	
+							//we can't allow this cell.
+						}
+						thisCell.setPiece(piece);
+						c.setPiece(currentlyOnDest);
+					}
+					else
+					{
+						c.setNextMove(true);
+					}
 				}
-				return true;
 			}
 			//If he clicks on an opponent piece, don't do anything.
-			else
-				return false;
+			return false;
 		}
 		else 
 		{
@@ -341,4 +414,5 @@ public class Board
 			return true;
 		}
 	}
+
 }

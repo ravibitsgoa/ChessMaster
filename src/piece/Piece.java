@@ -82,7 +82,7 @@ public abstract class Piece
 		
 		this.getAllMoves(board);
 		//If we don't know all the moves from this position or
-		//if this is a king, get all the moves.
+		//If this piece is a king, get all the moves.
 		//For king, moves can change possibly after each move of
 		//a piece on the board.
 		
