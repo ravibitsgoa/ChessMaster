@@ -401,7 +401,42 @@ public class Board
 					c.setNextMove(false);
 				}
 				
-				boolean move = selectedCell.getPiece().moveTo(thisCell, this);
+				boolean move = false;
+				Piece selectedPiece = selectedCell.getPiece();
+				if(selectedPiece instanceof King)
+				{
+					King king = (King) selectedPiece;
+					if(	king.canKingSideCastle() && 
+						thisCell.col == (Board.colMin +1) && 
+						thisCell.row == selectedCell.row)
+					{
+						king.moveTo(thisCell, this);
+						
+						Cell rookCell = this.getCellAt(thisCell.row, 
+								thisCell.col-1);
+						Rook kingSideRook = (Rook) rookCell.getPiece();
+						
+						kingSideRook.castle(this);
+						move = true;
+					}
+					else if(king.canQueenSideCastle() && 
+							thisCell.col == (Board.colMax - 2) && 
+							thisCell.row == selectedCell.row)
+					{
+						king.moveTo(thisCell, this);
+						
+						Cell rookCell = this.getCellAt(thisCell.row, 
+								thisCell.col+2);
+						Rook queenSideRook = (Rook) rookCell.getPiece();
+						
+						queenSideRook.castle(this);
+						
+						move = true;
+					}
+				}
+				
+				if(!move)
+					move = selectedCell.getPiece().moveTo(thisCell, this);
 				if(move)//the player has made a move.
 				{
 					if(currentPlayerColour == White)
@@ -415,4 +450,11 @@ public class Board
 		}
 	}
 
+	public King getKing(String colour)
+	{
+		if(colour == White)
+			return whiteKing;
+		else
+			return blackKing;
+	}
 }
