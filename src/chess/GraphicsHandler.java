@@ -29,6 +29,8 @@ public class GraphicsHandler extends JPanel
 	private final int x0, y0, rowLen, colLen, border;
 	private final Color HIGHLIGHT, NEXTMOVE;
 	private MouseHandler mouseHandler;
+	private AI ai;
+	private int gameMode;
 	
 	public GraphicsHandler(Board b, int x, int y, int rowLen, 
 			int colLen, int border)
@@ -126,6 +128,24 @@ public class GraphicsHandler extends JPanel
 		message.setSize(300, 300);
 	}
 	
+	/**
+	 * Sets the gameMode to 1 if it's player vs AI.
+	 * Sets it to two if it's between two human players.
+	 * */
+	public void setGameMode(int mode) throws Exception
+	{
+		if(mode !=1 && mode!=2)
+			throw new Exception("Invalid game mode in GraphicsHandler.");
+		this.gameMode = mode;
+	}
+	
+	public void setAI(AI ai) throws Exception
+	{
+		if(ai == null)
+			throw new Exception("null AI object in setAI()");
+		this.ai = ai;
+	}
+	
 	public void check(String playerColour)
 	{
 		JFrame message = new JFrame("Check !!");
@@ -158,6 +178,11 @@ public class GraphicsHandler extends JPanel
 				this.checkMate(Board.Black);
 			else if(board.isUnderCheck(Board.Black))
 				this.check(Board.Black);
+		}
+		
+		if(gameMode == 1)
+		{
+			ai.playNextMove();
 		}
 	}
 	

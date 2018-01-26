@@ -18,6 +18,8 @@ public class Main
 	private JFrame chessWindow;
 	private Player player, player2;
 	private String colour, colour2;
+	private GraphicsHandler graphicsHandler;
+	private Board board;
 	
 	private int gameMode;
 	private JFrame[] windowList;
@@ -32,19 +34,39 @@ public class Main
 		gameModeWindow.setSize(300, 300);
 		gameModeWindow.setVisible(true);
 		
-		Board board = new Board(true);
+		board = new Board(true);
 		board.print();
 		
 		chessWindow = new JFrame("chess");
-		GraphicsHandler g= new GraphicsHandler(board, 50, 50, 75, 75, 1);
-		chessWindow.add(g);
+		graphicsHandler= new GraphicsHandler(board, 50, 50, 75, 75, 1);
+		chessWindow.add(graphicsHandler);
 		chessWindow.setSize(700, 700);
 		chessWindow.setVisible(false);
 	}
-	
+
 	public static void main(String args[])
 	{
 		new Main();
+	}
+	
+	private void setHumanPlayerColour(String colour)
+	{
+		this.colour = colour;
+
+		if(colour == Board.White)
+			this.colour2 = Board.Black;
+		else
+			this.colour2 = Board.White;
+		
+		try 
+		{
+			graphicsHandler.setAI(new AI(board, colour2));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("Exception in setHumanPlayerColour() of Main.");
+		}
 	}
 	
 	public void nextWindow(JFrame window)
@@ -59,6 +81,17 @@ public class Main
 	
 	public void setWindowList()
 	{
+		try 
+		{
+			graphicsHandler.setGameMode(gameMode);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("Exception in setWindowList() of Main"
+					+ "while setting game mode.");
+		}
+		
 		if(gameMode == 1)
 		{
 			selectPlayerWindow = new SelectPlayerWindow(1);
@@ -122,7 +155,7 @@ public class Main
 			@Override
 			public void itemStateChanged(ItemEvent e) 
 			{
-				Main.this.colour = this.color;
+				Main.this.setHumanPlayerColour(this.color);
 				CloseFrame();
 			}
 		}
