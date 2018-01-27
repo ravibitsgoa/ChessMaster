@@ -86,13 +86,15 @@ class PieceTest
 		{
 			//Creating a new black rook at the cell a1.
 			piece = new Rook(Board.Black, board.getCellAt(Board.rowMin, Board.colMin));
+			board.addPiece(piece);
 			Cell dest= board.getCellAt((char)(Board.rowMin+2), Board.colMin);
 			
 			assertFalse(piece.moveTo(dest, null),
 					"A piece must return false when board is null.");
 			assertFalse(piece.moveTo(null, board),
 					"A piece must return false when destination is null.");
-			
+			//board.print();
+			//System.out.println(dest);
 			assertTrue(piece.moveTo(dest, board), 
 					"rook must be able to move to cell a3 from a1.");
 			
@@ -107,7 +109,7 @@ class PieceTest
 			assertEquals(14, piece.moves.size(), 
 					"rook must have 14 moves from cell a3.");
 			
-			ArrayList<Cell> moveslist = piece.moves;
+			ArrayList<Cell> moveslist = piece.getAllMoves(board);
 			dest= board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+1));
 			assertEquals(false, piece.moveTo(dest, board), 
 					"rook must not be able to move b2 from a3.");
@@ -116,7 +118,8 @@ class PieceTest
 		}
 		catch(Exception e)
 		{
-			System.out.println("Exception in testMoveTo() "
+			e.printStackTrace();
+			System.out.println("Exception in moveToTest() "
 					+ "method of PieceTest");
 		}
 	}

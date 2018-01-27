@@ -144,6 +144,8 @@ public class GraphicsHandler extends JPanel
 		if(ai == null)
 			throw new Exception("null AI object in setAI()");
 		this.ai = ai;
+		if(ai.getColour() == Board.White)
+			ai.playNextMove();
 	}
 	
 	public void check(String playerColour)
@@ -170,20 +172,19 @@ public class GraphicsHandler extends JPanel
 		this.repaint();
 		if(moveHappend)
 		{
-			if(board.isCheckMate(Board.White))
-				this.checkMate(Board.White);
-			else if(board.isUnderCheck(Board.White))
-				this.check(Board.White);
-			if(board.isCheckMate(Board.Black))
-				this.checkMate(Board.Black);
-			else if(board.isUnderCheck(Board.Black))
-				this.check(Board.Black);
+			if(gameMode == 1)
+			{
+				ai.playNextMove();
+			}
 		}
-		
-		if(gameMode == 1)
-		{
-			ai.playNextMove();
-		}
+		if(board.isCheckMate(Board.White))
+			this.checkMate(Board.White);
+		else if(board.isUnderCheck(Board.White))
+			this.check(Board.White);
+		if(board.isCheckMate(Board.Black))
+			this.checkMate(Board.Black);
+		else if(board.isUnderCheck(Board.Black))
+			this.check(Board.Black);
 	}
 	
 	/**

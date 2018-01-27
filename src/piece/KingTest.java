@@ -84,6 +84,7 @@ class KingTest
 		{
 			king = new King(Board.White, 
 				board.getCellAt(Board.rowMin, Board.colMin));
+			board.addPiece(king);
 			//Made a new white king at cell a1 of the board.
 			//king.getAllMoves(board);
 			
@@ -91,6 +92,9 @@ class KingTest
 					(char)(Board.colMin+1));
 			@SuppressWarnings("unused")
 			Rook rook = new Rook(Board.Black, rookCell);
+			board.addPiece(rook);
+			
+			//board.print();
 			
 			//king must be able to move to only the cell a2.
 			assertTrue(king.canMoveTo(

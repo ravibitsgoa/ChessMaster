@@ -159,14 +159,16 @@ class BoardTest
 	     	board = new Board();
 	     	Cell a1= board.getCellAt(Board.rowMin, Board.colMin);
 	     	Rook rook = new Rook(Board.White, a1);
-	     	Cell b2= board.getCellAt(Board.rowMin+1, Board.colMin+1);
+	     	board.addPiece(rook);
 	     	
+	     	Cell b2= board.getCellAt(Board.rowMin+1, Board.colMin+1);
 	     	King blackKing = new King(Board.Black, b2);
+	     	board.addPiece(blackKing);
 	     	assertFalse(board.isUnderAttack(a1.row, a1.col, blackKing),
 	     			"cell a1 is not under attack by anyone other than black king.");
 	     	assertFalse(board.isUnderAttack(b2.row, b2.col, blackKing),
 	     			"cell b2 is not under attack.");
-	     	
+	     	//board.print();
 	     	Cell b1= board.getCellAt(Board.rowMin, Board.colMin+1);
 	     	Cell a2= board.getCellAt(Board.rowMin+1, Board.colMin);
 	     	Cell a3= board.getCellAt(Board.rowMin+2, Board.colMin);

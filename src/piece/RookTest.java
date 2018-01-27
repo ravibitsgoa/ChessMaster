@@ -130,6 +130,7 @@ class RookTest {
 		}
 		catch(Exception e)
 		{
+			//e.printStackTrace();
 			System.out.println("Exception in getAllMovesTest() method of RookTest.");
 		}
 	}

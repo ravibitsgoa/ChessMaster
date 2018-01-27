@@ -51,13 +51,14 @@ public class Rook extends Piece
 		if(this.canCastle())
 		{
 			King king = board.getKing(this.colour);
-			if(	king.canKingSideCastle() &&
+			
+			if( king!=null && king.canKingSideCastle() &&
 				this.currentPos.col < king.currentPos.col)
 			{
 				char row = this.currentPos.row, col= this.currentPos.col;
 				moves.add(board.getCellAt(row, col+2));
 			}
-			else if(king.canQueenSideCastle() &&
+			else if( king!= null && king.canQueenSideCastle() &&
 					this.currentPos.col > king.currentPos.col)
 			{
 				char row = this.currentPos.row, col= this.currentPos.col;

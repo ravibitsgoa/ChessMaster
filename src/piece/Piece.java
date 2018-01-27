@@ -42,6 +42,14 @@ public abstract class Piece
 	 * */
 	public abstract String toString();
 	
+	/**
+	 * @return the cell containing this piece.
+	 * */
+	public Cell getCell()
+	{
+		return this.currentPos;
+	}
+	
 	/** 
 	 * Checks whether the Piece can be moved into cell dest or not.
 	 * @return True if it can be moved to dest, it moves itself, 
@@ -57,6 +65,8 @@ public abstract class Piece
 		if(canMoveTo(dest, board))
 		{	
 			this.currentPos.setPiece(null);	//empty the current position.
+			if(dest.getPiece() != null)
+				board.killPieceAt(dest);
 			dest.setPiece(this);			//fill the destination position.
 			this.currentPos = dest;			//replace current position with new one.
 			this.getAllMoves(board);		//find all moves reachable from here.

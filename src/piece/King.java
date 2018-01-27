@@ -31,14 +31,6 @@ public class King extends Piece
 		return colour.charAt(0)+"K";
 	}
 	
-	/**
-	 * @return the cell containing this king.
-	 * */
-	public Cell getCell()
-	{
-		return this.currentPos;
-	}
-	
 	/** 
 	 * A King can move only to immediately adjacent (at most 8) cells.
 	 * Also, the destination cell must not be under attack, right now.
@@ -59,7 +51,7 @@ public class King extends Piece
 				int dir=-1;
 				boolean canCastle = true;
 				char cc= this.getCell().col, row =this.getCell().row, col;
-				System.out.println(cc+" "+row);
+				//System.out.println(cc+" "+row);
 				for(col = (char)(cc+dir); 
 						col>Board.colMin && col<Board.colMax; col+=dir)
 				{
@@ -78,15 +70,18 @@ public class King extends Piece
 					//the king can't castle.
 				}
 
-				Piece pieceOnRookCell = board.getCellAt(row, col).getPiece();
-				if(canCastle && pieceOnRookCell != null &&
-					pieceOnRookCell instanceof Rook)
-				{
-					Rook rook = (Rook) pieceOnRookCell;
-					if(rook.canCastle())
+				Cell rookCell = board.getCellAt(row, col);
+				if(rookCell != null)
+				{	Piece pieceOnRookCell = rookCell.getPiece();
+					if(canCastle && pieceOnRookCell != null &&
+						pieceOnRookCell instanceof Rook)
 					{
-						kingSideCastling = true;
-						this.moves.add(board.getCellAt(row, col-dir));
+						Rook rook = (Rook) pieceOnRookCell;
+						if(rook.canCastle())
+						{
+							kingSideCastling = true;
+							this.moves.add(board.getCellAt(row, col-dir));
+						}
 					}
 				}
 			}

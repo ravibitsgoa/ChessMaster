@@ -68,17 +68,13 @@ public class Pawn extends Piece
 		//The diagonally opposite cells must be occupied by a piece
 		//of the opposite colour, for the pawn to attack it.
 		if(	board.colourAt((char)(currentPos.row + this.dir), 
-				(char)(currentPos.col-1))	!= null		
-		&&	board.colourAt((char)(currentPos.row + this.dir), 
-			(char)(currentPos.col-1))	!= this.colour)
+			(char)(currentPos.col-1)) == Board.opposite(this.colour))
 		{	
 			moves.add(board.getCellAt((char)(currentPos.row + this.dir), 
 				(char)(currentPos.col-1)));
 		}
 		if(	board.colourAt((char)(currentPos.row + this.dir), 
-			(char)(currentPos.col+1))	!= null
-		&&	board.colourAt((char)(currentPos.row + this.dir), 
-			(char)(currentPos.col+1))	!= this.colour)
+			(char)(currentPos.col+1)) == Board.opposite(this.colour))
 		{	
 			moves.add(board.getCellAt((char)(currentPos.row + this.dir), 
 				(char)(currentPos.col+1)));
@@ -116,8 +112,8 @@ public class Pawn extends Piece
 		if((dest.row == Board.rowMax || dest.row == Board.rowMin)
 			&& this.canMoveTo(dest, board))
 		{
+			board.killPieceAt(currentPos);
 			currentPos.setPiece(null);
-			
 			/*System.out.println("You can update your piece.");
 			System.out.println("Enter Q for Queen, R for rook, K for "
 					+ "knight and B for bishop.");
@@ -137,7 +133,7 @@ public class Pawn extends Piece
 					//If destination cell contains anything,
 					//make it empty.
 					dest.setPiece(null);
-					new Queen(this.colour, dest);
+					board.addPiece(new Queen(this.colour, dest));
 					//System.out.println(dest.getPiece());
 				}
 				else
