@@ -57,6 +57,10 @@ public class Pawn extends Piece
 	{
 		this.moves = new ArrayList<Cell>();
 		//Case 1: Normal move 
+		//System.out.println(this);
+		//System.out.println(this.currentPos);
+		if(this.currentPos == null || board.isKilled(this))
+			return this.moves;
 		if(board.colourAt((char)(currentPos.row + this.dir), 
 			currentPos.col)	== null)
 		{	
@@ -132,8 +136,10 @@ public class Pawn extends Piece
 				{	
 					//If destination cell contains anything,
 					//make it empty.
+					board.killPieceAt(dest);
 					dest.setPiece(null);
-					board.addPiece(new Queen(this.colour, dest));
+					currentPos.setPiece(null);
+					board.promotePawn(this, new Queen(this.colour, dest));
 					//System.out.println(dest.getPiece());
 				}
 				else

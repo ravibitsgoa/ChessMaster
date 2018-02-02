@@ -60,7 +60,8 @@ public abstract class Piece
 	 * */
 	public boolean moveTo(Cell dest, Board board)
 	{
-		if(dest == null || board == null)
+		if(	dest == null || board == null || 
+			this.currentPos == null || board.isKilled(this))
 			return false;
 		if(canMoveTo(dest, board))
 		{	

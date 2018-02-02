@@ -16,7 +16,7 @@ public class Board
 	private boolean selected;
 	private King whiteKing, blackKing;
 	private Cell selectedCell;
-	private ArrayList<Piece> whitePieces, blackPieces;
+	private ArrayList<Piece> whitePieces, blackPieces, killedPieces;
 	
 	private void emptyBoard()
 	{	
@@ -25,6 +25,7 @@ public class Board
 		selectedCell = null;
 		whitePieces = new ArrayList<>();
 		blackPieces = new ArrayList<>();
+		killedPieces = new ArrayList<>();
 		try 
 		{
 			cells = new Cell[8][8];
@@ -174,21 +175,28 @@ public class Board
 		//System.out.println("hmm"+piece);
 		if(piece!= null)
 		{
-			if(piece.getColour() == White)
-				whitePieces.remove(piece);
-			else
-				blackPieces.remove(piece);
+			killedPieces.add(piece);
+			//if(piece.getColour() == White)
+			//	whitePieces.remove(piece);
+			//else
+			//	blackPieces.remove(piece);
 		}
+	}
+	
+	public boolean isKilled(Piece piece)
+	{
+		return killedPieces.contains(piece);
 	}
 	
 	public void addPiece(Piece piece)
 	{
 		if(piece!= null)
 		{
-			if(piece.getColour() == White)
-				whitePieces.add(piece);
-			else
-				blackPieces.add(piece);
+			killedPieces.remove(piece);
+			//if(piece.getColour() == White)
+			//	whitePieces.add(piece);
+			//else
+			//	blackPieces.add(piece);
 		}
 	}
 	
@@ -210,7 +218,10 @@ public class Board
 		String ownColour = otherThanThis.getColour();
 		oppositeColourPieces = this.getPieces(opposite(ownColour));
 		for(Piece piece: oppositeColourPieces)	
-		{			
+		{	
+			if(isKilled(piece))
+				continue;
+			
 			if( !(piece instanceof King) &&
 				piece.canMoveTo(dest, this) )
 			{	//System.out.println(dest+" is under"
@@ -489,4 +500,14 @@ public class Board
 		else
 			return blackKing;
 	}
+	
+	public void promotePawn(Pawn p, Queen q)
+	{
+		killPieceAt(p.getCell());
+		if(q.getColour() == White)
+			whitePieces.add(q);
+		else
+			blackPieces.add(q);
+	}
+	
 }
