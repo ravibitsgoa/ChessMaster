@@ -90,17 +90,18 @@ public class GraphicsHandler extends JPanel
 					graphics.setColor(NEXTMOVE);
 					graphics.fillRect(x, y, colLen, rowLen);			
 				}
-				Piece thisPiece = thisCell.getPiece();
+				String pieceType = board.getPieceType(thisCell);
+				Class<? extends Piece> pieceClass = board.getPieceClass(thisCell);
 				//draw the image of the piece contained by this cell.
-				if(thisPiece != null)
+				if(pieceType != null)
 				{
-					Class<? extends Piece> type = thisPiece.getClass();
 					BufferedImage img = null;
 					
 					try 
 					{
-						img = ImageIO.read(type.
-								getResource(thisPiece.toString()+".png"));
+						//System.out.println(pieceType);
+						img = ImageIO.read(pieceClass.
+								getResource(pieceType+".png"));
 					} 
 					catch (IOException e) 
 					{

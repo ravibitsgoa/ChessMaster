@@ -102,11 +102,12 @@ public class AI
 					Piece currentlyOnDest = dest.getPiece();
 					if(	currentlyOnDest != null &&
 						currentlyOnDest.getColour() == colour)
-						continue;
+						assert(false);
 					
 					board.killPieceAt(dest);	//remove the piece at dest.
-					dest.setPiece(ownPiece);	//set piece on destination to this.
-					thisCell.setPiece(null);	//empty the current cell.
+					//dest.setPiece(ownPiece);	//set piece on destination to this.
+					//thisCell.setPiece(null);	//empty the current cell.
+					ownPiece.moveTo(dest, board);
 					
 					int value = minimax(depth-1, board, Board.opposite(playerColour));
 					if(maxValue < value)
@@ -115,8 +116,9 @@ public class AI
 						from = thisCell;
 						to = dest;
 					}
+					ownPiece.undoMove();
 					dest.setPiece(currentlyOnDest);
-					thisCell.setPiece(ownPiece);
+					//thisCell.setPiece(ownPiece);
 					board.addPiece(currentlyOnDest);
 				}
 			}

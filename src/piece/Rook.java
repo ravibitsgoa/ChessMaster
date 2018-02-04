@@ -1,7 +1,4 @@
 package piece;
-import java.util.ArrayList;
-
-import chess.*;
 
 /**
  * @author Ravishankar P. Joshi
@@ -9,8 +6,8 @@ import chess.*;
 public class Rook extends Piece 
 {
 	private boolean inInitialState;
-	public Rook(String col, Cell cell) throws Exception
-	{	super(col, cell);
+	public Rook(String col) throws Exception
+	{	super(col);
 		inInitialState = true;
 	}
 	
@@ -30,23 +27,15 @@ public class Rook extends Piece
 	}
 	
 	/** 
-	 * A rook can move only in same row/ column.
 	 * A piece can move to dest cell only if 
 	 * 1. it's either empty or
 	 * 2. occupied by a piece of opposite colour.
 	 * */
-	@Override
-	public ArrayList<Cell> getAllMoves(Board board) 
+	/*@Override
+	public ArrayList<Cell> getAllMoves(Movement movement) 
 	{
-		this.moves = new ArrayList<Cell>();
+		ArrayList<Cell> moves = new ArrayList<Cell>();
 		
-		//If the rook is to be moved along a row.
-		moves.addAll(this.movesInDir(board, 1, 0));
-		moves.addAll(this.movesInDir(board, -1, 0));
-		
-		//If the rook is to be moved along a column.
-		moves.addAll(this.movesInDir(board, 0, 1));
-		moves.addAll(this.movesInDir(board, 0, -1));
 		
 		if(this.canCastle())
 		{
@@ -67,23 +56,14 @@ public class Rook extends Piece
 
 		}
 		
-		return this.moves;
-	}
-	
-	@Override
-	public boolean moveTo(Cell dest, Board board)
-	{
-		boolean moved = super.moveTo(dest, board);
-		if(moved)
-			inInitialState = false;
-		return moved;
-	}
-	
+		return moves;
+	}*/
 	/**
 	 * Castles the rook by moving it to appropriate cell.
 	 * @return true if castling is completed,
 	 * false otherwise.
 	 * */
+	/*
 	public boolean castle(Board board)
 	{
 		if(this.canCastle())
@@ -113,5 +93,5 @@ public class Rook extends Piece
 				System.out.println("Exception in castle() of Rook");
 		}
 		return false;
-	}
+	}*/
 }

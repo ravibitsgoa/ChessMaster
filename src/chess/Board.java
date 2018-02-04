@@ -17,6 +17,7 @@ public class Board
 	private King whiteKing, blackKing;
 	private Cell selectedCell;
 	private ArrayList<Piece> whitePieces, blackPieces, killedPieces;
+	private Movement movement;
 	
 	private void emptyBoard()
 	{	
@@ -36,6 +37,7 @@ public class Board
 			}
 			//Columns are 'a' to 'h'.
 			//Rows are '1' to '8', with row 1 nearest to white.
+			movement = new Movement(this);
 		}
 		catch(Exception e)
 		{
@@ -61,9 +63,9 @@ public class Board
 		{	
 			try 
 			{
-				whitePieces.add(new Pawn(White, cells[1][j]));	
+				this.add(new Pawn(White, cells[1][j]), cells[1][j]);	
 				//the second nearest row to white is filled with white pawns
-				blackPieces.add(new Pawn(Black, cells[6][j]));
+				this.add(new Pawn(Black, cells[6][j]), cells[6][j]);
 				//the second nearest row to black is filled with black pawns.
 			}
 			catch(Exception e)
@@ -75,10 +77,10 @@ public class Board
 		try 
 		{
 			//giving 2 rooks to both the player on respective corners.
-			whitePieces.add(new Rook(White, cells[0][0]));	
-			whitePieces.add(new Rook(White, cells[0][7]));
-			blackPieces.add(new Rook(Black, cells[7][0]));
-			blackPieces.add(new Rook(Black, cells[7][7]));
+			this.add(new Rook(White), cells[0][0]);	
+			this.add(new Rook(White), cells[0][7]);
+			this.add(new Rook(Black), cells[7][0]);
+			this.add(new Rook(Black), cells[7][7]);
 		}
 		catch(Exception e)
 		{
@@ -88,10 +90,10 @@ public class Board
 		try
 		{
 			//giving 2 knights to both players on cells just beside the rooks.
-			whitePieces.add(new Knight(White, cells[0][1]));
-			whitePieces.add(new Knight(White, cells[0][6]));
-			blackPieces.add(new Knight(Black, cells[7][1]));
-			blackPieces.add(new Knight(Black, cells[7][6]));
+			this.add(new Knight(White), cells[0][1]);
+			this.add(new Knight(White), cells[0][6]);
+			this.add(new Knight(Black), cells[7][1]);
+			this.add(new Knight(Black), cells[7][6]);
 		}
 		catch(Exception e)
 		{
@@ -100,10 +102,10 @@ public class Board
 		
 		try
 		{	//giving 2 bishops to both players on cells just beside the knights.
-			whitePieces.add(new Bishop(White, cells[0][2]));
-			whitePieces.add(new Bishop(White, cells[0][5]));
-			blackPieces.add(new Bishop(Black, cells[7][2]));
-			blackPieces.add(new Bishop(Black, cells[7][5]));
+			this.add(new Bishop(White), cells[0][2]);
+			this.add(new Bishop(White), cells[0][5]);
+			this.add(new Bishop(Black), cells[7][2]);
+			this.add(new Bishop(Black), cells[7][5]);
 		}
 		catch(Exception e)
 		{
@@ -113,8 +115,8 @@ public class Board
 		try
 		{
 			//giving a queen to both players on cells just beside a bishop.
-			whitePieces.add(new Queen(White, cells[0][4]));
-			blackPieces.add(new Queen(Black, cells[7][4]));
+			this.add(new Queen(White), cells[0][4]);
+			this.add(new Queen(Black), cells[7][4]);
 		}
 		catch(Exception e)
 		{
@@ -124,10 +126,10 @@ public class Board
 		try
 		{
 			//giving a king to both players on cells just beside the queen.
-			whiteKing = new King(White, cells[0][3]);
-			blackKing = new King(Black, cells[7][3]);
-			whitePieces.add(whiteKing);
-			blackPieces.add(blackKing);
+			whiteKing = new King(White);
+			blackKing = new King(Black);
+			this.add(whiteKing, cells[0][3]);
+			this.add(blackKing, cells[7][3]);
 		}
 		catch(Exception e)
 		{
@@ -136,6 +138,17 @@ public class Board
 		
 	}
 	
+	private void add(Piece piece, Cell cell) throws Exception
+	{
+		if(piece == null || cell == null)
+			throw new Exception("null exception in add() of board.");
+		if(piece.colour == White)
+			whitePieces.add(piece);
+		else
+			blackPieces.add(piece);
+		movement.add(piece, cell);
+	}
+
 	/**
 	 * Returns the reference to the cell at (row, col) in the board.
 	 * Returns null if the row or column are not valid (out of bounds).
@@ -169,22 +182,18 @@ public class Board
 			return White;
 	}
 	
-	public void killPieceAt(Cell cell)
+	public void kill(Piece piece)
 	{
-		Piece piece = cell.getPiece();
-		//System.out.println("hmm"+piece);
 		if(piece!= null)
 		{
 			killedPieces.add(piece);
-			//if(piece.getColour() == White)
-			//	whitePieces.remove(piece);
-			//else
-			//	blackPieces.remove(piece);
 		}
 	}
 	
 	public boolean isKilled(Piece piece)
 	{
+		if(piece == null)
+			return true;
 		return killedPieces.contains(piece);
 	}
 	
@@ -200,83 +209,17 @@ public class Board
 		}
 	}
 	
-	/**
-	 * This method is to be used only by king piece, to check 
-	 * whether cell dest is under attack by any piece or not.
-	 * 
-	 * @return true if the cell is under attack by 
-	 * any piece other than the king itself (passed as argument).
-	 * Returns false if this cells is free from threat.
-	 * */
-	public boolean isUnderAttack(char row, char col, King otherThanThis)
-	{
-		Cell dest = getCellAt(row, col);
-		if(dest == null)
-			return false;
-		
-		ArrayList<Piece> oppositeColourPieces;
-		String ownColour = otherThanThis.getColour();
-		oppositeColourPieces = this.getPieces(opposite(ownColour));
-		for(Piece piece: oppositeColourPieces)	
-		{	
-			if(isKilled(piece))
-				continue;
-			
-			if( !(piece instanceof King) &&
-				piece.canMoveTo(dest, this) )
-			{	//System.out.println(dest+" is under"
-				//	+ " attack by piece at "+ cells[i][j]);
-				return true;
-			}
-			else if(piece instanceof King)
-			{	//if this cell contains the other king.
-				int distSquared =0;
-				Cell thisCell = ((King) piece).getCell();
-				distSquared = (thisCell.row-dest.row)*(thisCell.row-dest.row) +
-						(thisCell.col-dest.col)*(thisCell.col-dest.col);
-				if(distSquared <= 2)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	/** 
-	 * @return the colour of the piece
-	 * on the cell with given (row, column).
-	 **/
-	public String colourAt(char row, char col)
-	{	
-		Cell c= this.getCellAt(row, col);
-		if(c== null)
-			return null;
-		
-		Piece onThisCell = c.getPiece();
-		if(onThisCell == null)
-			return null;
-		else
-			return onThisCell.getColour();
-	}
-	
-	/** 
-	 * @return the colour of the piece
-	 * on the cell equivalent to the parameter cell.
-	 **/
-	public String colourAt(Cell dest)
-	{
-		return this.colourAt(dest.row, dest.col);
-	}
-	
 	/** 
 	 * This method just prints current board situation to terminal.
 	 * Used for debugging.
 	 **/
 	public void print()
-	{	for(int i=0; i<8; i++)
-		{	for(int j=0; j<8; j++)
-			{	Piece onThis = cells[i][j].getPiece();
+	{	
+		for(int i=0; i<8; i++)
+		{	
+			for(int j=0; j<8; j++)
+			{	
+				Piece onThis = movement.getPieceOn(cells[i][j]);
 				if(onThis == null)
 					System.out.print(" - ");
 				else
@@ -286,70 +229,6 @@ public class Board
 		}
 	}
 	
-	/**
-	 * @return true iff current player has got a check-mate.
-	 * Returns false if the king of this player has at least one move,
-	 * or it is not under check.
-	 * */
-	public boolean isCheckMate(String colourOfPlayer)
-	{
-		if(!this.isUnderCheck(colourOfPlayer))
-			return false;
-	
-		King king = this.getKing(colourOfPlayer);
-		int size = king.getAllMoves(this).size();
-		
-		if(size!=0)
-			return false;
-		else
-		{
-			//Try moving some piece of current player to see if it can
-			//avoid the check.
-			//If there is any such move, return false.
-			//Otherwise return true.
-			ArrayList<Piece> ownPieces = getPieces(colourOfPlayer);
-			
-			for(Piece piece: ownPieces)	
-			{			
-				ArrayList<Cell> moves = piece.getAllMoves(this);
-				Cell thisCell = piece.getCell();
-				for(Cell c: moves)
-				{
-					Piece currentlyOnC = c.getPiece();
-					c.setPiece(piece);
-					
-					thisCell.setPiece(null);
-					boolean lifeSavingMove =
-						!(this.isUnderCheck(colourOfPlayer));
-					c.setPiece(currentlyOnC);
-					thisCell.setPiece(piece);
-					if(lifeSavingMove == true)
-						return false;
-				}
-			}
-			
-			return true;
-		}
-	}
-	
-	/**
-	 * @return true iff the king of given colour is under check.
-	 * Returns false otherwise.
-	 * */
-	public boolean isUnderCheck(String colourOfPlayer)
-	{
-		//System.out.println(colourOfPlayer);
-		King king = getKing(colourOfPlayer);
-		Cell kingCell = king.getCell();
-		if(!this.isUnderAttack(kingCell.row, kingCell.col, king))
-			return false;
-		else
-		{	
-			//if(highlight)
-				//this.clicked(kingCell.row, kingCell.col);
-			return true;
-		}
-	}
 	
 	/**
 	 * This function is called whenever the user clicks on the cell 
@@ -378,44 +257,24 @@ public class Board
 			return false;
 		}
 		
-		Piece piece = thisCell.getPiece();
+		//Piece piece = thisCell.getPiece();
 		
 		if(!selected)
 		{	
 			//if player clicks on his own piece, mark it as selected.
-			if(piece != null && piece.getColour() == currentPlayerColour)
+			if(movement.canSelect(thisCell, currentPlayerColour))
 			{	
 				selectedCell = thisCell;
 				selected = true;
-				thisCell.select(currentPlayerColour, true);
+				thisCell.select(true);
 				
 				//pinning: a piece can't move if it makes 
 				//it's own king vulnerable in the immediate next move.
 				
-				ArrayList<Cell> allMoves = piece.getAllMoves(this);
+				ArrayList<Cell> allMoves = movement.getAllMoves(thisCell);
 				for(Cell c: allMoves)
 				{
-					if(!(piece instanceof King))
-					{	thisCell.setPiece(null);
-					
-						//Store the piece on the cell in a temporary variable.
-						Piece currentlyOnDest = c.getPiece();
-						c.setPiece(piece);
-						if(!isUnderCheck(currentPlayerColour))
-						{
-							c.setNextMove(true);
-						}
-						else
-						{	
-							//we can't allow this cell.
-						}
-						thisCell.setPiece(piece);
-						c.setPiece(currentlyOnDest);
-					}
-					else
-					{
-						c.setNextMove(true);
-					}
+					c.setNextMove(true);
 				}
 			}
 			//If he clicks on an opponent piece, don't do anything.
@@ -424,18 +283,18 @@ public class Board
 		else 
 		{
 			selected = false;
-			selectedCell.select(currentPlayerColour, false);
-			if(selectedCell != null && selectedCell.getPiece() != null)
+			selectedCell.select(false);
+			if(selectedCell != null)
 			{	
-				ArrayList<Cell> allMoves = selectedCell.getPiece().getAllMoves(this);
-				for(Cell c: allMoves)
+				ArrayList<Cell> allMoves = movement.getAllMoves(selectedCell);
+				for(Cell dest: allMoves)
 				{
-					c.setNextMove(false);
+					dest.setNextMove(false);
 				}
 				
 				boolean move = false;
 				String moveString = null;
-				Piece selectedPiece = selectedCell.getPiece();
+				/*Piece selectedPiece = selectedCell.getPiece();
 				if(selectedPiece instanceof King)
 				{
 					King king = (King) selectedPiece;
@@ -468,21 +327,14 @@ public class Board
 						moveString = "o-o-o";
 					}
 				}
-				
-				if(!move)
+				*/
+				if(moveString == null)
 				{	
-					moveString = "";
-					//Pawns are not written in move notations.
-					if(!(selectedPiece instanceof Pawn))
-						moveString += selectedPiece.toString().charAt(1);
-					if(thisCell.getPiece()!= null)
-						moveString +="x";	//killing move.
-					moveString+= thisCell.toString();
-					
-					move = selectedPiece.moveTo(thisCell, this);
+					moveString = movement.moveTo(selectedCell, thisCell);
 				}
-				if(move)//the player has made a move.
+				if(moveString != null)//the player has made a move.
 				{
+					move = true;
 					currentPlayerColour = opposite(currentPlayerColour);
 					System.out.println(moveString);					
 				}
@@ -501,13 +353,37 @@ public class Board
 			return blackKing;
 	}
 	
-	public void promotePawn(Pawn p, Queen q)
+	public void promotePawn(Pawn pawn, Queen queen, Cell queenCell)
 	{
-		killPieceAt(p.getCell());
-		if(q.getColour() == White)
-			whitePieces.add(q);
-		else
-			blackPieces.add(q);
+		kill(pawn);
+		try 
+		{
+			this.add(queen, queenCell);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("Something went wrong in promotePawn() of Board");
+		}
 	}
 	
+	public boolean isCheckMate(String playerColour)
+	{
+		return movement.isCheckMate(playerColour);
+	}
+	
+	public boolean isUnderCheck(String playerColour)
+	{
+		return movement.isUnderCheck(playerColour);
+	}
+
+	public String getPieceType(Cell thisCell) 
+	{
+		return movement.getPieceType(thisCell);
+	}
+
+	public Class<? extends Piece> getPieceClass(Cell thisCell) 
+	{
+		return movement.getPieceClass(thisCell);
+	}
 }
