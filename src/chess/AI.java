@@ -6,10 +6,12 @@ import piece.*;
 
 public class AI 
 {
-	private Board board;
-	private String colour;
-	private Cell[] bestMove;
-	public AI(Board board, String colour) throws Exception
+	private final Board board;
+	private final String AIcolour;
+	private Move bestMove;
+	private final Movement movement;
+	public AI(Board board, String colour, Movement movment) 
+			throws Exception
 	{
 		//System.out.println(colour);
 		if(colour!= Board.White && colour!=Board.Black)
@@ -18,7 +20,8 @@ public class AI
 			throw new Exception("Board empty exception in AI class.");
 		
 		this.board = board;
-		this.colour = colour;
+		this.AIcolour = colour;
+		this.movement = movment;
 		System.out.println(colour);
 	}
 	
@@ -43,8 +46,7 @@ public class AI
 	private int evaluate (Board board)
 	{
 		int valueOfBoard= 0;
-		ArrayList<Piece> ownPieces = board.getPieces(colour);
-		ArrayList<Piece> oppPieces = board.getPieces(Board.opposite(colour));
+		ArrayList<Piece> ownPieces = board.getPieces(AIcolour);
 		int ownPieceValue= 0;
 		for(Piece ownPiece : ownPieces)
 		{
@@ -53,22 +55,24 @@ public class AI
 			ownPieceValue += valueOf(ownPiece);			
 		}
 		int oppPieceValue = 0;
+		ArrayList<Piece> oppPieces = board.getPieces(Board.opposite(AIcolour));
 		for(Piece oppPiece: oppPieces)
 		{	
 			if(board.isKilled(oppPiece))
 				continue;
 			oppPieceValue += valueOf(oppPiece);			
 		}
-		valueOfBoard = ownPieceValue - oppPieceValue;
+		valueOfBoard = oppPieceValue - ownPieceValue;
+		//System.out.printf("%d ",valueOfBoard);
 		return valueOfBoard;
 	}
 	
 	public void playNextMove()
 	{
 		Cell from = null, to=null;
-		Cell[] move = getNextMove();
-		from = move[0];
-		to = move[1];
+		Move move = getNextMove();
+		from = move.getSource();
+		to = move.getDestination();
 		board.clicked(from.row, from.col);
 		board.clicked(to.row, to.col);
 	}
@@ -83,10 +87,10 @@ public class AI
 	{
 		if(depth == 0)
 			return -evaluate(board);
-		else if(playerColour == this.colour)
+		else if(playerColour == this.AIcolour)
 		{	
 			final int inf = 10000000;
-			Cell from = null, to = null;
+			Move move = null;
 			int maxValue = -inf;
 			ArrayList<Piece> ownPieces = board.getPieces(playerColour);
 			
@@ -95,42 +99,32 @@ public class AI
 				if(board.isKilled(ownPiece))
 					continue;
 				
-				Cell thisCell = ownPiece.getCell();
-				ArrayList<Cell> moves = ownPiece.getAllMoves(board);
+				ArrayList<Cell> moves = movement.getAllMoves(ownPiece);
 				for(Cell dest: moves)
 				{
-					Piece currentlyOnDest = dest.getPiece();
-					if(	currentlyOnDest != null &&
-						currentlyOnDest.getColour() == colour)
-						assert(false);
+					Move tempMove = movement.moveTo(ownPiece, dest);
 					
-					board.killPieceAt(dest);	//remove the piece at dest.
-					//dest.setPiece(ownPiece);	//set piece on destination to this.
-					//thisCell.setPiece(null);	//empty the current cell.
-					ownPiece.moveTo(dest, board);
-					
-					int value = minimax(depth-1, board, Board.opposite(playerColour));
+					int value = minimax(depth-1, board, 
+							Board.opposite(playerColour));
+					System.out.printf("%d ", value);
 					if(maxValue < value)
 					{
 						maxValue = value;
-						from = thisCell;
-						to = dest;
+						move = tempMove;
 					}
-					ownPiece.undoMove();
-					dest.setPiece(currentlyOnDest);
-					//thisCell.setPiece(ownPiece);
-					board.addPiece(currentlyOnDest);
+					movement.undoMove();
 				}
 			}
-			Cell[] move = {from, to};
 			if(depth == 2)
 				bestMove = move;
+			System.out.println();
+			System.out.printf("best: %d\n",maxValue);
 			return maxValue;
 		}
 		else
 		{
 			final int inf = 10000000;
-			//Cell from = null, to = null;
+			Move move = null;
 			int maxValue = inf;
 			ArrayList<Piece> oppPieces = board.getPieces(playerColour);
 			
@@ -139,44 +133,32 @@ public class AI
 				if(board.isKilled(oppPiece))
 					continue;
 				
-				Cell thisCell = oppPiece.getCell();
-				ArrayList<Cell> moves = oppPiece.getAllMoves(board);
+				ArrayList<Cell> moves = movement.getAllMoves(oppPiece);
 				for(Cell dest: moves)
 				{
-					Piece currentlyOnDest = dest.getPiece();
-					if(	currentlyOnDest != null &&
-						currentlyOnDest.getColour() == colour)
-						continue;
-					
-					board.killPieceAt(dest);	//remove the piece at dest.
-					dest.setPiece(oppPiece);	//set piece on destination to this.
-					thisCell.setPiece(null);	//empty the current cell.
+					Move tempMove = movement.moveTo(oppPiece, dest);
 					
 					int value = minimax(depth-1, board, Board.opposite(playerColour));
 					if(maxValue > value)
 					{
 						maxValue = value;
-						//from = thisCell;
-						//to = dest;
+						move = tempMove;
 					}
-					dest.setPiece(currentlyOnDest);
-					thisCell.setPiece(oppPiece);
-					board.addPiece(currentlyOnDest);
+					movement.undoMove();
 				}
 			}
 			return maxValue;
 		}
 	}
 	
-	private Cell[] getNextMove()
+	private Move getNextMove()
 	{
-		this.minimax(2, board, this.colour);
-		//Cell[] move = {from, to};
+		this.minimax(2, board, this.AIcolour);
 		return bestMove;
 	}
 	
 	public String getColour()
 	{
-		return this.colour;
+		return this.AIcolour;
 	}
 }

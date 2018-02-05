@@ -70,7 +70,7 @@ public class Movement
 	 * or Rook or Bishop) if it reaches the terminal cell of any column.
 	 * Returns false if either of the arguments are null.
 	 * */
-	public String moveTo(Cell from, Cell to)
+	public Move moveTo(Cell from, Cell to)
 	{
 		if(	to == null || this.board == null || 
 			from == null || board.isKilled(onCell.get(from)))
@@ -98,7 +98,7 @@ public class Movement
 				e.printStackTrace();
 				System.out.println("Something went wrong while promoting the pawn");
 			}
-			return move.toString();
+			return move;
 		}
 		
 		if(this.canMoveTo(pieceToMove, to))
@@ -112,7 +112,7 @@ public class Movement
 			onCell.put(to, pieceToMove);	//fill the destination position.
 			cellOf.put(pieceToMove, to);	//set position of this cell as dest.
 			this.recomputeMoves(pieceToMove);//find all moves reachable from here.
-			return move.toString();
+			return move;
 		}
 		else
 			return null;
@@ -221,10 +221,19 @@ public class Movement
 				Cell dest = board.getCellAt(row, col);
 				if(this.isValidMove(king, dest))
 				{	
-					System.out.println(dest);
+					//this.moveTo(king, dest);
+					Piece onDest= onCell.get(dest);
+					onCell.put(dest, king);
+					cellOf.put(king, dest);
+					board.kill(onDest);
+					//System.out.println(dest);
 					boolean isValid = !isUnderAttack(dest, king.colour);
 					if(isValid)
 						kingMoves.add(dest);
+					//this.undoMove();
+					this.add(king, currentPos);
+					this.add(onDest, dest);
+					board.addPiece(onDest);
 				}
 			}
 		}
@@ -547,8 +556,8 @@ public class Movement
 	
 	public void add(Piece piece, Cell cell) 
 	{
-		if(piece instanceof King)
-			System.out.println(piece+" "+cell);
+		//if(piece instanceof King)
+		//	System.out.println(piece+" "+cell);
 		cellOf.put(piece, cell);
 		onCell.put(cell, piece);
 		//moves.put(piece, recomputeMoves(piece));
@@ -612,5 +621,10 @@ public class Movement
 		if(cell == null || onCell.get(cell) == null)
 			return null;
 		return onCell.get(cell).getClass();
+	}
+
+	public Move moveTo(Piece ownPiece, Cell dest) 
+	{
+		return this.moveTo(cellOf.get(ownPiece), dest);
 	}
 }

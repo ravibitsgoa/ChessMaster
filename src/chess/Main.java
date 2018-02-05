@@ -20,6 +20,7 @@ public class Main
 	private String colour, colour2;
 	private GraphicsHandler graphicsHandler;
 	private Board board;
+	private Movement movement;
 	
 	private int gameMode;
 	private JFrame[] windowList;
@@ -60,7 +61,8 @@ public class Main
 		
 		try 
 		{
-			graphicsHandler.setAI(new AI(board, colour2));
+			graphicsHandler.setAI(new AI(board, colour2, 
+					board.getMovement()));
 		}
 		catch(Exception e)
 		{

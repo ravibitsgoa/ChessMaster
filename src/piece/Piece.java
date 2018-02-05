@@ -1,7 +1,4 @@
 package piece;
-import java.util.ArrayList;
-
-import chess.*;
 
 /**
  * @author Ravishankar P. Joshi

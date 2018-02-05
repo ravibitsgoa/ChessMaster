@@ -7,7 +7,7 @@ import chess.*;
  * */
 public class Pawn extends Piece 
 {	
-	public short dir;		//direction of movement of the pawn.
+	public final short dir;		//direction of movement of the pawn.
 	//dir = 1 for a white pawn.
 	//dir = -1 for a black pawn.
 	public final Cell orig;	//The original cell of the pawn.

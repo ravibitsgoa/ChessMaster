@@ -9,15 +9,15 @@ import piece.*;
  * */
 public class Board 
 {	
-	private Cell cells[][];
 	public static final char rowMax='8', colMax='h', rowMin='1', colMin='a';
 	public static final String White="White", Black = "Black";
+	private Movement movement;
+	private Cell cells[][];
 	private String currentPlayerColour;
 	private boolean selected;
 	private King whiteKing, blackKing;
 	private Cell selectedCell;
 	private ArrayList<Piece> whitePieces, blackPieces, killedPieces;
-	private Movement movement;
 	
 	private void emptyBoard()
 	{	
@@ -330,7 +330,9 @@ public class Board
 				*/
 				if(moveString == null)
 				{	
-					moveString = movement.moveTo(selectedCell, thisCell);
+					Move temp = movement.moveTo(selectedCell, thisCell);
+					if(temp != null)
+						moveString = temp.toString();
 				}
 				if(moveString != null)//the player has made a move.
 				{
@@ -385,5 +387,15 @@ public class Board
 	public Class<? extends Piece> getPieceClass(Cell thisCell) 
 	{
 		return movement.getPieceClass(thisCell);
+	}
+	/*
+	public ArrayList<Cell> getAllMoves(Piece piece) 
+	{
+		return movement.getAllMoves(piece);
+	}*/
+
+	public Movement getMovement() 
+	{
+		return movement;
 	}
 }
