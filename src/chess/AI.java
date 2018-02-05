@@ -10,6 +10,9 @@ public class AI
 	private final String AIcolour;
 	private Move bestMove;
 	private final Movement movement;
+	private final int startingDepth;
+	private int nodeCount;
+	
 	public AI(Board board, String colour, Movement movment) 
 			throws Exception
 	{
@@ -22,7 +25,9 @@ public class AI
 		this.board = board;
 		this.AIcolour = colour;
 		this.movement = movment;
+		startingDepth = 4;
 		System.out.println(colour);
+		nodeCount=0;
 	}
 	
 	private int valueOf(Piece piece)
@@ -83,15 +88,15 @@ public class AI
 	 * minimize (i.e. as negative as possible) for the other player.
 	 * i.e. it finds best move for itself.
 	 * */
-	private int minimax(int depth, Board board, String playerColour)
+	private int minimax(int depth, Board board, String playerColour, 
+						int alpha, int beta)
 	{
 		if(depth == 0)
 			return -evaluate(board);
+		//if it's playing for itself, it will maximize board value (heuristic).
 		else if(playerColour == this.AIcolour)
 		{	
-			final int inf = 10000000;
 			Move move = null;
-			int maxValue = -inf;
 			ArrayList<Piece> ownPieces = board.getPieces(playerColour);
 			
 			for(Piece ownPiece: ownPieces)
@@ -105,27 +110,34 @@ public class AI
 					Move tempMove = movement.moveTo(ownPiece, dest);
 					
 					int value = minimax(depth-1, board, 
-							Board.opposite(playerColour));
-					System.out.printf("%d ", value);
-					if(maxValue < value)
+							Board.opposite(playerColour), alpha, beta);
+					//System.out.printf("%d ", value);
+					nodeCount++;
+					if(alpha < value)
 					{
-						maxValue = value;
+						alpha = value;
 						move = tempMove;
 					}
 					movement.undoMove();
+
+					if(alpha == beta)	//If we have already found the optimal path.
+						break;	//no need to change anything else.
 				}
+				if(alpha == beta)	//If we have already found the optimal path.
+					break;	//no need to change anything else.
+			
 			}
-			if(depth == 4)
-				bestMove = move;
-			System.out.println();
-			System.out.printf("best: %d\n",maxValue);
-			return maxValue;
+			if(depth == startingDepth)	//If we're back to the start node,
+				bestMove = move;		//play the best known move.
+			
+			//System.out.println();
+			//System.out.printf("best: %d\n",maxValue);
+			return alpha;
 		}
+		//for the other player, it will minimize the value.
 		else
 		{
-			final int inf = 10000000;
 			Move move = null;
-			int minValue = inf;
 			ArrayList<Piece> oppPieces = board.getPieces(playerColour);
 			
 			for(Piece oppPiece: oppPieces)
@@ -138,22 +150,31 @@ public class AI
 				{
 					Move tempMove = movement.moveTo(oppPiece, dest);
 					
-					int value = minimax(depth-1, board, Board.opposite(playerColour));
-					if(minValue > value)
+					int value = minimax(depth-1, board, Board.opposite(playerColour), 
+							alpha, beta);
+					nodeCount++;
+					
+					if(beta > value)
 					{
-						minValue = value;
+						beta = value;
 						move = tempMove;
 					}
 					movement.undoMove();
+
+					if(alpha == beta)	//If we have already found the optimal path.
+						return beta;	//No need to change anything else.
 				}
 			}
-			return minValue;
+			return beta;
 		}
 	}
 	
 	private Move getNextMove()
 	{
-		this.minimax(4, board, this.AIcolour);
+		nodeCount=0;
+		final int inf = 1000000;
+		System.out.println(this.minimax(startingDepth, board, this.AIcolour, -inf, inf));
+		System.out.println(nodeCount);
 		return bestMove;
 	}
 	
