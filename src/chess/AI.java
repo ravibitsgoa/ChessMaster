@@ -115,7 +115,7 @@ public class AI
 					movement.undoMove();
 				}
 			}
-			if(depth == 2)
+			if(depth == 4)
 				bestMove = move;
 			System.out.println();
 			System.out.printf("best: %d\n",maxValue);
@@ -125,7 +125,7 @@ public class AI
 		{
 			final int inf = 10000000;
 			Move move = null;
-			int maxValue = inf;
+			int minValue = inf;
 			ArrayList<Piece> oppPieces = board.getPieces(playerColour);
 			
 			for(Piece oppPiece: oppPieces)
@@ -139,21 +139,21 @@ public class AI
 					Move tempMove = movement.moveTo(oppPiece, dest);
 					
 					int value = minimax(depth-1, board, Board.opposite(playerColour));
-					if(maxValue > value)
+					if(minValue > value)
 					{
-						maxValue = value;
+						minValue = value;
 						move = tempMove;
 					}
 					movement.undoMove();
 				}
 			}
-			return maxValue;
+			return minValue;
 		}
 	}
 	
 	private Move getNextMove()
 	{
-		this.minimax(2, board, this.AIcolour);
+		this.minimax(4, board, this.AIcolour);
 		return bestMove;
 	}
 	
