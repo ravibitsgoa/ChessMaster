@@ -5,6 +5,8 @@ package piece;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,16 +17,18 @@ import chess.*;
  * jUnit test class for class {@link piece.Queen}.
  * @author Ravishankar P. Joshi
  **/
-class QueenTest {
-
+class QueenTest 
+{
 	private Board board;
 	private Queen queen;
+	private Movement movement;
 	
 	@BeforeEach
 	void setUp() 
 	{	
 		board = new Board();
 		queen = null;
+		movement = board.getMovement();
 	}
 
 	@AfterEach
@@ -32,6 +36,7 @@ class QueenTest {
 	{
 		board = null;
 		queen = null;
+		movement = null;
 	}
 
 	/**
@@ -44,14 +49,20 @@ class QueenTest {
 		try 
 		{
 			Cell queenCell = board.getCellAt(Board.rowMin, Board.colMin);
-			queen = new Queen(Board.White, queenCell);
-			assertEquals(Board.White, queen.colour);
-			assertEquals(queenCell, queen.currentPos);
-			assertEquals(queen, queenCell.getPiece());
+			queen = new Queen(Board.White);
+			//made a white queen on cell a1.
+			movement.add(queen, queenCell);
 			
+			assertEquals(Board.White, queen.colour);
+			assertEquals(queen, movement.getPieceOn(queenCell));
+			
+			board.kill(queen);
 			queenCell = board.getCellAt(Board.rowMax, Board.colMin);
-			queen = new Queen(Board.Black, queenCell);
+			queen = new Queen(Board.Black);
+			//made a black queen on cell a8.
+			movement.add(queen, queenCell);
 			assertEquals(Board.Black, queen.colour);
+			assertEquals(queen, movement.getPieceOn(queenCell));
 		}
 		catch(Exception e)
 		{
@@ -68,15 +79,13 @@ class QueenTest {
 	{
 		try 
 		{
-			queen = new Queen(Board.White, 
-					board.getCellAt(Board.rowMin, Board.colMin));
-			//Made a new white queen at cell A1 of the board.
+			queen = new Queen(Board.White);
+			//Made a new white queen.
 			assertEquals(Board.White.charAt(0)+"Q", queen.toString(),
 				"toString method of a white queen object should return WQ");
 			
-			queen = new Queen(Board.Black, 
-					board.getCellAt(Board.rowMax, Board.colMax));
-			//Made a new black queen at cell h8 of the board.
+			queen = new Queen(Board.Black);
+			//Made a new black queen.
 			assertEquals(Board.Black.charAt(0)+"Q", queen.toString(),
 				"toString method of black queen object should return BQ");
 		}
@@ -96,8 +105,9 @@ class QueenTest {
 	{
 		try 
 		{
-			queen = new Queen(Board.White, 
-					board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+3)));
+			queen = new Queen(Board.White);
+			movement.add(queen, board.getCellAt((char)(Board.rowMin+2),
+								(char)(Board.colMin+3)));
 			//Made a new white queen at cell d3 of the board.
 			
 			Cell expected[]=
@@ -135,17 +145,20 @@ class QueenTest {
 				board.getCellAt((char)(Board.rowMin+6), (char)(Board.colMin+3)),//d7
 				board.getCellAt((char)(Board.rowMin+7), (char)(Board.colMin+3)),//d8
 			};
-			assertEquals(expected.length, queen.getAllMoves(board).size());
+			ArrayList<Cell> actualQueenMoves = movement.getAllMoves(queen);
+			assertEquals(expected.length, actualQueenMoves.size());
 			//Queen must be able to move to only these cells.
 			for(Cell move: expected)
-				assertTrue(queen.canMoveTo(move, board),
+				assertTrue(actualQueenMoves.contains(move),
 						"Queen must be able to move to all these cells.");
 			
 			Cell rookCell = board.getCellAt((char)(Board.rowMin+4), 
 					(char)(Board.colMin+5));
-			new Rook(Board.Black, rookCell);
+			Rook rook = new Rook(Board.Black);
+			movement.add(rook, rookCell);
 			//Made a new black rook at cell f5 of the board.
-			assertEquals(expected.length-2, queen.getAllMoves(board).size());
+			actualQueenMoves = movement.getAllMoves(queen);
+			assertEquals(expected.length-2, actualQueenMoves.size());
 			//White queen must be able to move to only the cells up to
 			//the black rook.
 			
@@ -156,28 +169,30 @@ class QueenTest {
 					
 			for(Cell move: expected)
 			{	if(move!=g6 && move!=h7)
-					assertTrue(queen.canMoveTo(move, board),
+					assertTrue(actualQueenMoves.contains(move),
 						"WQ must be able to move to the cells upto BR.");
 				else
-					assertFalse(queen.canMoveTo(move, board),
+					assertFalse(actualQueenMoves.contains(move),
 						"White Queen can't jump over a black rook.");
 			}
 			
 			//destruct the black rook.
-			rookCell.setPiece(null);
+			board.kill(rook);
 			
-			new Rook(Board.White, rookCell);
+			rook = new Rook(Board.White);
+			movement.add(rook, rookCell);
 			//Made a new *white* rook at cell f5 of the board.
 			
-			assertEquals(expected.length-3, queen.getAllMoves(board).size());
+			actualQueenMoves = movement.getAllMoves(queen);
+			assertEquals(expected.length-3, actualQueenMoves.size());
 			//Queen must be able to move to only the cells before the white rook.
 			
 			for(Cell move: expected)
 			{	if(move != rookCell && move!=g6 && move!=h7)
-					assertTrue(queen.canMoveTo(move, board),
+					assertTrue(actualQueenMoves.contains(move),
 						"WQ must be able to move to the cells upto WR.");
 				else
-					assertFalse(queen.canMoveTo(move, board),
+					assertFalse(actualQueenMoves.contains(move),
 						"A white Queen can't cross or attack a white rook.");
 			}
 		}

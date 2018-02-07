@@ -21,11 +21,13 @@ class PieceTest
 {
 	private Piece piece;
 	private Board board;
+	private Movement movement;
 	@BeforeEach
 	void setUp()
 	{
 		piece = null;
 		board = new Board();
+		movement = board.getMovement();
 	}
 
 	@AfterEach
@@ -33,6 +35,7 @@ class PieceTest
 	{
 		piece = null;
 		board = null;
+		movement = null;
 	}
 
 	/**
@@ -47,11 +50,12 @@ class PieceTest
 		
 		try 
 		{
-			piece = new Rook(Board.Black, a1);
+			piece = new Rook(Board.Black);
+			movement.add(piece, a1);
+			
 			assertEquals(Board.Black, piece.colour);
-			assertEquals(a1, piece.currentPos);
-			assertEquals(piece, a1.getPiece());
-			assertEquals(null, piece.moves);
+			
+			assertEquals(piece, movement.getPieceOn(a1));
 		}
 		catch(Exception e)
 		{
@@ -60,17 +64,7 @@ class PieceTest
 		}
 		
 		Executable closureContainingCodeToTest = () -> piece = 
-				new Rook(Board.White, a1);
-		assertThrows(Exception.class, closureContainingCodeToTest, 
-				"Cell not empty exception should be thrown.");
-		
-		closureContainingCodeToTest = () -> piece = 
-				new Rook(Board.White, null);
-		assertThrows(Exception.class, closureContainingCodeToTest, 
-				"Null cell exception should be thrown.");
-	
-		closureContainingCodeToTest = () -> piece = 
-				new Rook(null, board.getCellAt(Board.rowMax, Board.colMax));
+				new Rook(null);
 		assertThrows(Exception.class, closureContainingCodeToTest, 
 				"Null colour exception should be thrown.");
 	}
@@ -85,36 +79,37 @@ class PieceTest
 		try
 		{
 			//Creating a new black rook at the cell a1.
-			piece = new Rook(Board.Black, board.getCellAt(Board.rowMin, Board.colMin));
-			board.addPiece(piece);
+			piece = new Rook(Board.Black);
+			movement.add(piece, board.getCellAt(Board.rowMin, Board.colMin));
+			
 			Cell dest= board.getCellAt((char)(Board.rowMin+2), Board.colMin);
 			
-			assertFalse(piece.moveTo(dest, null),
-					"A piece must return false when board is null.");
-			assertFalse(piece.moveTo(null, board),
-					"A piece must return false when destination is null.");
+			assertNull(movement.moveTo(piece, null),
+				"Movement object must return null when destination is null.");
 			//board.print();
 			//System.out.println(dest);
-			assertTrue(piece.moveTo(dest, board), 
-					"rook must be able to move to cell a3 from a1.");
+			assertNotNull(movement.moveTo(piece, dest), 
+				"rook must be able to move to cell a3 from a1.");
 			
-			assertEquals(null, board.colourAt(Board.rowMin, Board.colMin), 
-					"a1 cell must be empty now.");
+			assertNull(movement.colourAt(Board.rowMin, Board.colMin), 
+				"a1 cell must be empty now.");
 			
-			assertEquals(piece, dest.getPiece(), 
-					"rook must be on the dest cell now.");
-			assertEquals(dest, piece.currentPos, 
-					"rook must be on the dest cell now.");
+			assertEquals(piece, movement.getPieceOn(dest), 
+				"rook must be on the dest cell now.");
+			//System.out.println("hmm");
+			//board.print();
+			ArrayList<Cell> movesList = movement.getAllMoves(piece);
+			//System.out.println("test"+movesList);
+			assertEquals(14, movesList.size(), 
+				"rook must have 14 moves from cell a3.");
 			
-			assertEquals(14, piece.moves.size(), 
-					"rook must have 14 moves from cell a3.");
-			
-			ArrayList<Cell> moveslist = piece.getAllMoves(board);
+			//board.print();
 			dest= board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+1));
-			assertEquals(false, piece.moveTo(dest, board), 
-					"rook must not be able to move b2 from a3.");
-			assertEquals(moveslist, piece.moves, 
-					"the list of moves must not change.");
+			assertNull(movement.moveTo(piece, dest), 
+				"rook must not be able to move to b2 from a3.");
+			//System.out.println(movement.getAllMoves(piece));
+			assertEquals(movesList, movement.getAllMoves(piece), 
+				"the list of moves must not change.");
 		}
 		catch(Exception e)
 		{
@@ -137,20 +132,18 @@ class PieceTest
 		try 
 		{
 			//Creating a new black rook at the cell a1.
-			piece = new Rook(Board.Black, board.getCellAt(Board.rowMin, Board.colMin));
-			assertEquals(null, piece.moves);
-
+			piece = new Rook(Board.Black);
+			movement.add(piece, board.getCellAt(Board.rowMin, Board.colMin));
+			
 			Cell dest = board.getCellAt(Board.rowMax, Board.colMin);
-			assertFalse(piece.canMoveTo(dest, null),
-					"A piece must return false when board is null.");
-			assertFalse(piece.canMoveTo(null, board),
+			assertFalse(movement.canMoveTo(piece, null),
 					"A piece must return false when destination is null.");
 			
-			//Make sure that initially moves list is empty,
-			//and, on calling canMoveTo(), it fills the list.
-			Boolean x = piece.canMoveTo(dest, board);
-			assertEquals(14, piece.moves.size());
-			assertEquals(true, x);	
+			Boolean x = movement.canMoveTo(piece, dest);
+			assertEquals(14, movement.getAllMoves(piece).size(),
+					"A rook can have exactly 14 moves from a1 cell.");
+			assertEquals(true, x, "A rook must be able to move"
+					+ " from a1 to a8.");	
 		}
 		catch(Exception e)
 		{
@@ -168,17 +161,18 @@ class PieceTest
 		try 
 		{
 			//Creating a new black rook at the cell a1.
-			piece = new Rook(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
-			ArrayList<Cell> temp = piece.getAllMoves(board);
-			//Make sure that canMoveTo() doesn't mess with 
+			piece = new Rook(Board.White);
+			movement.add(piece, board.getCellAt(Board.rowMin, Board.colMin));
+			ArrayList<Cell> moves = movement.getAllMoves(piece);
+			//Make sure that canMoveTo() doesn't mess with
 			//already filled list of moves.
-			assertEquals(14, piece.moves.size());
-			assertEquals(temp, piece.moves);
-			Boolean y = piece.canMoveTo(
-					board.getCellAt(Board.rowMax, Board.colMin), board);
+			assertEquals(14, movement.getAllMoves(piece).size());
+			assertEquals(moves, movement.getAllMoves(piece));
+			Boolean y = movement.canMoveTo( piece,
+					board.getCellAt(Board.rowMax, Board.colMin));
 			assertEquals(true, y);
-			Boolean selfCell = piece.canMoveTo(
-					board.getCellAt(Board.rowMin, Board.colMin), board);
+			Boolean selfCell = movement.canMoveTo( piece,
+					board.getCellAt(Board.rowMin, Board.colMin));
 			assertEquals(false, selfCell);
 		}
 		catch(Exception e)
@@ -199,29 +193,25 @@ class PieceTest
 		try 
 		{
 			//Creating a new black rook at the cell a1.
-			piece = new Rook(Board.Black, board.getCellAt(Board.rowMin, Board.colMin));
-			ArrayList<Cell> temp;
-			temp = piece.movesInDir(board, 1, 0);
-			//It must be able to move only in the same column.
-			for(Cell c: temp)
-				assertEquals(Board.colMin, c.col);
-			assertEquals(7, temp.size());
-			assertFalse(temp.contains(board.getCellAt(Board.rowMin, Board.colMin)));
+			piece = new Rook(Board.Black);
+			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
+			movement.add(piece, a1);
+			ArrayList<Cell> moves;
+			moves = movement.getAllMoves(piece);
 			
-			temp = piece.movesInDir(board, -1, 0);
-			//It can't go outside the board, by decrementing row from '1'.
-			assertEquals(0, temp.size());		
-	
-			temp = piece.movesInDir(board, 0, 1);
-			//It must be able to move only in the same row.
-			for(Cell c: temp)
-				assertEquals(Board.rowMin, c.row);
-			assertEquals(7, temp.size());
-			assertFalse(temp.contains(board.getCellAt(Board.rowMin, Board.colMin)));
+			assertEquals(14, moves.size(), "Rook can have exactly 14 moves"
+					+ " from a1 cell.");
+			for(Cell c: moves)
+			{	
+				assertTrue(Board.colMin == c.col || Board.rowMin==c.row,
+					"Rook must be able to move only in the same column/row.");
+				assertTrue(c.row>=Board.rowMin && c.col>=Board.colMin, 
+					"Rook can't go outside the board");
+				assertTrue(c.row<=Board.rowMax && c.col<=Board.colMax,
+					"Rook can't go outside the board");
+			}
+			assertFalse(moves.contains(a1));
 			
-			temp = piece.movesInDir(board, 0, -1);
-			//It can't go outside the board, by decrementing column from 'a'.
-			assertEquals(0, temp.size());
 		}
 		catch(Exception e)
 		{
@@ -242,26 +232,26 @@ class PieceTest
 		{
 			//This tests moves of a bishop along a constant difference diagonal.
 			//Creating a new white bishop at the cell a1.
-			piece = new Bishop(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
-			ArrayList<Cell> temp;
-			temp = piece.movesInDir(board, 1, 1);
-			//It must be able to move only in the same diagonal.
-			for(Cell c: temp)
-				assertEquals(0, (c.col - Board.colMin)-(c.row - Board.rowMin));
-			assertEquals(7, temp.size());
-			assertFalse(temp.contains(board.getCellAt(Board.rowMin, Board.colMin)));
+			piece = new Bishop(Board.White);
+			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
+			movement.add(piece, a1);
+			ArrayList<Cell> moves;
+			moves = movement.getAllMoves(piece);
+			assertEquals(7, moves.size(), "A bishop can have exactly 7 moves"
+					+ " from cell a1.");
+			for(Cell c: moves)
+			{	
+				assertEquals((c.col - Board.colMin),
+							 (c.row - Board.rowMin),
+				"Bishop must be able to move only in the same diagonal.");
+
+				assertTrue(c.row >= Board.rowMin && c.col >= Board.colMin, 
+						"A piece can't go outside the board");
+				assertTrue(c.row <= Board.rowMax && c.col <= Board.colMax,
+						"A piece can't go outside the board");			
+			}
+			assertFalse(moves.contains(a1));
 			
-			temp = piece.movesInDir(board, -1, -1);
-			//It can't go outside the board.
-			assertEquals(0, temp.size());
-			
-			temp = piece.movesInDir(board, 1, -1);
-			//It can't go outside the board.
-			assertEquals(0, temp.size());
-			
-			temp = piece.movesInDir(board, -1, 1);
-			//It can't go outside the board.
-			assertEquals(0, temp.size());
 		}
 		catch(Exception e)
 		{
@@ -283,29 +273,37 @@ class PieceTest
 		{
 			//This tests moves of a bishop along a constant sum diagonal.
 			//Creating a new white bishop at the cell a8.
-			piece = new Bishop(Board.White, board.getCellAt(Board.rowMax, Board.colMin));
-			ArrayList<Cell> temp;
+			piece = new Bishop(Board.White);
+			movement.add(piece, board.getCellAt(Board.rowMax, Board.colMin));
 			
-			Cell edge = board.getCellAt(Board.rowMin, Board.colMax);
-			new Pawn(Board.White, edge);
+			Cell h1 = board.getCellAt(Board.rowMin, Board.colMax);
+			Pawn whitePawn = new Pawn(Board.White, h1);
+			movement.add(whitePawn, h1);
 			//putting an intruding white pawn on h1.
 			
-			temp = piece.movesInDir(board, -1, 1);
+			ArrayList<Cell> moves = movement.getAllMoves(piece);
 			//It must be able to move only in the same diagonal.
-			for(Cell c: temp)
-				assertEquals(7, (c.col - Board.colMin)+(c.row - Board.rowMin));
-			assertEquals(6, temp.size());
-			assertFalse(temp.contains(board.getCellAt(Board.rowMin, Board.colMin)));
-			assertFalse(temp.contains(edge), "A white bishop cannot attack a white pawn.");
+			for(Cell c: moves)
+			{	
+				assertEquals(7, 
+						(c.col - Board.colMin)+(c.row - Board.rowMin));
+			}
+			assertEquals(6, moves.size());
+			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
+			assertFalse(moves.contains(a1));
+			assertFalse(moves.contains(h1), 
+					"A white bishop cannot attack a white pawn.");
 			
-			edge.setPiece(null);//destruct the old pawn.
-			new Pawn(Board.Black, edge);
+			board.kill(whitePawn);
+			//destruct the old pawn.
+			movement.add(new Pawn(Board.Black, h1), h1);
 			//putting an intruding black pawn on h1.
 			
-			temp = piece.movesInDir(board, -1, 1);
-			assertEquals(7, temp.size());
-			assertFalse(temp.contains(board.getCellAt(Board.rowMin, Board.colMin)));
-			assertTrue(temp.contains(edge), "A white bishop can attack a black pawn.");
+			moves = movement.getAllMoves(piece);
+			assertEquals(7, moves.size());
+			assertFalse(moves.contains(a1));
+			assertTrue(moves.contains(h1), 
+					"A white bishop can attack a black pawn.");
 		}
 		catch(Exception e)
 		{
@@ -323,13 +321,30 @@ class PieceTest
 	{
 		try
 		{
-			piece = new Bishop(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
-			//a white bishop at an edge cell is stored into a piece place-holder.
+			piece = new Bishop(Board.White);
+			//a white bishop is stored into a piece place-holder.
 			assertEquals(Board.White, piece.getColour());
 			
-			piece = new Rook(Board.Black, board.getCellAt(Board.rowMax, Board.colMax));
-			//a black rook at an edge cell is stored into a piece place-holder.
+			piece = new Rook(Board.Black);
+			//a black rook is stored into a piece place-holder.
 			assertEquals(Board.Black, piece.getColour());
+			
+			piece = new Knight(Board.Black);
+			//a black knight is stored into a piece place-holder.
+			assertEquals(Board.Black, piece.getColour());
+			
+			piece = new King(Board.White);
+			//a white king is stored into a piece place-holder.
+			assertEquals(Board.White, piece.getColour());
+			
+			piece = new Queen(Board.Black);
+			//a black queen is stored into a piece place-holder.
+			assertEquals(Board.Black, piece.getColour());
+			
+			piece = new Pawn(Board.White, 
+					board.getCellAt(Board.rowMin, Board.colMin));
+			//a white pawn at cell 'a1' is stored into a piece place-holder.
+			assertEquals(Board.White, piece.getColour());
 		}
 		catch(Exception e)
 		{

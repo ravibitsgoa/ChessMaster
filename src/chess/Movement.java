@@ -2,6 +2,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import piece.*;
 
@@ -48,7 +49,7 @@ public class Movement
 		Cell source = lastMove.getSource();
 		Cell destination = lastMove.getDestination();
 
-		board.addPiece(onDestination);
+		board.reincarnate(onDestination);
 		
 		this.add(onDestination, destination);
 		this.add(onSource, source);
@@ -70,6 +71,12 @@ public class Movement
 	 * or Rook or Bishop) if it reaches the terminal cell of any column.
 	 * Returns false if either of the arguments are null.
 	 * */
+
+	public Move moveTo(Piece ownPiece, Cell dest) 
+	{
+		return this.moveTo(cellOf.get(ownPiece), dest);
+	}
+	
 	public Move moveTo(Cell from, Cell to)
 	{
 		if(	to == null || this.board == null || 
@@ -111,7 +118,7 @@ public class Movement
 				board.kill(onCell.get(to));	//kill it.
 			onCell.put(to, pieceToMove);	//fill the destination position.
 			cellOf.put(pieceToMove, to);	//set position of this cell as dest.
-			this.recomputeMoves(pieceToMove);//find all moves reachable from here.
+			//this.recomputeMoves(pieceToMove);//find all moves reachable from here.
 			return move;
 		}
 		else
@@ -125,9 +132,9 @@ public class Movement
 	 * */
 	private ArrayList<Cell> getRookMoves(Piece piece)
 	{
-		if(!(piece instanceof Rook || piece instanceof Queen) 
-			|| piece == null)
-			return null;
+		//if(!(piece instanceof Rook || piece instanceof Queen) 
+		//	|| piece == null)
+		//	return null;
 		
 		ArrayList<Cell> rookMoves = new ArrayList<>();
 		//If the rook is to be moved along a row.
@@ -137,6 +144,7 @@ public class Movement
 		//If the rook is to be moved along a column.
 		rookMoves.addAll(this.movesInDir(piece, 0, 1));
 		rookMoves.addAll(this.movesInDir(piece, 0, -1));
+		//System.out.println(rookMoves);
 		return rookMoves;
 	}
 	
@@ -223,6 +231,7 @@ public class Movement
 				{	
 					//this.moveTo(king, dest);
 					Piece onDest= onCell.get(dest);
+					onCell.put(currentPos, null);
 					onCell.put(dest, king);
 					cellOf.put(king, dest);
 					board.kill(onDest);
@@ -233,10 +242,11 @@ public class Movement
 					//this.undoMove();
 					this.add(king, currentPos);
 					this.add(onDest, dest);
-					board.addPiece(onDest);
+					board.reincarnate(onDest);
 				}
 			}
 		}
+		this.moves.put(king, kingMoves);
 		return kingMoves;
 	}
 	
@@ -354,16 +364,18 @@ public class Movement
 	 * Returns false otherwise.
 	 * Returns false if either of the arguments are null.
 	 * */
-	private boolean canMoveTo(Piece piece, Cell to)
+	public boolean canMoveTo(Piece piece, Cell to)
 	{
 		if(to == null || piece == null || board == null)
 			return false;
 		
 		//Moves of pieces can change possibly after each move of
 		//a piece on the board.
-				
+		//System.out.println("canMoveTo "+moves.get(piece)
+		//+" "+cellOf.get(piece)+" "+to);
 		ArrayList<Cell> movesOfThisPiece = this.recomputeMoves(piece);
 		moves.put(piece, movesOfThisPiece);
+		//System.out.println(moves.get(piece));
 		return movesOfThisPiece.contains(to);
 	}
 	
@@ -400,7 +412,20 @@ public class Movement
 		{
 			if(!(piece instanceof King))
 			{	
-				this.moveTo(cellOf.get(piece), dest);
+				//System.out.println(dest);
+				//this.moveTo(cellOf.get(piece), dest);
+				Cell from = cellOf.get(piece);
+				Piece onDestination = onCell.get(dest);
+				onCell.put(from, null);		//empty the current position.
+				//System.out.println(from+" "+onCell.get(from));
+				//if the destination contains a piece,
+				board.kill(onDestination);	//kill it.
+				//fill the destination position.
+				//set position of this cell as dest.
+				this.add(piece, dest);
+				//board.print();
+				//System.out.println();
+				//System.out.println(dest);
 				if(!isUnderCheck(piece.colour))
 				{
 					validMoves.add(dest);
@@ -409,7 +434,10 @@ public class Movement
 				{	
 					//we can't allow this cell.
 				}
-				this.undoMove();
+				this.add(onDestination, dest);
+				this.add(piece, from);
+				board.reincarnate(onDestination);
+				//System.out.println(dest);
 			}
 			else
 			{
@@ -427,10 +455,11 @@ public class Movement
 	public String colourAt(char row, char col)
 	{	
 		Cell cell= board.getCellAt(row, col);
-		if(cell== null)
+		if(cell == null)
 			return null;
 		
 		Piece onThisCell = onCell.get(cell);
+		//System.out.println(onThisCell);
 		if(onThisCell == null)
 			return null;
 		else
@@ -462,6 +491,9 @@ public class Movement
 			return false;
 	
 		King king = board.getKing(playerColour);
+		//System.out.println(king);
+		this.recomputeMoves(king);
+		//System.out.println(moves.get(king));
 		int size = moves.get(king).size();
 		
 		if(size!=0)
@@ -472,7 +504,7 @@ public class Movement
 			//avoid the check.
 			//If there is any such move, return false.
 			//Otherwise return true.
-			ArrayList<Piece> ownPieces = board.getPieces(playerColour);
+			CopyOnWriteArrayList<Piece> ownPieces = board.getPieces(playerColour);
 			
 			for(Piece piece: ownPieces)	
 			{			
@@ -506,6 +538,8 @@ public class Movement
 	{
 		//System.out.println(colourOfPlayer);
 		King king = board.getKing(playerColour);
+		if(king == null)	//if there is no king, it's not under attack :P
+			return false;
 		if(!this.isUnderAttack(cellOf.get(king), king.colour))
 			return false;
 		else
@@ -524,6 +558,7 @@ public class Movement
 	 * */
 	private ArrayList<Cell> movesInDir( Piece piece, int rowDir, int colDir)
 	{
+		//System.out.println(rowDir+" "+colDir);
 		ArrayList<Cell> listOfMoves = new ArrayList<Cell>();
 		Cell currentPos = cellOf.get(piece);
 		char row =(char)(currentPos.row + rowDir);
@@ -532,6 +567,7 @@ public class Movement
 		for(; row<=Board.rowMax && col<=Board.colMax &&
 			row>=Board.rowMin && col>=Board.colMin; row+=rowDir, col+=colDir)
 		{
+			//System.out.println(row+" "+col+" "+this.colourAt(row, col));
 			if(this.colourAt(row, col) == pieceColour)
 			{	
 				break;
@@ -557,8 +593,11 @@ public class Movement
 	public void add(Piece piece, Cell cell) 
 	{
 		//if(piece instanceof King)
-		//	System.out.println(piece+" "+cell);
-		cellOf.put(piece, cell);
+		//System.out.println(piece+" "+cell);
+		if(cell == null)
+			return;
+		if(piece != null)
+			cellOf.put(piece, cell);
 		onCell.put(cell, piece);
 		//moves.put(piece, recomputeMoves(piece));
 	}
@@ -576,7 +615,7 @@ public class Movement
 		if(cell == null)
 			return false;
 		
-		ArrayList<Piece> oppositeColourPieces;
+		CopyOnWriteArrayList<Piece> oppositeColourPieces;
 		oppositeColourPieces = board.getPieces(Board.opposite(ownColour));
 		for(Piece piece: oppositeColourPieces)	
 		{	
@@ -623,8 +662,4 @@ public class Movement
 		return onCell.get(cell).getClass();
 	}
 
-	public Move moveTo(Piece ownPiece, Cell dest) 
-	{
-		return this.moveTo(cellOf.get(ownPiece), dest);
-	}
 }

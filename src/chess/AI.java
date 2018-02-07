@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import piece.*;
 
@@ -51,7 +52,7 @@ public class AI
 	private int evaluate (Board board)
 	{
 		int valueOfBoard= 0;
-		ArrayList<Piece> ownPieces = board.getPieces(AIcolour);
+		CopyOnWriteArrayList<Piece> ownPieces = board.getPieces(AIcolour);
 		int ownPieceValue= 0;
 		for(Piece ownPiece : ownPieces)
 		{
@@ -60,7 +61,7 @@ public class AI
 			ownPieceValue += valueOf(ownPiece);			
 		}
 		int oppPieceValue = 0;
-		ArrayList<Piece> oppPieces = board.getPieces(Board.opposite(AIcolour));
+		CopyOnWriteArrayList<Piece> oppPieces = board.getPieces(Board.opposite(AIcolour));
 		for(Piece oppPiece: oppPieces)
 		{	
 			if(board.isKilled(oppPiece))
@@ -92,12 +93,17 @@ public class AI
 						int alpha, int beta)
 	{
 		if(depth == 0)
-			return -evaluate(board);
+		{
+			if(playerColour == AIcolour)
+				return -evaluate(board);
+			else
+				return evaluate(board);
+		}
 		//if it's playing for itself, it will maximize board value (heuristic).
 		else if(playerColour == this.AIcolour)
 		{	
 			Move move = null;
-			ArrayList<Piece> ownPieces = board.getPieces(playerColour);
+			CopyOnWriteArrayList<Piece> ownPieces = board.getPieces(playerColour);
 			
 			for(Piece ownPiece: ownPieces)
 			{	
@@ -108,7 +114,13 @@ public class AI
 				for(Cell dest: moves)
 				{
 					Move tempMove = movement.moveTo(ownPiece, dest);
-					
+					//System.out.println(ownPiece+" "+moves+" "+tempMove+" "+dest);
+					if(tempMove == null)
+					{	continue;
+						//tempMove.getSource();
+					}
+					if(move == null)
+						move = tempMove;
 					int value = minimax(depth-1, board, 
 							Board.opposite(playerColour), alpha, beta);
 					//System.out.printf("%d ", value);
@@ -138,7 +150,7 @@ public class AI
 		else
 		{
 			Move move = null;
-			ArrayList<Piece> oppPieces = board.getPieces(playerColour);
+			CopyOnWriteArrayList<Piece> oppPieces = board.getPieces(playerColour);
 			
 			for(Piece oppPiece: oppPieces)
 			{	
@@ -149,11 +161,16 @@ public class AI
 				for(Cell dest: moves)
 				{
 					Move tempMove = movement.moveTo(oppPiece, dest);
-					
+					//System.out.println(oppPiece+" "+moves+" "+tempMove+" "+dest);
+					if(tempMove == null)
+					{	continue;
+						//tempMove.getSource();
+					}
 					int value = minimax(depth-1, board, Board.opposite(playerColour), 
 							alpha, beta);
 					nodeCount++;
-					
+					if(move == null)
+						move = tempMove;
 					if(beta > value)
 					{
 						beta = value;
@@ -162,8 +179,10 @@ public class AI
 					movement.undoMove();
 
 					if(alpha == beta)	//If we have already found the optimal path.
-						return beta;	//No need to change anything else.
+						break;	//No need to change anything else.
 				}
+				if(alpha == beta)	//If we have already found the optimal path.
+					break;	//No need to change anything else.
 			}
 			return beta;
 		}
@@ -171,10 +190,14 @@ public class AI
 	
 	private Move getNextMove()
 	{
-		nodeCount=0;
+		long startTime = System.nanoTime();
+		nodeCount=0;	//The number of visited nodes in the minimax tree.
 		final int inf = 1000000;
 		System.out.println(this.minimax(startingDepth, board, this.AIcolour, -inf, inf));
-		System.out.println(nodeCount);
+		System.out.println(nodeCount);	
+		long stopTime = System.nanoTime();
+		System.out.println((stopTime-startTime)/(1e9));	
+		//Prints the number of seconds AI took for thinking.
 		return bestMove;
 	}
 	

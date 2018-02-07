@@ -15,11 +15,13 @@ class BishopTest {
 	
 	private Bishop bishop;
 	private Board board;
+	private Movement movement;
 	
 	@BeforeEach
 	void setUp() throws Exception 
 	{
 		board = new Board();
+		movement = board.getMovement();
 		bishop = null;
 	}
 
@@ -27,6 +29,7 @@ class BishopTest {
 	void tearDown() 
 	{
 		board = null;
+		movement = null;
 		bishop = null;
 	}
 
@@ -36,10 +39,11 @@ class BishopTest {
 		try 
 		{
 			Cell bishopCell = board.getCellAt(Board.rowMin, Board.colMin);
-			bishop = new Bishop(Board.White, bishopCell);
+			bishop = new Bishop(Board.White);
+			movement.add(bishop, bishopCell);
+			
 			assertEquals(Board.White, bishop.colour);
-			assertEquals(bishopCell, bishop.currentPos);
-			assertEquals(bishop, bishopCell.getPiece());
+			assertEquals(bishop, movement.getPieceOn(bishopCell));
 		}
 		catch(Exception e)
 		{
@@ -52,13 +56,15 @@ class BishopTest {
 	{
 		try 
 		{
-			bishop = new Bishop(Board.White, 
+			bishop = new Bishop(Board.White);
+			movement.add(bishop, 
 					board.getCellAt(Board.rowMin, Board.colMin));
-			//Made a new white bishop at cell A1 of the board.
+			//Made a new white bishop at cell a1 of the board.
 			assertEquals(Board.White.charAt(0)+"B", bishop.toString(),
 					"toString method of a white Bishop object should return WB");
 			
-			bishop = new Bishop(Board.Black, 
+			bishop = new Bishop(Board.Black);
+			movement.add(bishop, 
 					board.getCellAt(Board.rowMax, Board.colMax));
 			//Made a new black bishop at cell h8 of the board.
 			assertEquals(Board.Black.charAt(0)+"B", bishop.toString(),

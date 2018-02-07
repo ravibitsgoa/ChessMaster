@@ -18,4 +18,5 @@ public class Queen extends Piece
 	{
 		return colour.charAt(0)+"Q";
 	}
+
 }

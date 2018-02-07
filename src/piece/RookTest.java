@@ -2,6 +2,8 @@ package piece;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +14,10 @@ import chess.*;
  * @author Ravishankar P. Joshi
  */
 
-class RookTest {
-
+class RookTest 
+{
 	private Board board;
+	private Movement movement;
 	private Rook rook;
 	
 	@BeforeEach
@@ -22,6 +25,7 @@ class RookTest {
 	{
 		board = new Board();
 		rook = null;
+		movement = board.getMovement();
 	}
 
 	/**
@@ -31,6 +35,7 @@ class RookTest {
 	{
 		board = null;
 		rook = null;
+		movement = null;
 	}
 
 	/**
@@ -41,11 +46,11 @@ class RookTest {
 	{
 		try 
 		{
-			rook = new Rook(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
+			rook = new Rook(Board.White);
 			assertEquals(Board.White.charAt(0)+"R", rook.toString(),
 					"A white rook must return WR from toString()");
 			
-			rook = new Rook(Board.Black, board.getCellAt(Board.rowMax, Board.colMax));
+			rook = new Rook(Board.Black);
 			assertEquals(Board.Black.charAt(0)+"R", rook.toString(),
 					"A black rook must return BR from toString()");
 		}
@@ -63,8 +68,8 @@ class RookTest {
 	{
 		try 
 		{
-			rook = new Rook(Board.White, 
-					board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+2)));
+			rook = new Rook(Board.White);
+			movement.add(rook, board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+2)));
 			//Made a new white rook at cell c3 of the board.
 			
 			Cell expected[]=
@@ -87,44 +92,49 @@ class RookTest {
 				board.getCellAt((char)(Board.rowMin+6), (char)(Board.colMin+2)),//c7
 				board.getCellAt((char)(Board.rowMin+7), (char)(Board.colMin+2)),//c8
 			};
-			assertEquals(expected.length, rook.getAllMoves(board).size());
+			ArrayList<Cell> actualRookMoves = movement.getAllMoves(rook);
+			assertEquals(expected.length, actualRookMoves.size());
 			//rook must be able to move to only these cells.
 			for(Cell move: expected)
-				assertTrue(rook.canMoveTo(move, board),
-						"rook must be able to move to all these cells.");
+				assertTrue(actualRookMoves.contains(move),
+						"rook must be able to move to cell "+move);
 			
 			Cell pawnCell = board.getCellAt((char)(Board.rowMin+2), 
 					(char)(Board.colMin+5));
-			new Pawn(Board.Black, pawnCell);
+			Pawn pawn = new Pawn(Board.Black, pawnCell);
+			movement.add(pawn, pawnCell);
 			//Made a new black pawn at cell f3 of the board.
 			
-			assertEquals(expected.length-2, rook.getAllMoves(board).size());
+			actualRookMoves = movement.getAllMoves(rook);
+			assertEquals(expected.length-2, actualRookMoves.size());
 			//rook must be able to move to only the cells up to the black pawn.
 			
 			for(Cell move: expected)
 			{	if(move.col <= pawnCell.col)	//column<=f.
-					assertTrue(rook.canMoveTo(move, board),
+					assertTrue(actualRookMoves.contains(move),
 						"rook must be able to move to the cells upto BP.");
 				else
-					assertFalse(rook.canMoveTo(move, board),
+					assertFalse(actualRookMoves.contains(move),
 						"rook can't jump over a black pawn.");
 			}
 			
 			//destruct the black pawn.
-			pawnCell.setPiece(null);
+			board.kill(pawn);
 			
-			new Pawn(Board.White, pawnCell);
+			pawn = new Pawn(Board.White, pawnCell);
+			movement.add(pawn, pawnCell);
 			//Made a new *white* pawn at cell f3 of the board.
 			
-			assertEquals(expected.length-3, rook.getAllMoves(board).size());
+			actualRookMoves = movement.getAllMoves(rook);
+			assertEquals(expected.length-3, actualRookMoves.size());
 			//rook must be able to move to only the cells before the white pawn.
 			
 			for(Cell move: expected)
 			{	if(move.col < pawnCell.col)
-					assertTrue(rook.canMoveTo(move, board),
+					assertTrue(actualRookMoves.contains(move),
 						"rook must be able to move to the cells upto the WP.");
 				else
-					assertFalse(rook.canMoveTo(move, board),
+					assertFalse(actualRookMoves.contains(move),
 						"A white rook can't cross or attack a white pawn.");
 			}
 		}

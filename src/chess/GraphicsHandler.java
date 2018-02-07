@@ -2,6 +2,7 @@
 package chess;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
@@ -52,12 +53,19 @@ public class GraphicsHandler extends JPanel
 	public void paintComponent(Graphics graphics)
 	{
 		super.paintComponent(graphics);
+		graphics.setFont(new Font("Serif", Font.BOLD, 24));
 		for(int i=0; i<=(Board.rowMax-Board.rowMin); i++)
 		{
+			graphics.setColor(Color.BLACK);
+			int labelx = 3*x0/2 + i*rowLen, labely = y0-5;
+			String title = (char)('h'-i) + "";
+			graphics.drawString(title, labelx, labely);
+			//JLabel label = new JLabel("a"+i);
+			//label.setHorizontalAlignment(labelx);
+			//label.setVerticalAlignment(labely);
 			for(int j=0; j<=(Board.colMax-Board.colMin); j++)
 			{
 				Cell thisCell = board.getCellAt(j+Board.rowMin, i+Board.colMin);
-				graphics.setColor(Color.BLACK);
 				int x= x0+ i*rowLen, y= y0+ j*colLen;
 				
 				graphics.drawRect(x, y, colLen, rowLen);
@@ -168,23 +176,23 @@ public class GraphicsHandler extends JPanel
 		int col = (x-x0) / rowLen;
 		int row = (y-y0) / colLen;
 		
-		boolean moveHappend = board.clicked(row +Board.rowMin, 
+		boolean moveHappened = board.clicked(row +Board.rowMin, 
 											col +Board.colMin);
 		this.repaint();
-		if(moveHappend)
+		
+		if(moveHappened && gameMode == 1)
 		{
-			if(gameMode == 1)
-			{
-				ai.playNextMove();
-			}
+			ai.playNextMove();
+			moveHappened = true;
 		}
+		
 		if(board.isCheckMate(Board.White))
 			this.checkMate(Board.White);
-		else if(board.isUnderCheck(Board.White))
+		else if(moveHappened && board.isUnderCheck(Board.White))
 			this.check(Board.White);
 		if(board.isCheckMate(Board.Black))
 			this.checkMate(Board.Black);
-		else if(board.isUnderCheck(Board.Black))
+		else if(moveHappened && board.isUnderCheck(Board.Black))
 			this.check(Board.Black);
 	}
 	

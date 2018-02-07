@@ -61,8 +61,8 @@ public class Main
 		
 		try 
 		{
-			graphicsHandler.setAI(new AI(board, colour2, 
-					board.getMovement()));
+			movement = board.getMovement();
+			graphicsHandler.setAI(new AI(board, colour2, movement));
 		}
 		catch(Exception e)
 		{

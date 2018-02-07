@@ -1,13 +1,14 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import piece.*;
 
 /**
  * @author Ravishankar P. Joshi
  * */
-public class Board 
+public class Board
 {	
 	public static final char rowMax='8', colMax='h', rowMin='1', colMin='a';
 	public static final String White="White", Black = "Black";
@@ -17,16 +18,17 @@ public class Board
 	private boolean selected;
 	private King whiteKing, blackKing;
 	private Cell selectedCell;
-	private ArrayList<Piece> whitePieces, blackPieces, killedPieces;
+	private CopyOnWriteArrayList<Piece> whitePieces, blackPieces,
+										killedPieces;
 	
 	private void emptyBoard()
 	{	
 		currentPlayerColour = Board.White;
 		selected = false;
 		selectedCell = null;
-		whitePieces = new ArrayList<>();
-		blackPieces = new ArrayList<>();
-		killedPieces = new ArrayList<>();
+		whitePieces = new CopyOnWriteArrayList<>();
+		blackPieces = new CopyOnWriteArrayList<>();
+		killedPieces = new CopyOnWriteArrayList<>();
 		try 
 		{
 			cells = new Cell[8][8];
@@ -137,7 +139,7 @@ public class Board
 		}
 		
 	}
-	
+
 	private void add(Piece piece, Cell cell) throws Exception
 	{
 		if(piece == null || cell == null)
@@ -166,7 +168,7 @@ public class Board
 		return this.getCellAt((char)row, (char)col);
 	}
 	
-	public ArrayList<Piece> getPieces(String colour)
+	public CopyOnWriteArrayList<Piece> getPieces(String colour)
 	{
 		if(colour == White)
 			return whitePieces;
@@ -197,7 +199,7 @@ public class Board
 		return killedPieces.contains(piece);
 	}
 	
-	public void addPiece(Piece piece)
+	public void reincarnate(Piece piece)
 	{
 		if(piece!= null)
 		{
@@ -398,4 +400,5 @@ public class Board
 	{
 		return movement;
 	}
+
 }
