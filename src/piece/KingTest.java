@@ -3,6 +3,8 @@ package piece;
 //import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,13 +19,14 @@ class KingTest
 	
 	private Board board;
 	private King king;
+	private Movement movement;
 	
 	@BeforeEach
 	void setUp()
 	{	
-		board= new Board();	// this is a new empty board.
+		board = new Board();	// this is a new empty board.
 		king = null;		
-		// king can't be constructed without an initial position.
+		movement = board.getMovement();
 	}
 
 	@AfterEach
@@ -31,6 +34,7 @@ class KingTest
 	{
 		board = null;
 		king = null;
+		movement = null;
 	}
 
 	@Test
@@ -38,12 +42,12 @@ class KingTest
 	{
 		try 
 		{
-			king = new King(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
+			king = new King(Board.White);
 			//Made a new white king at cell a1 of the board.
 			assertEquals(Board.White.charAt(0)+"K", king.toString(),
 					"toString method of a white King object should return WK");
 			
-			king = new King(Board.Black, board.getCellAt(Board.rowMax, Board.colMax));
+			king = new King(Board.Black);
 			//Made a new white king at cell h8 of the board.
 			assertEquals(Board.Black.charAt(0)+"K", king.toString(),
 					"toString method of black King object should return BK");
@@ -60,12 +64,12 @@ class KingTest
 	{
 		try
 		{
-			king = new King(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
+			king = new King(Board.White);
 			//Made a new white king at cell A1 of the board.
 			assertEquals(Board.White, king.getColour(),
 					"getColour method of a white King object should return White");
 			
-			king = new King(Board.Black, board.getCellAt(Board.rowMax, Board.colMax));
+			king = new King(Board.Black);
 			//Made a new black king at cell h8 of the board.
 			assertEquals(Board.Black, king.getColour(),
 					"getColour method of a black King object should return Black");
@@ -82,26 +86,24 @@ class KingTest
 	{
 		try 
 		{
-			king = new King(Board.White, 
-				board.getCellAt(Board.rowMin, Board.colMin));
-			board.addPiece(king);
+			king = new King(Board.White);
+			movement.add(king, board.getCellAt(Board.rowMin, Board.colMin));
 			//Made a new white king at cell a1 of the board.
-			//king.getAllMoves(board);
 			
-			Cell rookCell = board.getCellAt((char)(Board.rowMin+7), 
-					(char)(Board.colMin+1));
+			Cell rookCell = board.getCellAt(Board.rowMin+7, Board.colMin+1);
 			@SuppressWarnings("unused")
-			Rook rook = new Rook(Board.Black, rookCell);
-			board.addPiece(rook);
+			Rook rook = new Rook(Board.Black);
+			movement.add(rook, rookCell);
 			
 			//board.print();
 			
 			//king must be able to move to only the cell a2.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(Board.rowMin+1), Board.colMin), board));
-			//for(Cell c: king.moves)
-				//System.out.println(c);
-			assertEquals(1, king.moves.size());
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(Board.rowMin+1, Board.colMin)));
+			//ArrayList<Cell> moves = movement.getAllMoves(king);
+			//for(Cell c: moves)
+			//	System.out.println(c);
+			assertEquals(1, movement.getAllMoves(king).size());
 		}
 		catch(Exception e)
 		{
@@ -116,20 +118,18 @@ class KingTest
 	{
 		try 
 		{
-			king = new King(Board.White, board.getCellAt(Board.rowMin, Board.colMin));
-			//Made a new white king at cell A1 of the board.
-			//king.getAllMoves(board);
+			king = new King(Board.White);
+			movement.add(king, board.getCellAt(Board.rowMin, Board.colMin));
+			//Made a new white king at cell a1 of the board.
 			
 			//king must be able to move to all 3 cells just beside him.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(Board.rowMin+1), Board.colMin), board));
-			assertTrue(king.canMoveTo(
-				board.getCellAt(Board.rowMin, (char)(Board.colMin+1)), board));
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+1)), board));
-			//for(Cell c: king.moves)
-				//System.out.println(c);
-			assertEquals(3, king.moves.size());
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(Board.rowMin+1, Board.colMin)));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(Board.rowMin, Board.colMin+1)));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(Board.rowMin+1, Board.colMin+1)));
+			assertEquals(3, movement.getAllMoves(king).size());
 		}
 		catch(Exception e)
 		{
@@ -143,31 +143,29 @@ class KingTest
 	{
 		try
 		{
-			Cell pos = board.getCellAt(Board.rowMin, (char)(Board.colMin+1));
-			king = new King(Board.White, pos);
+			Cell pos = board.getCellAt(Board.rowMin, Board.colMin+1);
+			king = new King(Board.White);
+			movement.add(king, pos);
 			//Made a new white king at cell b1 of the board.
-			king.getAllMoves(board);
 			
 			//King must be able to move to all 5 cells just beside him.
 			//This is b2.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row+1), pos.col), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row+1, pos.col)));
 			//This is c1.
-			assertTrue(king.canMoveTo(
-				board.getCellAt(pos.row, (char)(pos.col+1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row, pos.col+1)));
 			//This is a1.
-			assertTrue(king.canMoveTo(
-				board.getCellAt(pos.row, (char)(pos.col-1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row, pos.col-1)));
 			//This is c2.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row+1), (char)(pos.col+1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row+1, pos.col+1)));
 			//This is a2.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row+1), (char)(pos.col-1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row+1, pos.col-1)));
 			
-			//for(Cell c: king.moves)
-				//System.out.println(c);
-			assertEquals(5, king.moves.size());
+			assertEquals(5, movement.getAllMoves(king).size());
 		}
 		catch(Exception e)
 		{
@@ -181,31 +179,29 @@ class KingTest
 	{
 		try 
 		{
-			Cell pos = board.getCellAt((char)(Board.rowMin+1), Board.colMin);
-			king = new King(Board.White, pos);
+			Cell pos = board.getCellAt(Board.rowMin+1, Board.colMin);
+			king = new King(Board.White);
+			movement.add(king, pos);
 			//Made a new white king at cell a2 of the board.
-			king.getAllMoves(board);
 			
 			//King must be able to move to all 5 cells just beside him.
 			//This is a1.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row-1), pos.col), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row-1, pos.col)));
 			//This is a3.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row+1), pos.col), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row+1, pos.col)));
 			//This is b1.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row-1), (char)(pos.col+1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row-1, pos.col+1)));
 			//This is b2.
-			assertTrue(king.canMoveTo(
-				board.getCellAt(pos.row, (char)(pos.col+1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row, pos.col+1)));
 			//This is b3.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row+1), (char)(pos.col+1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row+1, pos.col+1)));
 			
-			//for(Cell c: king.moves)
-				//System.out.println(c);
-			assertEquals(5, king.moves.size());
+			assertEquals(5, movement.getAllMoves(king).size());
 		}
 		catch(Exception e)
 		{
@@ -219,40 +215,38 @@ class KingTest
 	{
 		try
 		{
-			Cell pos = board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+1));
-			king = new King(Board.White, pos);
+			Cell pos = board.getCellAt(Board.rowMin+1, Board.colMin+1);
+			king = new King(Board.White);
+			movement.add(king, pos);
 			//Made a new white king at cell b2 of the board.
-			king.getAllMoves(board);
 			
 			//King must be able to move to all 8 cells just beside him.
 			//This is a1.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row-1), (char)(pos.col-1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row-1, pos.col-1)));
 			//This is b1.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row-1), pos.col), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row-1, pos.col)));
 			//This is c1.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row-1), (char)(pos.col+1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row-1, pos.col+1)));
 			//This is a2.
-			assertTrue(king.canMoveTo(
-				board.getCellAt(pos.row, (char)(pos.col-1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row, pos.col-1)));
 			//This is a3.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row+1), (char)(pos.col-1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row+1, pos.col-1)));
 			//This is c2.
-			assertTrue(king.canMoveTo(
-				board.getCellAt(pos.row, (char)(pos.col+1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row, pos.col+1)));
 			//This is c3.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row+1), (char)(pos.col+1)), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row+1, pos.col+1)));
 			//This is b1.
-			assertTrue(king.canMoveTo(
-				board.getCellAt((char)(pos.row+1), pos.col), board));
+			assertTrue(movement.canMoveTo(king,
+				board.getCellAt(pos.row+1, pos.col)));
 					
-			//for(Cell c: king.moves)
-				//System.out.println(c);
-			assertEquals(8, king.moves.size());
+			assertEquals(8, movement.getAllMoves(king).size());
 		}
 		catch(Exception e)
 		{

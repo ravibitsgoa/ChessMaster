@@ -373,7 +373,7 @@ public class Movement
 		//a piece on the board.
 		//System.out.println("canMoveTo "+moves.get(piece)
 		//+" "+cellOf.get(piece)+" "+to);
-		ArrayList<Cell> movesOfThisPiece = this.recomputeMoves(piece);
+		ArrayList<Cell> movesOfThisPiece = this.getAllMoves(piece);
 		moves.put(piece, movesOfThisPiece);
 		//System.out.println(moves.get(piece));
 		return movesOfThisPiece.contains(to);
@@ -404,7 +404,9 @@ public class Movement
 	 * */
 	public ArrayList<Cell> getAllMoves(Piece piece)
 	{
-		//System.out.println(piece);
+		if(piece == null || board.isKilled(piece) || cellOf.get(piece)==null)
+			return null;
+		
 		this.recomputeMoves(piece);
 		ArrayList<Cell> allMoves = this.moves.get(piece);
 		ArrayList<Cell> validMoves = new ArrayList<Cell>();
@@ -597,7 +599,19 @@ public class Movement
 		if(cell == null)
 			return;
 		if(piece != null)
-			cellOf.put(piece, cell);
+		{	cellOf.put(piece, cell);
+			if(!board.getPieces(piece.colour).contains(piece))
+			{
+				try 
+				{
+					board.add(piece, cell);
+				} 
+				catch (Exception e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 		onCell.put(cell, piece);
 		//moves.put(piece, recomputeMoves(piece));
 	}

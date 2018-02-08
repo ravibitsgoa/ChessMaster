@@ -106,44 +106,44 @@ class QueenTest
 		try 
 		{
 			queen = new Queen(Board.White);
-			movement.add(queen, board.getCellAt((char)(Board.rowMin+2),
-								(char)(Board.colMin+3)));
+			movement.add(queen, board.getCellAt(Board.rowMin+2,
+								Board.colMin+3));
 			//Made a new white queen at cell d3 of the board.
 			
 			Cell expected[]=
 			{	
-				board.getCellAt((char)(Board.rowMin+3), (char)(Board.colMin+4)),//e4
-				board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+5)),//f5
-				board.getCellAt((char)(Board.rowMin+5), (char)(Board.colMin+6)),//g6
-				board.getCellAt((char)(Board.rowMin+6), (char)(Board.colMin+7)),//h7
+				board.getCellAt(Board.rowMin+3, Board.colMin+4),//e4
+				board.getCellAt(Board.rowMin+4, Board.colMin+5),//f5
+				board.getCellAt(Board.rowMin+5, Board.colMin+6),//g6
+				board.getCellAt(Board.rowMin+6, Board.colMin+7),//h7
 				
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+4)),//e2
-				board.getCellAt(Board.rowMin, (char)(Board.colMin+5)),			//f1
+				board.getCellAt(Board.rowMin+1, Board.colMin+4),//e2
+				board.getCellAt(Board.rowMin, Board.colMin+5),	//f1
 				
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+2)),//c2
-				board.getCellAt(Board.rowMin, (char)(Board.colMin+1)),			//b1
+				board.getCellAt(Board.rowMin+1, Board.colMin+2),//c2
+				board.getCellAt(Board.rowMin, Board.colMin+1),	//b1
 				
-				board.getCellAt((char)(Board.rowMin+3), (char)(Board.colMin+2)),//c4
-				board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+1)),//b5
-				board.getCellAt((char)(Board.rowMin+5), Board.colMin),			//a6
+				board.getCellAt(Board.rowMin+3, Board.colMin+2),//c4
+				board.getCellAt(Board.rowMin+4, Board.colMin+1),//b5
+				board.getCellAt(Board.rowMin+5, Board.colMin),	//a6
 				
-				board.getCellAt((char)(Board.rowMin+2), Board.colMin),			//a3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+1)),//b3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+2)),//c3
+				board.getCellAt(Board.rowMin+2, Board.colMin),	//a3
+				board.getCellAt(Board.rowMin+2, Board.colMin+1),//b3
+				board.getCellAt(Board.rowMin+2, Board.colMin+2),//c3
 				
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+4)),//e3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+5)),//f3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+6)),//g3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+7)),//h3
+				board.getCellAt(Board.rowMin+2, Board.colMin+4),//e3
+				board.getCellAt(Board.rowMin+2, Board.colMin+5),//f3
+				board.getCellAt(Board.rowMin+2, Board.colMin+6),//g3
+				board.getCellAt(Board.rowMin+2, Board.colMin+7),//h3
 				
-				board.getCellAt(Board.rowMin, (char)(Board.colMin+3)),			//d1
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+3)),//d2
+				board.getCellAt(Board.rowMin, Board.colMin+3),	//d1
+				board.getCellAt(Board.rowMin+1, Board.colMin+3),//d2
 				
-				board.getCellAt((char)(Board.rowMin+3), (char)(Board.colMin+3)),//d4
-				board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+3)),//d5
-				board.getCellAt((char)(Board.rowMin+5), (char)(Board.colMin+3)),//d6
-				board.getCellAt((char)(Board.rowMin+6), (char)(Board.colMin+3)),//d7
-				board.getCellAt((char)(Board.rowMin+7), (char)(Board.colMin+3)),//d8
+				board.getCellAt(Board.rowMin+3, Board.colMin+3),//d4
+				board.getCellAt(Board.rowMin+4, Board.colMin+3),//d5
+				board.getCellAt(Board.rowMin+5, Board.colMin+3),//d6
+				board.getCellAt(Board.rowMin+6, Board.colMin+3),//d7
+				board.getCellAt(Board.rowMin+7, Board.colMin+3),//d8
 			};
 			ArrayList<Cell> actualQueenMoves = movement.getAllMoves(queen);
 			assertEquals(expected.length, actualQueenMoves.size());
@@ -152,8 +152,8 @@ class QueenTest
 				assertTrue(actualQueenMoves.contains(move),
 						"Queen must be able to move to all these cells.");
 			
-			Cell rookCell = board.getCellAt((char)(Board.rowMin+4), 
-					(char)(Board.colMin+5));
+			Cell rookCell = board.getCellAt(Board.rowMin+4, 
+					Board.colMin+5);
 			Rook rook = new Rook(Board.Black);
 			movement.add(rook, rookCell);
 			//Made a new black rook at cell f5 of the board.
@@ -162,10 +162,8 @@ class QueenTest
 			//White queen must be able to move to only the cells up to
 			//the black rook.
 			
-			Cell g6 = board.getCellAt((char)(Board.rowMin+5), 
-					(char)(Board.colMin+6));
-			Cell h7 = board.getCellAt((char)(Board.rowMin+6), 
-					(char)(Board.colMin+7));
+			Cell g6 = board.getCellAt(Board.rowMin+5, Board.colMin+6);
+			Cell h7 = board.getCellAt(Board.rowMin+6, Board.colMin+7);
 					
 			for(Cell move: expected)
 			{	if(move!=g6 && move!=h7)

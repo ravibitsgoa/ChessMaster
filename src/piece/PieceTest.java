@@ -82,7 +82,7 @@ class PieceTest
 			piece = new Rook(Board.Black);
 			movement.add(piece, board.getCellAt(Board.rowMin, Board.colMin));
 			
-			Cell dest= board.getCellAt((char)(Board.rowMin+2), Board.colMin);
+			Cell dest= board.getCellAt(Board.rowMin+2, Board.colMin);
 			
 			assertNull(movement.moveTo(piece, null),
 				"Movement object must return null when destination is null.");
@@ -104,7 +104,7 @@ class PieceTest
 				"rook must have 14 moves from cell a3.");
 			
 			//board.print();
-			dest= board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+1));
+			dest= board.getCellAt(Board.rowMin+1, Board.colMin+1);
 			assertNull(movement.moveTo(piece, dest), 
 				"rook must not be able to move to b2 from a3.");
 			//System.out.println(movement.getAllMoves(piece));

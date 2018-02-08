@@ -82,7 +82,8 @@ class BishopTest {
 	{
 		try 
 		{
-			bishop = new Bishop(Board.White, 
+			bishop = new Bishop(Board.White);
+			movement.add(bishop, 
 					board.getCellAt(Board.rowMin+2, Board.colMin+3));
 			//Made a new white bishop at cell d3 of the board.
 			
@@ -103,41 +104,43 @@ class BishopTest {
 				board.getCellAt(Board.rowMin+4, Board.colMin+1),//b5
 				board.getCellAt(Board.rowMin+5, Board.colMin)	//a6
 			};
-			assertEquals(expected.length, bishop.getAllMoves(board).size());
+			assertEquals(expected.length, movement.getAllMoves(bishop).size());
 			//Bishop must be able to move to only these cells.
 			for(Cell move: expected)
-				assertTrue(bishop.canMoveTo(move, board),
+				assertTrue(movement.canMoveTo(bishop, move),
 						"Bishop must be able to move to all these cells.");
 			
 			Cell queenCell = board.getCellAt(Board.rowMin+4, Board.colMin+5);
-			new Queen(Board.Black, queenCell);
+			Queen queen = new Queen(Board.Black);
+			movement.add(queen, queenCell);
 			//Made a new black queen at cell f5 of the board.
-			assertEquals(expected.length-2, bishop.getAllMoves(board).size());
+			assertEquals(expected.length-2, movement.getAllMoves(bishop).size());
 			//Bishop must be able to move to only the cells up to the black queen.
 			for(Cell move: expected)
 			{	if(move.col <= queenCell.col)	//column<=f.
-					assertTrue(bishop.canMoveTo(move, board),
+					assertTrue(movement.canMoveTo(bishop, move),
 						"Bishop must be able to move to the cells upto BQ.");
 				else
-					assertFalse(bishop.canMoveTo(move, board),
+					assertFalse(movement.canMoveTo(bishop, move),
 						"Bishop can't jump over a black queen.");
 			}
 			
 			//destruct the black queen.
-			queenCell.setPiece(null);
+			board.kill(queen);
 			
-			new Queen(Board.White, queenCell);
+			queen = new Queen(Board.White);
+			movement.add(queen, queenCell);
 			//Made a new *white* queen at cell f5 of the board.
 			
-			assertEquals(expected.length-3, bishop.getAllMoves(board).size());
+			assertEquals(expected.length-3, movement.getAllMoves(bishop).size());
 			//Bishop must be able to move to only the cells before the white queen.
 			
 			for(Cell move: expected)
 			{	if(move != queenCell && move.col <= queenCell.col)
-					assertTrue(bishop.canMoveTo(move, board),
+					assertTrue(movement.canMoveTo(bishop, move),
 						"Bishop must be able to move to the cells upto WQ.");
 				else
-					assertFalse(bishop.canMoveTo(move, board),
+					assertFalse(movement.canMoveTo(bishop, move),
 						"A white Bishop can't cross or attack a white queen.");
 			}
 		}

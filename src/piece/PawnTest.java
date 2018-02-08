@@ -90,32 +90,25 @@ class PawnTest
 	{
 		try
 		{
-			Cell origCell = board.getCellAt((char)(Board.rowMin+1), 
-					Board.colMin);
+			Cell origCell = board.getCellAt(Board.rowMin+1,	Board.colMin);
 			//creating a white pawn on cell a2.
 			Pawn pawn = new Pawn(Board.White, origCell);
 			movement.add(pawn, origCell);
 			
-			Cell a3 = board.getCellAt((char)(Board.rowMin+2), 
-					Board.colMin);
+			Cell a3 = board.getCellAt(Board.rowMin+2, Board.colMin);
 			assertNotNull(movement.moveTo(pawn, a3));
 			
-			Cell a4 = board.getCellAt((char)(Board.rowMin+3), 
-					Board.colMin);
+			Cell a4 = board.getCellAt(Board.rowMin+3, Board.colMin);
 			assertNotNull(movement.moveTo(pawn, a4));
 			
-			Cell a5 = board.getCellAt((char)(Board.rowMin+4), 
-					Board.colMin);
+			Cell a5 = board.getCellAt(Board.rowMin+4, Board.colMin);
 			assertNotNull(movement.moveTo(pawn, a5));
 			
-			Cell a6 = board.getCellAt((char)(Board.rowMin+5), 
-					Board.colMin);
+			Cell a6 = board.getCellAt(Board.rowMin+5, Board.colMin);
 			assertNotNull(movement.moveTo(pawn, a6));
 			
-			Cell a7 = board.getCellAt((char)(Board.rowMin+6), 
-					Board.colMin);
-			Cell a8 = board.getCellAt((char)(Board.rowMin+7), 
-					Board.colMin);
+			Cell a7 = board.getCellAt(Board.rowMin+6, Board.colMin);
+			Cell a8 = board.getCellAt(Board.rowMin+7, Board.colMin);
 			assertNull(movement.moveTo(pawn, a8), "A pawn can't jump "
 					+ "from a6 to a8.");
 			
@@ -139,30 +132,25 @@ class PawnTest
 	{
 		try
 		{
-			Cell origCell = board.getCellAt((char)(Board.rowMin+1), 
-					Board.colMin);
+			Cell origCell = board.getCellAt(Board.rowMin+1, Board.colMin);
 			//creating a white pawn on cell a2.
 			pawn = new Pawn(Board.White, origCell);
 			movement.add(pawn, origCell);
 			
-			Cell a4 = board.getCellAt((char)(Board.rowMin+3), 
-					Board.colMin);	//initial jump start.
+			Cell a4 = board.getCellAt(Board.rowMin+3, Board.colMin);	
+			//initial jump start.
 			assertNotNull(movement.moveTo(pawn, a4));
 			
-			Cell a5 = board.getCellAt((char)(Board.rowMin+4), 
-					Board.colMin);
+			Cell a5 = board.getCellAt(Board.rowMin+4, Board.colMin);
 			assertNotNull(movement.moveTo(pawn, a5));
 			
-			Cell a6 = board.getCellAt((char)(Board.rowMin+5), 
-					Board.colMin);
+			Cell a6 = board.getCellAt(Board.rowMin+5, Board.colMin);
 			assertNotNull(movement.moveTo(pawn, a6));
 			
-			Cell a7 = board.getCellAt((char)(Board.rowMin+6), 
-					Board.colMin);
+			Cell a7 = board.getCellAt(Board.rowMin+6, Board.colMin);
 			assertNotNull(movement.moveTo(pawn, a7));
 			
-			Cell a8 = board.getCellAt((char)(Board.rowMin+7), 
-					Board.colMin);
+			Cell a8 = board.getCellAt(Board.rowMin+7, Board.colMin);
 			
 			Queen queen = new Queen(Board.White);
 			movement.add(queen, a8);
@@ -190,33 +178,26 @@ class PawnTest
 	{
 		try
 		{
-			Cell b7 = board.getCellAt((char)(Board.rowMin+6), 
-					(char)(Board.colMin+1));
+			Cell b7 = board.getCellAt(Board.rowMin+6, Board.colMin+1);
 			pawn = new Pawn(Board.Black, b7);
 			movement.add(pawn, b7);
 			
-			Cell b6 = board.getCellAt((char)(Board.rowMin+5), 
-					(char)(Board.colMin+1));
+			Cell b6 = board.getCellAt(Board.rowMin+5, Board.colMin+1);
 			assertNotNull(movement.moveTo(pawn, b6));
 			
-			Cell b5 = board.getCellAt((char)(Board.rowMin+4), 
-					(char)(Board.colMin+1));
+			Cell b5 = board.getCellAt(Board.rowMin+4, Board.colMin+1);
 			assertNotNull(movement.moveTo(pawn, b5));
 
-			Cell b4 = board.getCellAt((char)(Board.rowMin+3), 
-					(char)(Board.colMin+1));
+			Cell b4 = board.getCellAt(Board.rowMin+3, Board.colMin+1);
 			assertNotNull(movement.moveTo(pawn, b4));
 
-			Cell b3 = board.getCellAt((char)(Board.rowMin+2), 
-					(char)(Board.colMin+1));
+			Cell b3 = board.getCellAt(Board.rowMin+2, Board.colMin+1);
 			assertNotNull(movement.moveTo(pawn, b3));
 			
-			Cell b2 = board.getCellAt((char)(Board.rowMin+1), 
-					(char)(Board.colMin+1));
+			Cell b2 = board.getCellAt(Board.rowMin+1, Board.colMin+1);
 			assertNotNull(movement.moveTo(pawn, b2));
 			
-			Cell b1 = board.getCellAt(Board.rowMin, 
-					(char)(Board.colMin+1));
+			Cell b1 = board.getCellAt(Board.rowMin, Board.colMin+1);
 			assertNotNull(movement.moveTo(pawn, b1));
 		}
 		catch(Exception e)
@@ -231,8 +212,7 @@ class PawnTest
 	{
 		try
 		{
-			Cell origCell = board.getCellAt((char)(Board.rowMin+1), 
-					Board.colMin);
+			Cell origCell = board.getCellAt(Board.rowMin+1,	Board.colMin);
 			//creating a white pawn on cell a2.
 			pawn = new Pawn(Board.White, origCell);
 			movement.add(pawn, origCell);
@@ -251,18 +231,17 @@ class PawnTest
 	{
 		try
 		{
-			Cell origCell = board.getCellAt((char)(Board.rowMin+1), 
-					Board.colMin);
+			Cell origCell = board.getCellAt(Board.rowMin+1, Board.colMin);
 			//creating a white pawn on cell a2.
 			pawn = new Pawn(Board.White, origCell);
 			movement.add(pawn, origCell);
 			
 			ArrayList<Cell> moves = movement.getAllMoves(pawn);
 			
-			Cell a4 = board.getCellAt((char)(Board.rowMin+3), 
-					Board.colMin);	//initial jump start.
-			Cell a3 = board.getCellAt((char)(Board.rowMin+2), 
-					Board.colMin);	//initial normal move.
+			Cell a4 = board.getCellAt(Board.rowMin+3, Board.colMin);	
+			//initial jump start.
+			Cell a3 = board.getCellAt(Board.rowMin+2, Board.colMin);	
+			//initial normal move.
 			assertTrue(moves.contains(a3), 
 					"A pawn can move from a2 to a3.");
 			assertTrue(moves.contains(a4),
@@ -315,15 +294,12 @@ class PawnTest
 	{
 		try
 		{
-			Cell c2 = board.getCellAt((char)(Board.rowMin+1), 
-					(char)(Board.colMin+2));
+			Cell c2 = board.getCellAt(Board.rowMin+1, Board.colMin+2);
 			pawn = new Pawn(Board.White, c2);
 			movement.add(pawn, c2);
 			
-			Cell d3 = board.getCellAt((char)(Board.rowMin+2), 
-					(char)(Board.colMin+3));
-			Cell b3 = board.getCellAt((char)(Board.rowMin+2), 
-					(char)(Board.colMin+1));
+			Cell d3 = board.getCellAt(Board.rowMin+2, Board.colMin+3);
+			Cell b3 = board.getCellAt(Board.rowMin+2, Board.colMin+1);
 			ArrayList<Cell> moves = movement.getAllMoves(pawn);
 			assertFalse(moves.contains(d3), 
 					"A pawn can't move from a2 to empty d3.");

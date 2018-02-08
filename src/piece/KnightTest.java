@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import chess.Board;
 import chess.Cell;
+import chess.Movement;
 
 /**
  * @author Ravishankar P. Joshi
@@ -17,12 +18,14 @@ import chess.Cell;
 class KnightTest 
 {
 	private Knight knight;
+	private Movement movement;
 	private Board board;
 	@BeforeEach
 	void setUp()
 	{	
 		board = new Board(); // this is a new empty board.
 		knight = null;
+		movement = board.getMovement();
 	}
 
 	@AfterEach
@@ -30,6 +33,7 @@ class KnightTest
 	{
 		board = null;
 		knight = null;
+		movement = null;
 	}
 
 	@Test
@@ -38,10 +42,10 @@ class KnightTest
 		try 
 		{
 			Cell knightCell = board.getCellAt(Board.rowMin, Board.colMax);
-			knight = new Knight(Board.White, knightCell);
+			knight = new Knight(Board.White);
+			movement.add(knight, knightCell);
 			assertEquals(Board.White, knight.colour);
-			assertEquals(knightCell, knight.currentPos);
-			assertEquals(knight, knightCell.getPiece());
+			assertEquals(knight, movement.getPieceOn(knightCell));
 		} 
 		catch (Exception e) 
 		{
@@ -54,14 +58,12 @@ class KnightTest
 	{
 		try 
 		{
-			Cell knightCell = board.getCellAt(Board.rowMin, Board.colMin);
-			knight = new Knight(Board.White, knightCell);
+			knight = new Knight(Board.White);
 			assertEquals(Board.White.charAt(0)+"N", knight.toString());
 			
-			knightCell.setPiece(null);
 			knight = null;	//deleting the old knight.
 		
-			knight = new Knight(Board.Black, knightCell);
+			knight = new Knight(Board.Black);
 			assertEquals(Board.Black.charAt(0)+"N", knight.toString());
 		} 
 		catch (Exception e) 
@@ -76,11 +78,12 @@ class KnightTest
 		try 
 		{
 			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
-			knight = new Knight(Board.White, a1);
-			ArrayList<Cell> allMoves = knight.getAllMoves(board);
+			knight = new Knight(Board.White);
+			movement.add(knight, a1);
+			ArrayList<Cell> allMoves = movement.getAllMoves(knight);
 			
-			Cell c2 = board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+2));
-			Cell b3 = board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+1));
+			Cell c2 = board.getCellAt(Board.rowMin+1, Board.colMin+2);
+			Cell b3 = board.getCellAt(Board.rowMin+2, Board.colMin+1);
 			assertTrue(allMoves.contains(c2), 
 				"Knight must be able to move from a1 to c2.");
 			assertTrue(allMoves.contains(b3),
@@ -97,20 +100,20 @@ class KnightTest
 	}
 	
 	@Test
-	void movesFromNullBoardTest() 
+	void movesFromNullCellTest() 
 	{
 		try 
 		{
-			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
-			knight = new Knight(Board.White, a1);
-			ArrayList<Cell> allMoves = knight.getAllMoves(null);
-			assertEquals(null, allMoves,
-				"Knight must return null moves on an empty board.");
+			knight = new Knight(Board.White);
+			movement.add(knight, null);
+			ArrayList<Cell> allMoves = movement.getAllMoves(knight);
+			assertNull(allMoves,
+				"Knight must return null moves when its cell is null.");
 		} 
 		catch (Exception e) 
 		{
 			//e.printStackTrace();
-			System.out.println("Exception in movesFromNullBoardTest()"
+			System.out.println("Exception in movesFromNullCellTest()"
 					+ " of KnightTest");
 		}
 	}
@@ -120,22 +123,22 @@ class KnightTest
 	{
 		try 
 		{
-			Cell d4 = board.getCellAt((char)(Board.rowMin+3), 
-					(char)(Board.colMin+3));
-			knight = new Knight(Board.White, d4);
-			ArrayList<Cell> allMoves = knight.getAllMoves(board);
+			Cell d4 = board.getCellAt(Board.rowMin+3, Board.colMin+3);
+			knight = new Knight(Board.White);
+			movement.add(knight, d4);
+			ArrayList<Cell> allMoves = movement.getAllMoves(knight);
 			
 			Cell[] validCells = 
 			{
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+2)),//c2
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+1)),//b3
-				board.getCellAt((char)(Board.rowMin+5), (char)(Board.colMin+2)),//c6
-				board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+1)),//b5
+				board.getCellAt(Board.rowMin+1, Board.colMin+2),//c2
+				board.getCellAt(Board.rowMin+2, Board.colMin+1),//b3
+				board.getCellAt(Board.rowMin+5, Board.colMin+2),//c6
+				board.getCellAt(Board.rowMin+4, Board.colMin+1),//b5
 				
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+4)),//e2
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+5)),//f3
-				board.getCellAt((char)(Board.rowMin+5), (char)(Board.colMin+4)),//e6
-				board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+5)),//f5
+				board.getCellAt(Board.rowMin+1, Board.colMin+4),//e2
+				board.getCellAt(Board.rowMin+2, Board.colMin+5),//f3
+				board.getCellAt(Board.rowMin+5, Board.colMin+4),//e6
+				board.getCellAt(Board.rowMin+4, Board.colMin+5),//f5
 			};
 			for(Cell c : validCells) 
 			{
@@ -146,15 +149,16 @@ class KnightTest
 				"Knight can move to 8 cells from the cell d4.");
 			
 			
-			Cell c2 = board.getCellAt((char)(Board.rowMin+1), 
-					(char)(Board.colMin+2));
+			Cell c2 = board.getCellAt(Board.rowMin+1, Board.colMin+2);
 			@SuppressWarnings("unused")
-			Bishop b = new Bishop(Board.White, c2);
+			Bishop bishop = new Bishop(Board.White);
+			movement.add(bishop, c2);
+			allMoves = movement.getAllMoves(knight);
 			//Creating a white bishop on c2, so that white knight can't attack it.
 			for(Cell c: validCells)
 			{	
 				if(c==c2)
-					assertFalse(knight.canMoveTo(c, board), 
+					assertFalse(movement.canMoveTo(knight, c), 
 						"A white knight can't attack a white bishop");
 				else
 				{
@@ -162,18 +166,19 @@ class KnightTest
 						"Knight must be able to move from d4 to "+c);
 				}
 			}
-			assertEquals(7, knight.moves.size());
+			assertEquals(7, allMoves.size());
 			
+			board.kill(bishop);
+			bishop = null;	//destructing the old bishop.
 			
-			c2.setPiece(null);
-			b = null;	//destructing the old bishop.
-			
-			b = new Bishop(Board.Black, c2);
+			bishop = new Bishop(Board.Black);
+			movement.add(bishop, c2);
+			allMoves = movement.getAllMoves(knight);
 			//Creating a black bishop on c2, so that a white knight can attack it.
 			for(Cell c: validCells)
 			{	
 				if(c==c2)
-					assertTrue(knight.canMoveTo(c, board), 
+					assertTrue(movement.canMoveTo(knight, c), 
 						"A white knight can attack a black bishop");
 				else
 				{
@@ -181,7 +186,7 @@ class KnightTest
 						"Knight must be able to move from d4 to "+c);
 				}
 			}
-			assertEquals(8, knight.moves.size());
+			assertEquals(8, allMoves.size());
 		} 
 		catch (Exception e) 
 		{

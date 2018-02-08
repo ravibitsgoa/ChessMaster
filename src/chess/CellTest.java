@@ -15,17 +15,20 @@ import piece.*;
 class CellTest 
 {
 	private Board board;
+	private Movement movement;
 	
 	@BeforeEach
 	void setUp()
 	{
 		board = new Board();
+		movement = board.getMovement();
 	}
 
 	@AfterEach
 	void tearDown()
 	{
 		board = null;
+		movement = null;
 	}
 
 	@Test
@@ -36,7 +39,7 @@ class CellTest
 			Cell a1 = new Cell(Board.rowMin, Board.colMin);
 			assertEquals(Board.rowMin, a1.row);
 			assertEquals(Board.colMin, a1.col);
-			assertEquals(null, a1.getPiece());
+			assertEquals(null, movement.getPieceOn(a1));
 		}
 		catch(Exception e)
 		{
@@ -69,81 +72,7 @@ class CellTest
 
 	}
 
-	@Test
-	void setPieceTest()
-	{
-		try
-		{	
-			Cell rookCell = board.getCellAt(Board.rowMin, Board.colMin);
-			Rook wr = new Rook(Board.White, rookCell);
-			assertTrue(rookCell.setPiece(wr), 
-				"An empty Cell must return true on setting piece");
-			assertTrue(rookCell.setPiece(null),
-				"A cell must return true on being emptied.");	//cell emptied.
-			assertTrue(rookCell.setPiece(wr),
-				"An empty Cell must return true on setting piece");
-			assertTrue(rookCell.setPiece(wr),
-				"A cell must return true when setting same piece on it.");
-			
-			Cell queenCell = board.getCellAt(Board.rowMax, Board.colMin);
-			Queen wq = new Queen(Board.White, queenCell);
-			assertFalse(rookCell.setPiece(wq),
-				"A cell must return false when a piece of same colour as"
-				+ " one lying on it, is tried to set on it.");
-			//You can't kill a white rook with a white queen.
-			assertEquals(wr, rookCell.getPiece());
-			//Rook must remain on the cell.
-			
-			queenCell = board.getCellAt(Board.rowMax, Board.colMax);
-			Queen bq = new Queen(Board.Black, queenCell);
-			assertTrue(rookCell.setPiece(bq),
-				"A cell must return true when a piece of opposite colour"
-				+ ", is tried to set on it.");
-			//You can kill a white rook with a black queen.
-			assertEquals(bq, rookCell.getPiece());
-			//Black queen must remain on the cell.
-			
-		}
-		catch(Exception e)
-		{
-			System.out.println("Exception in setPieceTest() of CellTest");
-		}
-	}
-
-	@Test
-	void getPieceTest() 
-	{
-		try
-		{	
-			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
-			Rook rook = new Rook(Board.White, a1);
-			
-			a1.setPiece(rook);
-			assertEquals(rook, a1.getPiece());	//Cell c must have the rook on it.
-			
-			a1.setPiece(null);
-			rook = null;						//this rook is destructed now.
-			assertEquals(null, a1.getPiece());	//c must not have anything.
-			
-			rook = new Rook(Board.White, a1);
-			a1.setPiece(rook);
-			assertEquals(rook, a1.getPiece());	//c must have the rook on it.
-			
-			rook.moveTo(board.getCellAt(Board.rowMax, Board.colMin), board);
-			//On moving the rook from a1 to a8,
-			//a1 must become empty.
-			assertEquals(null, a1.getPiece());
-			//and, a8 must have the rook on it.
-			assertEquals(rook, 
-					board.getCellAt(Board.rowMax, Board.colMin).getPiece());
-			
-		}
-		catch(Exception e)
-		{
-			System.out.println("Exception in getPieceTest() of CellTest");
-		}
-	}
-
+	
 	@Test
 	void toStringTest() 
 	{
@@ -167,7 +96,7 @@ class CellTest
 			Cell a1ShallowCopy = new Cell(Board.rowMin, Board.colMin);
 			assertTrue(a1.equals(a1ShallowCopy));
 			
-			Rook r = new Rook(Board.Black, a1);
+			Rook r = new Rook(Board.Black);
 			assertFalse(a1.equals(r));
 		}
 		catch(Exception e)
@@ -176,4 +105,31 @@ class CellTest
 		}
 	}
 
+	@Test
+	void selectionTest()
+	{
+		Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
+		assertFalse(a1.isSelected(), 
+				"A newly created cell must not be in selected state.");
+		a1.select(true);
+		assertTrue(a1.isSelected(),
+				"After selecting a cell, it must get into selected state.");
+		a1.select(false);
+		assertFalse(a1.isSelected(),
+				"After deselecting a cell, it must not be in selected state.");
+	}
+	
+	@Test
+	void nextMoveTest()
+	{
+		Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
+		assertFalse(a1.isNextMove(), 
+				"A newly created cell must not be in next move state.");
+		a1.setNextMove(true);
+		assertTrue(a1.isNextMove(),
+				"After setting a cell as next move, it must become so.");
+		a1.setNextMove(false);
+		assertFalse(a1.isNextMove(),
+				"After reseting a cell from next move, it must not be so.");
+	}
 }

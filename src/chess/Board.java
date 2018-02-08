@@ -140,7 +140,7 @@ public class Board
 		
 	}
 
-	private void add(Piece piece, Cell cell) throws Exception
+	public void add(Piece piece, Cell cell) throws Exception
 	{
 		if(piece == null || cell == null)
 			throw new Exception("null exception in add() of board.");

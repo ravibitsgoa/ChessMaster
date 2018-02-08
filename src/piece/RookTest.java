@@ -69,28 +69,28 @@ class RookTest
 		try 
 		{
 			rook = new Rook(Board.White);
-			movement.add(rook, board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+2)));
+			movement.add(rook, board.getCellAt(Board.rowMin+2, Board.colMin+2));
 			//Made a new white rook at cell c3 of the board.
 			
 			Cell expected[]=
 			{	
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+0)),//a3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+1)),//b3
+				board.getCellAt(Board.rowMin+2, Board.colMin+0),//a3
+				board.getCellAt(Board.rowMin+2, Board.colMin+1),//b3
 				
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+3)),//d3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+4)),//e3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+5)),//f3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+6)),//g3
-				board.getCellAt((char)(Board.rowMin+2), (char)(Board.colMin+7)),//h3
+				board.getCellAt(Board.rowMin+2, Board.colMin+3),//d3
+				board.getCellAt(Board.rowMin+2, Board.colMin+4),//e3
+				board.getCellAt(Board.rowMin+2, Board.colMin+5),//f3
+				board.getCellAt(Board.rowMin+2, Board.colMin+6),//g3
+				board.getCellAt(Board.rowMin+2, Board.colMin+7),//h3
 				
-				board.getCellAt((char)(Board.rowMin+0), (char)(Board.colMin+2)),//c1
-				board.getCellAt((char)(Board.rowMin+1), (char)(Board.colMin+2)),//c2
+				board.getCellAt(Board.rowMin+0, Board.colMin+2),//c1
+				board.getCellAt(Board.rowMin+1, Board.colMin+2),//c2
 				
-				board.getCellAt((char)(Board.rowMin+3), (char)(Board.colMin+2)),//c4
-				board.getCellAt((char)(Board.rowMin+4), (char)(Board.colMin+2)),//c5
-				board.getCellAt((char)(Board.rowMin+5), (char)(Board.colMin+2)),//c6
-				board.getCellAt((char)(Board.rowMin+6), (char)(Board.colMin+2)),//c7
-				board.getCellAt((char)(Board.rowMin+7), (char)(Board.colMin+2)),//c8
+				board.getCellAt(Board.rowMin+3, Board.colMin+2),//c4
+				board.getCellAt(Board.rowMin+4, Board.colMin+2),//c5
+				board.getCellAt(Board.rowMin+5, Board.colMin+2),//c6
+				board.getCellAt(Board.rowMin+6, Board.colMin+2),//c7
+				board.getCellAt(Board.rowMin+7, Board.colMin+2),//c8
 			};
 			ArrayList<Cell> actualRookMoves = movement.getAllMoves(rook);
 			assertEquals(expected.length, actualRookMoves.size());
@@ -99,8 +99,8 @@ class RookTest
 				assertTrue(actualRookMoves.contains(move),
 						"rook must be able to move to cell "+move);
 			
-			Cell pawnCell = board.getCellAt((char)(Board.rowMin+2), 
-					(char)(Board.colMin+5));
+			Cell pawnCell = board.getCellAt(Board.rowMin+2, 
+					Board.colMin+5);
 			Pawn pawn = new Pawn(Board.Black, pawnCell);
 			movement.add(pawn, pawnCell);
 			//Made a new black pawn at cell f3 of the board.
