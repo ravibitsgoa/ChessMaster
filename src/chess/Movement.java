@@ -14,6 +14,7 @@ public class Movement
 	private HashMap<Piece, ArrayList<Cell> > moves;
 	Stack<Move> pastMoves;
 	public static final String castling = "Castling", normalMove= "normal";
+	public static final String promoteMove = "promote";
 	
 	public Movement(Board board) throws Exception
 	{
@@ -89,12 +90,12 @@ public class Movement
 			to.row == Board.rowMin)	&& this.canMoveTo(pieceToMove, to) )
 		{
 			Move move = new Move(from, to, pieceToMove, onCell.get(to), 
-								 normalMove);
+								 promoteMove);
 			pastMoves.add(move);
 			//Note the current move.
 			
-			board.kill(pieceToMove);		//Kill the pawn which is to be promoted.
-			onCell.put(from, null);			//empty the current position.
+			//Kill the pawn which is to be promoted.
+			onCell.put(from, null);	//empty the current position.
 			//If destination cell contains anything,
 			//make it empty.
 			board.kill(onCell.get(to));
@@ -512,20 +513,23 @@ public class Movement
 			CopyOnWriteArrayList<Piece> ownPieces = board.getPieces(playerColour);
 			
 			for(Piece piece: ownPieces)	
-			{			
+			{	
+				if(board.isKilled(piece))
+					continue;
 				ArrayList<Cell> moveList = moves.get(piece);
 				Cell thisCell = cellOf.get(piece);
 				for(Cell dest: moveList)
 				{
 					//Piece currentlyOnC = onCell.get(c);
 					//c.setPiece(piece);
-					this.moveTo(thisCell, dest);
+					Move move = this.moveTo(thisCell, dest);
 					//thisCell.setPiece(null);
 					boolean lifeSavingMove =
 						!(this.isUnderCheck(playerColour));
 					//c.setPiece(currentlyOnC);
 					//thisCell.setPiece(piece);
-					this.undoMove();
+					if(move != null)
+						this.undoMove();
 					if(lifeSavingMove == true)
 						return false;
 				}

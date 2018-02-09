@@ -188,7 +188,7 @@ public class GraphicsHandler extends JPanel
 		boolean moveHappened = board.clicked(Board.rowMax-row , 
 											 col+Board.colMin);
 		this.repaint();
-		
+		//board.print();
 		if(moveHappened && gameMode == 1)
 		{
 			ai.playNextMove();

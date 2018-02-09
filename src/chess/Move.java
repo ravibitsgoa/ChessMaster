@@ -76,7 +76,10 @@ public class Move
 			if(onDestination != null)
 				moveString += "x";	//killing move.
 			moveString+= destination.toString();
-		
+			if(moveType == Movement.promoteMove)
+			{
+				moveString+="(Q)";
+			}
 			return moveString;
 		}
     }
