@@ -57,15 +57,24 @@ public class GraphicsHandler extends JPanel
 		for(int i=0; i<=(Board.rowMax-Board.rowMin); i++)
 		{
 			graphics.setColor(Color.BLACK);
-			int labelx = 3*x0/2 + i*rowLen, labely = y0-5;
-			String title = (char)('h'-i) + "";
-			graphics.drawString(title, labelx, labely);
-			//JLabel label = new JLabel("a"+i);
-			//label.setHorizontalAlignment(labelx);
-			//label.setVerticalAlignment(labely);
+			
+			{	//made a local scope.
+				int labelx = 3*x0/2 + i*rowLen, labely = y0-5;
+				String colTitle = (char)('a'+i) + "";
+				graphics.drawString(colTitle, labelx, labely);
+			}
+			
 			for(int j=0; j<=(Board.colMax-Board.colMin); j++)
 			{
-				Cell thisCell = board.getCellAt(j+Board.rowMin, i+Board.colMin);
+				graphics.setColor(Color.BLACK);
+				if(i==0)
+				{
+					int labelX = x0-20, labelY = 2*y0 + j*colLen;
+					String rowTitle = (char)('8'-j) + "";
+					graphics.drawString(rowTitle, labelX, labelY);
+				}
+				
+				Cell thisCell = board.getCellAt(Board.rowMax-j, i+Board.colMin);
 				int x= x0+ i*rowLen, y= y0+ j*colLen;
 				
 				graphics.drawRect(x, y, colLen, rowLen);
@@ -176,8 +185,8 @@ public class GraphicsHandler extends JPanel
 		int col = (x-x0) / rowLen;
 		int row = (y-y0) / colLen;
 		
-		boolean moveHappened = board.clicked(row +Board.rowMin, 
-											col +Board.colMin);
+		boolean moveHappened = board.clicked(Board.rowMax-row , 
+											 col+Board.colMin);
 		this.repaint();
 		
 		if(moveHappened && gameMode == 1)

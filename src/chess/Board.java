@@ -117,8 +117,8 @@ public class Board
 		try
 		{
 			//giving a queen to both players on cells just beside a bishop.
-			this.add(new Queen(White), cells[0][4]);
-			this.add(new Queen(Black), cells[7][4]);
+			this.add(new Queen(White), cells[0][3]);
+			this.add(new Queen(Black), cells[7][3]);
 		}
 		catch(Exception e)
 		{
@@ -130,8 +130,8 @@ public class Board
 			//giving a king to both players on cells just beside the queen.
 			whiteKing = new King(White);
 			blackKing = new King(Black);
-			this.add(whiteKing, cells[0][3]);
-			this.add(blackKing, cells[7][3]);
+			this.add(whiteKing, cells[0][4]);
+			this.add(blackKing, cells[7][4]);
 		}
 		catch(Exception e)
 		{

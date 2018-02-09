@@ -13,6 +13,7 @@ public class Movement
 	private HashMap<Piece, Cell> cellOf;
 	private HashMap<Piece, ArrayList<Cell> > moves;
 	Stack<Move> pastMoves;
+	public static final String castling = "Castling", normalMove= "normal";
 	
 	public Movement(Board board) throws Exception
 	{
@@ -87,7 +88,8 @@ public class Movement
 		if( pieceToMove instanceof Pawn && (to.row == Board.rowMax ||
 			to.row == Board.rowMin)	&& this.canMoveTo(pieceToMove, to) )
 		{
-			Move move = new Move(from, to, pieceToMove, onCell.get(to));
+			Move move = new Move(from, to, pieceToMove, onCell.get(to), 
+								 normalMove);
 			pastMoves.add(move);
 			//Note the current move.
 			
@@ -110,7 +112,8 @@ public class Movement
 		
 		if(this.canMoveTo(pieceToMove, to))
 		{	
-			Move move = new Move(from, to, pieceToMove, onCell.get(to));
+			Move move = new Move(from, to, pieceToMove, onCell.get(to), 
+								 normalMove);
 			pastMoves.add(move);
 			
 			onCell.put(from, null);			//empty the current position.
@@ -373,7 +376,7 @@ public class Movement
 		//a piece on the board.
 		//System.out.println("canMoveTo "+moves.get(piece)
 		//+" "+cellOf.get(piece)+" "+to);
-		ArrayList<Cell> movesOfThisPiece = this.getAllMoves(piece);
+		ArrayList<Cell> movesOfThisPiece = this.recomputeMoves(piece);
 		moves.put(piece, movesOfThisPiece);
 		//System.out.println(moves.get(piece));
 		return movesOfThisPiece.contains(to);
