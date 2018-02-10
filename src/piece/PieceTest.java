@@ -51,7 +51,7 @@ class PieceTest
 		try 
 		{
 			piece = new Rook(Board.Black);
-			movement.add(piece, a1);
+			movement.construct(piece, a1);
 			
 			assertEquals(Board.Black, piece.colour);
 			
@@ -80,7 +80,7 @@ class PieceTest
 		{
 			//Creating a new black rook at the cell a1.
 			piece = new Rook(Board.Black);
-			movement.add(piece, board.getCellAt(Board.rowMin, Board.colMin));
+			movement.construct(piece, board.getCellAt(Board.rowMin, Board.colMin));
 			
 			Cell dest= board.getCellAt(Board.rowMin+2, Board.colMin);
 			
@@ -133,7 +133,7 @@ class PieceTest
 		{
 			//Creating a new black rook at the cell a1.
 			piece = new Rook(Board.Black);
-			movement.add(piece, board.getCellAt(Board.rowMin, Board.colMin));
+			movement.construct(piece, board.getCellAt(Board.rowMin, Board.colMin));
 			
 			Cell dest = board.getCellAt(Board.rowMax, Board.colMin);
 			assertFalse(movement.canMoveTo(piece, null),
@@ -162,7 +162,7 @@ class PieceTest
 		{
 			//Creating a new black rook at the cell a1.
 			piece = new Rook(Board.White);
-			movement.add(piece, board.getCellAt(Board.rowMin, Board.colMin));
+			movement.construct(piece, board.getCellAt(Board.rowMin, Board.colMin));
 			ArrayList<Cell> moves = movement.getAllMoves(piece);
 			//Make sure that canMoveTo() doesn't mess with
 			//already filled list of moves.
@@ -195,7 +195,7 @@ class PieceTest
 			//Creating a new black rook at the cell a1.
 			piece = new Rook(Board.Black);
 			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
-			movement.add(piece, a1);
+			movement.construct(piece, a1);
 			ArrayList<Cell> moves;
 			moves = movement.getAllMoves(piece);
 			
@@ -234,7 +234,7 @@ class PieceTest
 			//Creating a new white bishop at the cell a1.
 			piece = new Bishop(Board.White);
 			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
-			movement.add(piece, a1);
+			movement.construct(piece, a1);
 			ArrayList<Cell> moves;
 			moves = movement.getAllMoves(piece);
 			assertEquals(7, moves.size(), "A bishop can have exactly 7 moves"
@@ -274,11 +274,11 @@ class PieceTest
 			//This tests moves of a bishop along a constant sum diagonal.
 			//Creating a new white bishop at the cell a8.
 			piece = new Bishop(Board.White);
-			movement.add(piece, board.getCellAt(Board.rowMax, Board.colMin));
+			movement.construct(piece, board.getCellAt(Board.rowMax, Board.colMin));
 			
 			Cell h1 = board.getCellAt(Board.rowMin, Board.colMax);
 			Pawn whitePawn = new Pawn(Board.White, h1);
-			movement.add(whitePawn, h1);
+			movement.construct(whitePawn, h1);
 			//putting an intruding white pawn on h1.
 			
 			ArrayList<Cell> moves = movement.getAllMoves(piece);
@@ -296,7 +296,7 @@ class PieceTest
 			
 			board.kill(whitePawn);
 			//destruct the old pawn.
-			movement.add(new Pawn(Board.Black, h1), h1);
+			movement.construct(new Pawn(Board.Black, h1), h1);
 			//putting an intruding black pawn on h1.
 			
 			moves = movement.getAllMoves(piece);

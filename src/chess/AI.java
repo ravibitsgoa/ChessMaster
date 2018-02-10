@@ -125,6 +125,10 @@ public class AI
 							Board.opposite(playerColour), alpha, beta);
 					//System.out.printf("%d ", value);
 					nodeCount++;
+					if(tempMove.moveType == Movement.castlingMove)
+					{	
+						value+= 50;
+					}
 					if(alpha < value)
 					{
 						alpha = value;
@@ -171,6 +175,10 @@ public class AI
 					nodeCount++;
 					if(move == null)
 						move = tempMove;
+					if(tempMove.moveType == Movement.castlingMove)
+					{	
+						value-= 50;
+					}
 					if(beta > value)
 					{
 						beta = value;

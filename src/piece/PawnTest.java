@@ -42,7 +42,7 @@ class PawnTest
 		{
 			Cell pawnCell = board.getCellAt(Board.rowMin, Board.colMax);
 			pawn = new Pawn(Board.White, pawnCell);
-			movement.add(pawn, pawnCell);
+			movement.construct(pawn, pawnCell);
 			assertEquals(Board.White, pawn.colour);
 			assertEquals(pawn, movement.getPieceOn(pawnCell));
 			
@@ -54,7 +54,7 @@ class PawnTest
 			
 			board.kill(pawn);
 			pawn = new Pawn(Board.Black, pawnCell);
-			movement.add(pawn, pawnCell);
+			movement.construct(pawn, pawnCell);
 			assertEquals(-1, pawn.dir,
 					"A black pawn moves only in direction -1.");
 			assertEquals(pawn, movement.getPieceOn(pawnCell));
@@ -93,7 +93,7 @@ class PawnTest
 			Cell origCell = board.getCellAt(Board.rowMin+1,	Board.colMin);
 			//creating a white pawn on cell a2.
 			Pawn pawn = new Pawn(Board.White, origCell);
-			movement.add(pawn, origCell);
+			movement.construct(pawn, origCell);
 			
 			Cell a3 = board.getCellAt(Board.rowMin+2, Board.colMin);
 			assertNotNull(movement.moveTo(pawn, a3));
@@ -135,7 +135,7 @@ class PawnTest
 			Cell origCell = board.getCellAt(Board.rowMin+1, Board.colMin);
 			//creating a white pawn on cell a2.
 			pawn = new Pawn(Board.White, origCell);
-			movement.add(pawn, origCell);
+			movement.construct(pawn, origCell);
 			
 			Cell a4 = board.getCellAt(Board.rowMin+3, Board.colMin);	
 			//initial jump start.
@@ -153,14 +153,14 @@ class PawnTest
 			Cell a8 = board.getCellAt(Board.rowMin+7, Board.colMin);
 			
 			Queen queen = new Queen(Board.White);
-			movement.add(queen, a8);
+			movement.construct(queen, a8);
 			//Now, the pawn can't move to cell a8 blocked by a white queen.
 			assertNull(movement.moveTo(pawn, a8));
 			
 			board.kill(queen);
 			//destructing the white queen.
 			//constructing a black queen on cell a8.
-			movement.add(new Queen(Board.Black), a8);
+			movement.construct(new Queen(Board.Black), a8);
 			//Now, the pawn can't move to it.
 			assertNull(movement.moveTo(pawn, a8));
 			
@@ -180,7 +180,7 @@ class PawnTest
 		{
 			Cell b7 = board.getCellAt(Board.rowMin+6, Board.colMin+1);
 			pawn = new Pawn(Board.Black, b7);
-			movement.add(pawn, b7);
+			movement.construct(pawn, b7);
 			
 			Cell b6 = board.getCellAt(Board.rowMin+5, Board.colMin+1);
 			assertNotNull(movement.moveTo(pawn, b6));
@@ -215,7 +215,7 @@ class PawnTest
 			Cell origCell = board.getCellAt(Board.rowMin+1,	Board.colMin);
 			//creating a white pawn on cell a2.
 			pawn = new Pawn(Board.White, origCell);
-			movement.add(pawn, origCell);
+			movement.construct(pawn, origCell);
 			
 			assertNull(movement.moveTo(pawn, null));
 		}
@@ -234,7 +234,7 @@ class PawnTest
 			Cell origCell = board.getCellAt(Board.rowMin+1, Board.colMin);
 			//creating a white pawn on cell a2.
 			pawn = new Pawn(Board.White, origCell);
-			movement.add(pawn, origCell);
+			movement.construct(pawn, origCell);
 			
 			ArrayList<Cell> moves = movement.getAllMoves(pawn);
 			
@@ -250,7 +250,7 @@ class PawnTest
 					"A pawn can move to only 2 cells from cell a2.");
 			
 			Bishop bishop = new Bishop(Board.White);
-			movement.add(bishop, a4);
+			movement.construct(bishop, a4);
 			moves = movement.getAllMoves(pawn);
 			assertTrue(moves.contains(a3),
 					"A pawn can move from a2 to a3.");
@@ -263,7 +263,7 @@ class PawnTest
 			//destructing old bishop.
 			board.kill(bishop);
 			bishop= new Bishop(Board.Black);
-			movement.add(bishop, a4);
+			movement.construct(bishop, a4);
 			moves = movement.getAllMoves(pawn);
 			assertTrue(moves.contains(a3),
 					"A pawn can move from a2 to a3.");
@@ -275,7 +275,7 @@ class PawnTest
 			
 			board.kill(bishop);
 			bishop = new Bishop(Board.Black);
-			movement.add(bishop, a3);
+			movement.construct(bishop, a3);
 			moves = movement.getAllMoves(pawn);
 			assertEquals(0, moves.size(),
 					"A pawn can't move at all from initial position,"
@@ -296,7 +296,7 @@ class PawnTest
 		{
 			Cell c2 = board.getCellAt(Board.rowMin+1, Board.colMin+2);
 			pawn = new Pawn(Board.White, c2);
-			movement.add(pawn, c2);
+			movement.construct(pawn, c2);
 			
 			Cell d3 = board.getCellAt(Board.rowMin+2, Board.colMin+3);
 			Cell b3 = board.getCellAt(Board.rowMin+2, Board.colMin+1);
@@ -309,7 +309,7 @@ class PawnTest
 					"A pawn can move to only 2 cells from cell a2.");
 			
 			Knight knight = new Knight(Board.Black);
-			movement.add(knight, b3);
+			movement.construct(knight, b3);
 			moves = movement.getAllMoves(pawn);
 			assertFalse(moves.contains(d3), 
 					"A pawn can't move from a2 to empty d3.");
@@ -320,7 +320,7 @@ class PawnTest
 				"A pawn can move to only 3 cells from cell a2 now.");
 			
 			Bishop bishop = new Bishop(Board.White);
-			movement.add(bishop, d3);
+			movement.construct(bishop, d3);
 			moves = movement.getAllMoves(pawn);
 			assertFalse(moves.contains(d3), 
 					"A white pawn can't attack a white bishop.");
@@ -332,7 +332,7 @@ class PawnTest
 			
 			board.kill(bishop);
 			bishop = new Bishop(Board.Black);
-			movement.add(bishop, d3);
+			movement.construct(bishop, d3);
 			moves = movement.getAllMoves(pawn);
 			assertTrue(moves.contains(d3), 
 					"A white pawn can attack a black bishop.");

@@ -44,7 +44,7 @@ public class Move
     public String toString()
     {
     	String moveString = "";
-		if(moveType == Movement.castling)
+		if(moveType == Movement.castlingMove)
 		{
 			if(onSource instanceof King)
 			{

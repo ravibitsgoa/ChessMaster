@@ -40,7 +40,7 @@ class BishopTest {
 		{
 			Cell bishopCell = board.getCellAt(Board.rowMin, Board.colMin);
 			bishop = new Bishop(Board.White);
-			movement.add(bishop, bishopCell);
+			movement.construct(bishop, bishopCell);
 			
 			assertEquals(Board.White, bishop.colour);
 			assertEquals(bishop, movement.getPieceOn(bishopCell));
@@ -57,14 +57,14 @@ class BishopTest {
 		try 
 		{
 			bishop = new Bishop(Board.White);
-			movement.add(bishop, 
+			movement.construct(bishop, 
 					board.getCellAt(Board.rowMin, Board.colMin));
 			//Made a new white bishop at cell a1 of the board.
 			assertEquals(Board.White.charAt(0)+"B", bishop.toString(),
 					"toString method of a white Bishop object should return WB");
 			
 			bishop = new Bishop(Board.Black);
-			movement.add(bishop, 
+			movement.construct(bishop, 
 					board.getCellAt(Board.rowMax, Board.colMax));
 			//Made a new black bishop at cell h8 of the board.
 			assertEquals(Board.Black.charAt(0)+"B", bishop.toString(),
@@ -83,7 +83,7 @@ class BishopTest {
 		try 
 		{
 			bishop = new Bishop(Board.White);
-			movement.add(bishop, 
+			movement.construct(bishop, 
 					board.getCellAt(Board.rowMin+2, Board.colMin+3));
 			//Made a new white bishop at cell d3 of the board.
 			
@@ -112,7 +112,7 @@ class BishopTest {
 			
 			Cell queenCell = board.getCellAt(Board.rowMin+4, Board.colMin+5);
 			Queen queen = new Queen(Board.Black);
-			movement.add(queen, queenCell);
+			movement.construct(queen, queenCell);
 			//Made a new black queen at cell f5 of the board.
 			assertEquals(expected.length-2, movement.getAllMoves(bishop).size());
 			//Bishop must be able to move to only the cells up to the black queen.
@@ -129,7 +129,7 @@ class BishopTest {
 			board.kill(queen);
 			
 			queen = new Queen(Board.White);
-			movement.add(queen, queenCell);
+			movement.construct(queen, queenCell);
 			//Made a new *white* queen at cell f5 of the board.
 			
 			assertEquals(expected.length-3, movement.getAllMoves(bishop).size());

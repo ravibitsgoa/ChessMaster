@@ -13,8 +13,10 @@ public class Movement
 	private HashMap<Piece, Cell> cellOf;
 	private HashMap<Piece, ArrayList<Cell> > moves;
 	Stack<Move> pastMoves;
-	public static final String castling = "Castling", normalMove= "normal";
+	public static final String castlingMove = "Castling", normalMove= "normal";
 	public static final String promoteMove = "promote";
+	private static final String kingSideCastle = "KSC", queenSideCastle = "QSC";
+	private HashMap<Piece, Integer> movesCount;
 	
 	public Movement(Board board) throws Exception
 	{
@@ -25,6 +27,7 @@ public class Movement
 		cellOf = new HashMap<>();
 		moves = new HashMap<>();
 		pastMoves = new Stack<>();
+		movesCount = new HashMap<>();
 		
 		for(char row=Board.rowMin; row<=Board.rowMax; row++)
 		{
@@ -53,10 +56,17 @@ public class Movement
 
 		board.reincarnate(onDestination);
 		
-		this.add(onDestination, destination);
-		this.add(onSource, source);
+		this.put(onDestination, destination);
+		this.put(onSource, source);
+		//System.out.println("Undo called :| ");
+		movesCount.put(onSource, movesCount.get(onSource)-1);
 		this.recomputeMoves(onDestination);
 		this.recomputeMoves(onSource);
+		if(lastMove.moveType == castlingMove && onSource instanceof Rook)
+		{	//If it was a castling move, and rook was moved,
+			//call undo once more to undo the castling of King too.
+			undoMove();
+		}
 	}
 	
 	/** 
@@ -87,31 +97,18 @@ public class Movement
 		Piece pieceToMove = onCell.get(from);
 		
 		if( pieceToMove instanceof Pawn && (to.row == Board.rowMax ||
-			to.row == Board.rowMin)	&& this.canMoveTo(pieceToMove, to) )
-		{
-			Move move = new Move(from, to, pieceToMove, onCell.get(to), 
-								 promoteMove);
-			pastMoves.add(move);
-			//Note the current move.
-			
-			//Kill the pawn which is to be promoted.
-			onCell.put(from, null);	//empty the current position.
-			//If destination cell contains anything,
-			//make it empty.
-			board.kill(onCell.get(to));
-			try 
-			{
-				board.promotePawn((Pawn)pieceToMove, new Queen(pieceToMove.colour), to);
-			} 
-			catch (Exception e) 
-			{
-				e.printStackTrace();
-				System.out.println("Something went wrong while promoting the pawn");
-			}
-			return move;
+			to.row == Board.rowMin)	&& canMoveTo(pieceToMove, to) )
+		{	//If it's a pawn promote move.
+			return this.promotePawn((Pawn)pieceToMove, from, to);
 		}
 		
-		if(this.canMoveTo(pieceToMove, to))
+		if( pieceToMove instanceof King && canMoveTo(pieceToMove, to) 
+			&& Math.abs(to.col-from.col)==2)
+		{	//if king is moving by 2 cells, it's a castling move.
+			return castle((King)pieceToMove, to);
+		}
+		
+		if(canMoveTo(pieceToMove, to))
 		{	
 			Move move = new Move(from, to, pieceToMove, onCell.get(to), 
 								 normalMove);
@@ -121,12 +118,83 @@ public class Movement
 			if(onCell.get(to) != null)		//if the destination contains a piece,
 				board.kill(onCell.get(to));	//kill it.
 			onCell.put(to, pieceToMove);	//fill the destination position.
-			cellOf.put(pieceToMove, to);	//set position of this cell as dest.
+			cellOf.put(pieceToMove, to);	//set position of this piece as dest.
+			movesCount.put(pieceToMove, movesCount.get(pieceToMove)+1);
+			//increment by 1 the count of moves of this piece.
 			//this.recomputeMoves(pieceToMove);//find all moves reachable from here.
 			return move;
 		}
 		else
 			return null;
+	}
+
+	private Move castle(King king, Cell to) 
+	{	
+		if(onCell.get(to) != null)	//if the destination contains a piece,
+			assert(false);			//Something has gone wrong.
+	
+		Cell from = cellOf.get(king);
+		char kingRow = from.row;
+		Move move = new Move(from, to, king, null, castlingMove);
+		pastMoves.add(move);
+		
+		onCell.put(from, null);	//empty the current position.
+		onCell.put(to, king);	//put the king on the destination.
+		cellOf.put(king, to);	//set position of this king as dest.
+		movesCount.put(king, movesCount.get(king)+1);
+		//increment by 1 the count of moves of this piece.
+		//move the rook too.
+		Rook rook;
+		Cell rookDest;
+		if(to.col > from.col)	//king-side castling.
+		{	
+			rook = (Rook) onCell.get(board.getCellAt(kingRow, Board.colMax));
+			rookDest = board.getCellAt(kingRow, Board.colMax-2);
+		}
+		else	//queen-side castling.
+		{	
+			rook = (Rook) onCell.get(board.getCellAt(kingRow, Board.colMin));
+			rookDest = board.getCellAt(kingRow, Board.colMin+3);
+		}
+		Cell rookCell = cellOf.get(rook);
+		
+		if(onCell.get(rookDest) != null)//Rook destination is not empty.
+			assert(false);				//Something has gone wrong.
+		
+		Move move2 = new Move(rookCell, rookDest, rook, null, castlingMove);
+		pastMoves.add(move2);
+		
+		onCell.put(rookCell, null);		//empty the current position.
+		onCell.put(rookDest, rook);		//put the rook on the destination.
+		cellOf.put(rook, rookDest);		//set position of this rook as dest.
+		movesCount.put(rook, movesCount.get(rook)+1);
+		//increment by 1 the count of moves of this rook.
+		return move;
+	}
+
+	private Move promotePawn(Pawn pieceToMove, Cell from, Cell to) 
+	{
+		Move move = new Move(from, to, pieceToMove, onCell.get(to), 
+				 			 promoteMove);
+		pastMoves.add(move);
+		//Note the current move.
+		
+		//Kill the pawn which is to be promoted.
+		onCell.put(from, null);	//empty the current position.
+		//If destination cell contains anything,
+		//make it empty.
+		board.kill(onCell.get(to));
+		//movesCount.remove(pieceToMove);	//pawn is now to be destructed.
+		try 
+		{
+			board.promotePawn((Pawn)pieceToMove, new Queen(pieceToMove.colour), to);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			System.out.println("Something went wrong while promoting the pawn");
+		}
+		return move;
 	}
 
 	/**
@@ -244,8 +312,8 @@ public class Movement
 					if(isValid)
 						kingMoves.add(dest);
 					//this.undoMove();
-					this.add(king, currentPos);
-					this.add(onDest, dest);
+					this.put(king, currentPos);
+					this.put(onDest, dest);
 					board.reincarnate(onDest);
 				}
 			}
@@ -343,9 +411,96 @@ public class Movement
 		if(piece instanceof King)
 		{
 			newMoves.addAll(this.getKingMoves((King) piece));
+			King king = (King)piece;
+			if(canCastle(king, Movement.kingSideCastle) 
+				&& !isUnderCheck(king.colour))
+			{
+				newMoves.add(getCastlingMove(king, Movement.kingSideCastle));
+			}
+			if(canCastle(king, Movement.queenSideCastle) 
+				&& !isUnderCheck(king.colour))
+			{
+				newMoves.add(getCastlingMove(king, Movement.queenSideCastle));
+			}
 		}
 		this.moves.put(piece, newMoves);
 		return newMoves;
+	}
+	
+	private Cell getCastlingMove(King king, String castleSide) 
+	{
+		if(king == null || board.isKilled(king))
+			return null;
+		char kingRow= cellOf.get(king).row;
+		if(castleSide == Movement.kingSideCastle)
+		{
+			return board.getCellAt(kingRow, Board.colMax-1);
+		}
+		else
+		{
+			return board.getCellAt(kingRow, Board.colMin+2);
+		}
+	}
+
+	/**
+	 * Checks whether the king and the rook of the given side have not 
+	 * yet moved since the beginning of the game, and
+	 * two cells from which the king will pass or end up are empty and not
+	 * under attack by any opponent piece.
+	 * 
+	 * If king is currently under check, it can't castle no matter what.
+	 * 
+	 * @return true if the given king can castle in the given side.
+	 * False otherwise.
+	 * */
+	private boolean canCastle(King king, String castleSide) 
+	{
+		if(king == null || board.isKilled(king) || movesCount.get(king)!=0)
+			return false;
+		
+		if(isUnderCheck(king.colour))
+			return false;
+		
+		char kingRow= cellOf.get(king).row;
+		if(castleSide == kingSideCastle)
+		{
+			Cell h1orH8 = board.getCellAt(kingRow, Board.colMax);
+			Piece rook = onCell.get(h1orH8);
+			
+			if(rook == null || board.isKilled(rook) ||
+			   !(rook instanceof Rook) || movesCount.get(rook)!=0)
+				return false;
+			
+			Cell g1orG8 = board.getCellAt(kingRow, Board.colMax-1);
+			Cell f1orF8 = board.getCellAt(kingRow, Board.colMax-2);
+			if(onCell.get(g1orG8)!= null || onCell.get(f1orF8)!=null ||
+				this.isUnderAttack(g1orG8, king.colour) || 
+				this.isUnderAttack(f1orF8, king.colour) )
+				return false;
+			else
+				return true;
+		}
+		else
+		{
+			Cell a1orA8 = board.getCellAt(kingRow, Board.colMin);
+			Piece rook = onCell.get(a1orA8);
+			
+			if(rook == null || board.isKilled(rook) ||
+			   !(rook instanceof Rook) || movesCount.get(rook)!=0)
+				return false;
+			
+			Cell d1orD8 = board.getCellAt(kingRow, Board.colMin+3);
+			Cell c1orC8 = board.getCellAt(kingRow, Board.colMin+2);
+			Cell b1orB8 = board.getCellAt(kingRow, Board.colMin+1);
+			
+			if( onCell.get(d1orD8)!= null || onCell.get(c1orC8)!=null ||
+				onCell.get(b1orB8)!= null ||
+				this.isUnderAttack(d1orD8, king.colour) || 
+				this.isUnderAttack(c1orC8, king.colour) )
+				return false;
+			else
+				return true;
+		}
 	}
 
 	private boolean isValidMove(Piece piece, Cell dest)
@@ -428,7 +583,7 @@ public class Movement
 				board.kill(onDestination);	//kill it.
 				//fill the destination position.
 				//set position of this cell as dest.
-				this.add(piece, dest);
+				this.put(piece, dest);
 				//board.print();
 				//System.out.println();
 				//System.out.println(dest);
@@ -440,8 +595,8 @@ public class Movement
 				{	
 					//we can't allow this cell.
 				}
-				this.add(onDestination, dest);
-				this.add(piece, from);
+				this.put(onDestination, dest);
+				this.put(piece, from);
 				board.reincarnate(onDestination);
 				//System.out.println(dest);
 			}
@@ -598,8 +753,13 @@ public class Movement
 		return listOfMoves;
 	}
 
-	
-	public void add(Piece piece, Cell cell) 
+	/**
+	 * Sets the given piece on the given cell.
+	 * If piece is null, empties the cell.
+	 * If piece is not null, sets moveCount of that piece to zero, and
+	 * 		adds that piece to the board's pieces' list too.
+	 * */
+	private void put(Piece piece, Cell cell) 
 	{
 		//if(piece instanceof King)
 		//System.out.println(piece+" "+cell);
@@ -608,10 +768,10 @@ public class Movement
 		if(piece != null)
 		{	cellOf.put(piece, cell);
 			if(!board.getPieces(piece.colour).contains(piece))
-			{
+			{	//if board doesn't already know about this piece,
 				try 
-				{
-					board.add(piece, cell);
+				{	//add this piece to the board.
+					board.construct(piece, cell);
 				} 
 				catch (Exception e) 
 				{
@@ -621,6 +781,12 @@ public class Movement
 		}
 		onCell.put(cell, piece);
 		//moves.put(piece, recomputeMoves(piece));
+	}
+	
+	public void construct(Piece piece, Cell cell)
+	{
+		this.put(piece, cell);
+		movesCount.put(piece, 0);
 	}
 	
 	/**

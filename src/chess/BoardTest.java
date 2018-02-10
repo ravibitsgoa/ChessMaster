@@ -183,11 +183,11 @@ class BoardTest
     		movement = board.getMovement();
 	     	Cell a1= board.getCellAt(Board.rowMin, Board.colMin);
 	     	Rook rook = new Rook(Board.White);
-	     	board.add(rook, a1);
+	     	board.construct(rook, a1);
 	     	
 	     	Cell b2= board.getCellAt(Board.rowMin+1, Board.colMin+1);
 	     	King blackKing = new King(Board.Black);
-	     	board.add(blackKing, b2);
+	     	board.construct(blackKing, b2);
 	     	assertFalse(movement.isUnderAttack(a1, Board.Black),
 	     			"cell a1 is not under attack by any white piece.");
 	     	assertFalse(movement.isUnderAttack(b2, Board.Black),
@@ -231,14 +231,14 @@ class BoardTest
     				"colourAt() should return null for an empty cell.");
     		
     		Cell rookCell = board.getCellAt(Board.rowMin, Board.colMin+2);
-    		board.add(new Rook(Board.White), rookCell);
+    		board.construct(new Rook(Board.White), rookCell);
     		//Created a new white rook on cell c1.
     		assertEquals(Board.White, movement.colourAt(rookCell),
     				"colourAt() method should return white for a cell "+
     				"containing a white rook.");
     		
     		rookCell = board.getCellAt(Board.rowMin, Board.colMin+4);
-    		board.add(new Rook(Board.Black), rookCell);
+    		board.construct(new Rook(Board.Black), rookCell);
     		//Created a new black rook on cell e1.
     		assertEquals(Board.Black, movement.colourAt(rookCell),
     				"colourAt() method should return black for a cell "+

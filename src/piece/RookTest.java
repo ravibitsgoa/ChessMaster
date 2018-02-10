@@ -69,7 +69,7 @@ class RookTest
 		try 
 		{
 			rook = new Rook(Board.White);
-			movement.add(rook, board.getCellAt(Board.rowMin+2, Board.colMin+2));
+			movement.construct(rook, board.getCellAt(Board.rowMin+2, Board.colMin+2));
 			//Made a new white rook at cell c3 of the board.
 			
 			Cell expected[]=
@@ -102,7 +102,7 @@ class RookTest
 			Cell pawnCell = board.getCellAt(Board.rowMin+2, 
 					Board.colMin+5);
 			Pawn pawn = new Pawn(Board.Black, pawnCell);
-			movement.add(pawn, pawnCell);
+			movement.construct(pawn, pawnCell);
 			//Made a new black pawn at cell f3 of the board.
 			
 			actualRookMoves = movement.getAllMoves(rook);
@@ -122,7 +122,7 @@ class RookTest
 			board.kill(pawn);
 			
 			pawn = new Pawn(Board.White, pawnCell);
-			movement.add(pawn, pawnCell);
+			movement.construct(pawn, pawnCell);
 			//Made a new *white* pawn at cell f3 of the board.
 			
 			actualRookMoves = movement.getAllMoves(rook);

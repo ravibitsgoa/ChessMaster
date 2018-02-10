@@ -43,7 +43,7 @@ class KnightTest
 		{
 			Cell knightCell = board.getCellAt(Board.rowMin, Board.colMax);
 			knight = new Knight(Board.White);
-			movement.add(knight, knightCell);
+			movement.construct(knight, knightCell);
 			assertEquals(Board.White, knight.colour);
 			assertEquals(knight, movement.getPieceOn(knightCell));
 		} 
@@ -79,7 +79,7 @@ class KnightTest
 		{
 			Cell a1 = board.getCellAt(Board.rowMin, Board.colMin);
 			knight = new Knight(Board.White);
-			movement.add(knight, a1);
+			movement.construct(knight, a1);
 			ArrayList<Cell> allMoves = movement.getAllMoves(knight);
 			
 			Cell c2 = board.getCellAt(Board.rowMin+1, Board.colMin+2);
@@ -105,7 +105,7 @@ class KnightTest
 		try 
 		{
 			knight = new Knight(Board.White);
-			movement.add(knight, null);
+			movement.construct(knight, null);
 			ArrayList<Cell> allMoves = movement.getAllMoves(knight);
 			assertNull(allMoves,
 				"Knight must return null moves when its cell is null.");
@@ -125,7 +125,7 @@ class KnightTest
 		{
 			Cell d4 = board.getCellAt(Board.rowMin+3, Board.colMin+3);
 			knight = new Knight(Board.White);
-			movement.add(knight, d4);
+			movement.construct(knight, d4);
 			ArrayList<Cell> allMoves = movement.getAllMoves(knight);
 			
 			Cell[] validCells = 
@@ -152,7 +152,7 @@ class KnightTest
 			Cell c2 = board.getCellAt(Board.rowMin+1, Board.colMin+2);
 			@SuppressWarnings("unused")
 			Bishop bishop = new Bishop(Board.White);
-			movement.add(bishop, c2);
+			movement.construct(bishop, c2);
 			allMoves = movement.getAllMoves(knight);
 			//Creating a white bishop on c2, so that white knight can't attack it.
 			for(Cell c: validCells)
@@ -172,7 +172,7 @@ class KnightTest
 			bishop = null;	//destructing the old bishop.
 			
 			bishop = new Bishop(Board.Black);
-			movement.add(bishop, c2);
+			movement.construct(bishop, c2);
 			allMoves = movement.getAllMoves(knight);
 			//Creating a black bishop on c2, so that a white knight can attack it.
 			for(Cell c: validCells)

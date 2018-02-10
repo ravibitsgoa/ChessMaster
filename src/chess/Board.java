@@ -65,9 +65,9 @@ public class Board
 		{	
 			try 
 			{
-				this.add(new Pawn(White, cells[1][j]), cells[1][j]);	
+				this.construct(new Pawn(White, cells[1][j]), cells[1][j]);	
 				//the second nearest row to white is filled with white pawns
-				this.add(new Pawn(Black, cells[6][j]), cells[6][j]);
+				this.construct(new Pawn(Black, cells[6][j]), cells[6][j]);
 				//the second nearest row to black is filled with black pawns.
 			}
 			catch(Exception e)
@@ -79,10 +79,10 @@ public class Board
 		try 
 		{
 			//giving 2 rooks to both the player on respective corners.
-			this.add(new Rook(White), cells[0][0]);	
-			this.add(new Rook(White), cells[0][7]);
-			this.add(new Rook(Black), cells[7][0]);
-			this.add(new Rook(Black), cells[7][7]);
+			this.construct(new Rook(White), cells[0][0]);	
+			this.construct(new Rook(White), cells[0][7]);
+			this.construct(new Rook(Black), cells[7][0]);
+			this.construct(new Rook(Black), cells[7][7]);
 		}
 		catch(Exception e)
 		{
@@ -92,10 +92,10 @@ public class Board
 		try
 		{
 			//giving 2 knights to both players on cells just beside the rooks.
-			this.add(new Knight(White), cells[0][1]);
-			this.add(new Knight(White), cells[0][6]);
-			this.add(new Knight(Black), cells[7][1]);
-			this.add(new Knight(Black), cells[7][6]);
+			this.construct(new Knight(White), cells[0][1]);
+			this.construct(new Knight(White), cells[0][6]);
+			this.construct(new Knight(Black), cells[7][1]);
+			this.construct(new Knight(Black), cells[7][6]);
 		}
 		catch(Exception e)
 		{
@@ -104,10 +104,10 @@ public class Board
 		
 		try
 		{	//giving 2 bishops to both players on cells just beside the knights.
-			this.add(new Bishop(White), cells[0][2]);
-			this.add(new Bishop(White), cells[0][5]);
-			this.add(new Bishop(Black), cells[7][2]);
-			this.add(new Bishop(Black), cells[7][5]);
+			this.construct(new Bishop(White), cells[0][2]);
+			this.construct(new Bishop(White), cells[0][5]);
+			this.construct(new Bishop(Black), cells[7][2]);
+			this.construct(new Bishop(Black), cells[7][5]);
 		}
 		catch(Exception e)
 		{
@@ -117,8 +117,8 @@ public class Board
 		try
 		{
 			//giving a queen to both players on cells just beside a bishop.
-			this.add(new Queen(White), cells[0][3]);
-			this.add(new Queen(Black), cells[7][3]);
+			this.construct(new Queen(White), cells[0][3]);
+			this.construct(new Queen(Black), cells[7][3]);
 		}
 		catch(Exception e)
 		{
@@ -130,8 +130,8 @@ public class Board
 			//giving a king to both players on cells just beside the queen.
 			whiteKing = new King(White);
 			blackKing = new King(Black);
-			this.add(whiteKing, cells[0][4]);
-			this.add(blackKing, cells[7][4]);
+			this.construct(whiteKing, cells[0][4]);
+			this.construct(blackKing, cells[7][4]);
 		}
 		catch(Exception e)
 		{
@@ -140,7 +140,7 @@ public class Board
 		
 	}
 
-	public void add(Piece piece, Cell cell) throws Exception
+	public void construct(Piece piece, Cell cell) throws Exception
 	{
 		if(piece == null || cell == null)
 			throw new Exception("null exception in add() of board.");
@@ -148,7 +148,7 @@ public class Board
 			whitePieces.add(piece);
 		else
 			blackPieces.add(piece);
-		movement.add(piece, cell);
+		movement.construct(piece, cell);
 	}
 
 	/**
@@ -296,40 +296,6 @@ public class Board
 				
 				boolean move = false;
 				String moveString = null;
-				/*Piece selectedPiece = selectedCell.getPiece();
-				if(selectedPiece instanceof King)
-				{
-					King king = (King) selectedPiece;
-					if(	king.canKingSideCastle() && 
-						thisCell.col == (Board.colMin +1) && 
-						thisCell.row == selectedCell.row)
-					{
-						king.moveTo(thisCell, this);
-						
-						Cell rookCell = this.getCellAt(thisCell.row, 
-								thisCell.col-1);
-						Rook kingSideRook = (Rook) rookCell.getPiece();
-						
-						kingSideRook.castle(this);
-						move = true;
-						moveString = "o-o";
-					}
-					else if(king.canQueenSideCastle() && 
-							thisCell.col == (Board.colMax - 2) && 
-							thisCell.row == selectedCell.row)
-					{
-						king.moveTo(thisCell, this);
-						
-						Cell rookCell = this.getCellAt(thisCell.row, 
-								thisCell.col+2);
-						Rook queenSideRook = (Rook) rookCell.getPiece();
-						
-						queenSideRook.castle(this);
-						move = true;
-						moveString = "o-o-o";
-					}
-				}
-				*/
 				if(moveString == null)
 				{	
 					Move temp = movement.moveTo(selectedCell, thisCell);
@@ -362,7 +328,7 @@ public class Board
 		kill(pawn);
 		try 
 		{
-			this.add(queen, queenCell);
+			this.construct(queen, queenCell);
 		}
 		catch(Exception e)
 		{

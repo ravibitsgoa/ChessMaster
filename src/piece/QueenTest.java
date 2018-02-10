@@ -51,7 +51,7 @@ class QueenTest
 			Cell queenCell = board.getCellAt(Board.rowMin, Board.colMin);
 			queen = new Queen(Board.White);
 			//made a white queen on cell a1.
-			movement.add(queen, queenCell);
+			movement.construct(queen, queenCell);
 			
 			assertEquals(Board.White, queen.colour);
 			assertEquals(queen, movement.getPieceOn(queenCell));
@@ -60,7 +60,7 @@ class QueenTest
 			queenCell = board.getCellAt(Board.rowMax, Board.colMin);
 			queen = new Queen(Board.Black);
 			//made a black queen on cell a8.
-			movement.add(queen, queenCell);
+			movement.construct(queen, queenCell);
 			assertEquals(Board.Black, queen.colour);
 			assertEquals(queen, movement.getPieceOn(queenCell));
 		}
@@ -106,7 +106,7 @@ class QueenTest
 		try 
 		{
 			queen = new Queen(Board.White);
-			movement.add(queen, board.getCellAt(Board.rowMin+2,
+			movement.construct(queen, board.getCellAt(Board.rowMin+2,
 								Board.colMin+3));
 			//Made a new white queen at cell d3 of the board.
 			
@@ -155,7 +155,7 @@ class QueenTest
 			Cell rookCell = board.getCellAt(Board.rowMin+4, 
 					Board.colMin+5);
 			Rook rook = new Rook(Board.Black);
-			movement.add(rook, rookCell);
+			movement.construct(rook, rookCell);
 			//Made a new black rook at cell f5 of the board.
 			actualQueenMoves = movement.getAllMoves(queen);
 			assertEquals(expected.length-2, actualQueenMoves.size());
@@ -178,7 +178,7 @@ class QueenTest
 			board.kill(rook);
 			
 			rook = new Rook(Board.White);
-			movement.add(rook, rookCell);
+			movement.construct(rook, rookCell);
 			//Made a new *white* rook at cell f5 of the board.
 			
 			actualQueenMoves = movement.getAllMoves(queen);

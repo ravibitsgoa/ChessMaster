@@ -87,13 +87,13 @@ class KingTest
 		try 
 		{
 			king = new King(Board.White);
-			movement.add(king, board.getCellAt(Board.rowMin, Board.colMin));
+			movement.construct(king, board.getCellAt(Board.rowMin, Board.colMin));
 			//Made a new white king at cell a1 of the board.
 			
 			Cell rookCell = board.getCellAt(Board.rowMin+7, Board.colMin+1);
 			@SuppressWarnings("unused")
 			Rook rook = new Rook(Board.Black);
-			movement.add(rook, rookCell);
+			movement.construct(rook, rookCell);
 			
 			//board.print();
 			
@@ -119,7 +119,7 @@ class KingTest
 		try 
 		{
 			king = new King(Board.White);
-			movement.add(king, board.getCellAt(Board.rowMin, Board.colMin));
+			movement.construct(king, board.getCellAt(Board.rowMin, Board.colMin));
 			//Made a new white king at cell a1 of the board.
 			
 			//king must be able to move to all 3 cells just beside him.
@@ -145,7 +145,7 @@ class KingTest
 		{
 			Cell pos = board.getCellAt(Board.rowMin, Board.colMin+1);
 			king = new King(Board.White);
-			movement.add(king, pos);
+			movement.construct(king, pos);
 			//Made a new white king at cell b1 of the board.
 			
 			//King must be able to move to all 5 cells just beside him.
@@ -181,7 +181,7 @@ class KingTest
 		{
 			Cell pos = board.getCellAt(Board.rowMin+1, Board.colMin);
 			king = new King(Board.White);
-			movement.add(king, pos);
+			movement.construct(king, pos);
 			//Made a new white king at cell a2 of the board.
 			
 			//King must be able to move to all 5 cells just beside him.
@@ -217,7 +217,7 @@ class KingTest
 		{
 			Cell pos = board.getCellAt(Board.rowMin+1, Board.colMin+1);
 			king = new King(Board.White);
-			movement.add(king, pos);
+			movement.construct(king, pos);
 			//Made a new white king at cell b2 of the board.
 			
 			//King must be able to move to all 8 cells just beside him.
