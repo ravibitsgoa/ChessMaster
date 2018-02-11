@@ -131,18 +131,18 @@ class BoardTest
     	}
     	
     	//testing construction of queens:
-    	Cell queenCell = board.getCellAt(Board.rowMin, Board.colMin+4);	
+    	Cell queenCell = board.getCellAt(Board.rowMin, Board.colMin+3);	
 		assertEquals(Board.White.charAt(0)+"Q", 
 				movement.getPieceOn(queenCell).toString());
-		queenCell = board.getCellAt(Board.rowMin+7, Board.colMin+4);	
+		queenCell = board.getCellAt(Board.rowMax, Board.colMin+3);	
     	assertEquals(Board.Black.charAt(0)+"Q", 
     			movement.getPieceOn(queenCell).toString());
 		 	
     	//testing construction of queens:
-        Cell kingCell = board.getCellAt(Board.rowMin, Board.colMin+3);	
+        Cell kingCell = board.getCellAt(Board.rowMin, Board.colMin+4);	
 		assertEquals(Board.White.charAt(0)+"K", 
 				movement.getPieceOn(kingCell).toString());
-		kingCell = board.getCellAt(Board.rowMin+7, Board.colMin+3);	
+		kingCell = board.getCellAt(Board.rowMax, Board.colMin+4);	
     	assertEquals(Board.Black.charAt(0)+"K", 
     			movement.getPieceOn(kingCell).toString());
 	

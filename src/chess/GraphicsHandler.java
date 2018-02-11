@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -33,8 +34,8 @@ public class GraphicsHandler extends JPanel
 	private AI ai;
 	private int gameMode;
 	
-	public GraphicsHandler(Board b, int x, int y, int rowLen, 
-			int colLen, int border)
+	public GraphicsHandler(	Board b, int x, int y, int rowLen, 
+							int colLen, int border)
 	{
 		board = b;
 		x0= x;
@@ -241,4 +242,5 @@ public class GraphicsHandler extends JPanel
 		public void mouseExited(MouseEvent e) 
 		{}
 	}
+	
 }
