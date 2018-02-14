@@ -22,18 +22,25 @@ public class Player implements Serializable
 	private String name;
 	private Integer gamesPlayed;
 	private Integer gamesWon;
+	private Integer gamesLost;
 	
 	public Player(String name)
 	{
 		this.name = name;
 		gamesPlayed = 0;
 		gamesWon = 0;
-		System.out.println("Cons "+name);
+		gamesLost = 0;
+		System.out.println("Constructed "+name);
 	}
 	
 	public void won()
 	{
 		gamesWon++;
+	}
+	
+	public void lost()
+	{
+		gamesLost++;
 	}
 	
 	public void gamePlayed()

@@ -27,6 +27,12 @@ public class Main
 	private int gameMode;
 	private JFrame[] windowList;
 	
+	/**
+	 * Creates gameModeWindow, a new board, chessWindow.
+	 * Launches gameModeWindow.
+	 * On closing of the chessWindow, updates the statistics of the player(s).
+	 * */
+	
 	public Main()
 	{
 		//welcomeWindow = new WelcomeWindow();
@@ -49,9 +55,14 @@ public class Main
 				public void windowClosing(WindowEvent e) 
 				{
 					if(board.isCheckMate(colour) && player2 != null)
-						player2.won();
+					{	player2.won();
+						player.lost();
+					}
 					else if(board.isCheckMate(colour2))
-						player.won();
+					{	player.won();
+						player2.lost();
+					}
+					
 					player.gamePlayed();
 					player.storePlayer();
 				    if(player2 != null)
