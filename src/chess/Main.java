@@ -14,6 +14,8 @@ import javax.swing.*;
  */
 public class Main 
 {
+	private WelcomeWindow welcomeWindow;
+	private GameLoaderWindow gameLoaderWindow;
 	private GameModeWindow gameModeWindow;
 	private SelectPlayerWindow selectPlayerWindow;
 	private SelectColourWindow selectColourWindow;
@@ -23,6 +25,7 @@ public class Main
 	private GraphicsHandler graphicsHandler;
 	private Board board;
 	private Movement movement;
+	private Game game;
 	
 	private int gameMode;
 	private JFrame[] windowList;
@@ -35,18 +38,24 @@ public class Main
 	
 	public Main()
 	{
-		//welcomeWindow = new WelcomeWindow();
-		//welcomeWindow.setSize(300, 300);
-		//welcomeWindow.setVisible(true);
+		welcomeWindow = new WelcomeWindow();
+		welcomeWindow.setSize(300, 300);
+		welcomeWindow.setVisible(true);
+		
+		gameLoaderWindow = new GameLoaderWindow();
+		gameLoaderWindow.setSize(300, 300);
+		gameLoaderWindow.setVisible(false);
 		
 		gameModeWindow = new GameModeWindow();
 		gameModeWindow.setSize(300, 300);
-		gameModeWindow.setVisible(true);
+		gameModeWindow.setVisible(false);
 		
 		board = new Board(true);
+		movement = board.getMovement();
 		board.print();
 		
 		chessWindow = new JFrame("chess");
+		chessWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		graphicsHandler= new GraphicsHandler(board, 50, 50, 75, 75, 1);
 		chessWindow.add(graphicsHandler);
 		chessWindow.addWindowListener(
@@ -54,8 +63,30 @@ public class Main
 			{
 				public void windowClosing(WindowEvent e) 
 				{
-					if(board.isCheckMate(colour) && player2 != null)
-					{	player2.won();
+					if(game == null)
+					{
+						try 
+						{
+							//System.out.print(player+" "+player2+" ");
+							//System.out.print(colour+" "+colour2+"\n");
+							
+							game = new Game(gameMode, player.toString(), 
+								player2.toString(),	colour, colour2, 
+								board.getCurrentTurn());
+						} 
+						catch (Exception e1) 
+						{
+							e1.printStackTrace();
+						}
+					}
+					
+					game.storeMoves(movement, board.getCurrentTurn());	
+					//store all moves.
+					game.storeGame();			//store game object into file.
+					
+					if(board.isCheckMate(colour))
+					{	
+						player2.won();
 						player.lost();
 					}
 					else if(board.isCheckMate(colour2))
@@ -65,11 +96,8 @@ public class Main
 					
 					player.gamePlayed();
 					player.storePlayer();
-				    if(player2 != null)
-				    {	
-				    	player2.gamePlayed();
-				    	player2.storePlayer();
-				    }
+				    player2.gamePlayed();
+				    player2.storePlayer();
 				}
 			}
 		);
@@ -89,12 +117,10 @@ public class Main
 	 * */
 	private void setHumanPlayerColour(String colour)
 	{
+		//System.out.println(colour);
 		this.colour = colour;
 
-		if(colour == Board.White)
-			this.colour2 = Board.Black;
-		else
-			this.colour2 = Board.White;
+		this.colour2 = Board.opposite(colour);
 		
 		try 
 		{
@@ -315,8 +341,11 @@ public class Main
 				
 				if(mode == 2)
 				{
+					if(selectPlayer2.getSelectedItem() == null)
+						return;
 					String name2 = selectPlayer2.getSelectedItem().toString();
-					
+					if(name2 == null)
+						return;
 					if(name.equals(name2))
 						return;
 					//both names must be different.
@@ -325,7 +354,10 @@ public class Main
 					if(player2 == null)	//not yet selected.
 						return;
 				}
-				
+				else
+				{
+					player2 = Player.getPlayer(allPlayers, "AI");
+				}
 				CloseFrame();
 			}
 		}
@@ -355,7 +387,7 @@ public class Main
 		
 		public GameModeWindow()
 		{
-			super("Welcome to chess");
+			super("Select game mode");
 			setLayout(new FlowLayout());
 			
 			ButtonGroup group = new ButtonGroup();
@@ -363,6 +395,7 @@ public class Main
 			JRadioButton multiPlayer = new JRadioButton("Multi player mode");
 			add(singlePlayer);
 			add(multiPlayer);
+			
 			group.add(singlePlayer);
 			group.add(multiPlayer);
 			
@@ -371,7 +404,7 @@ public class Main
 		}
 		
 		/**
-		 * Close the frame and set the windows list for the UI.
+		 * Closes the frame and sets the windows list for the UI.
 		 * */
 		public void CloseFrame()
 		{
@@ -380,8 +413,8 @@ public class Main
 		}
 		
 		/**
-		 * Set the game mode according to the clicked button.
-		 * On successful set, immediately close the frame.
+		 * Sets the game mode according to the clicked button.
+		 * On successful set, immediately closes the frame.
 		 * */
 		private class HandlerClass implements ItemListener
 		{
@@ -400,4 +433,138 @@ public class Main
 		}
 	}
 	
+	/**
+	 * Welcomes the user and gives a choice to either start a new game
+	 * or load a previous game.
+	 * */
+	private class WelcomeWindow extends JFrame
+	{
+		private static final long serialVersionUID = -735673551329590382L;
+		private JRadioButton newGame, loadGame;
+		public WelcomeWindow()
+		{
+			super("Welcome to chess!");
+			setLayout(new FlowLayout());
+			
+			ButtonGroup group = new ButtonGroup();
+			newGame = new JRadioButton("New game");
+			loadGame = new JRadioButton("Load game");
+			add(newGame);
+			add(loadGame);
+			
+			group.add(loadGame);
+			group.add(newGame);
+			
+			loadGame.addItemListener(new HandlerClass());
+			newGame.addItemListener(new HandlerClass());
+		}
+		
+		/**
+		 * Closes the frame.
+		 * */
+		public void CloseFrame()
+		{
+			this.setVisible(false);
+			super.dispose();
+		}
+		
+		/**
+		 * If player wants a new game, call game mode window.
+		 * Otherwise call game loader window.
+		 * */
+		private class HandlerClass implements ItemListener
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e) 
+			{
+				if(e.getSource() == newGame)
+				{
+					Main.this.gameModeWindow.setVisible(true);
+				}
+				else if(e.getSource() == loadGame)
+				{
+					Main.this.gameLoaderWindow.setVisible(true);
+				}
+				CloseFrame();
+			}
+		}
+	}
+
+	private class GameLoaderWindow extends JFrame
+	{
+		private static final long serialVersionUID = 1L;
+		private JComboBox<Game> selectGame;
+		private ArrayList<Game> allGames;
+		private ArrayList<Player> allPlayers;
+		
+		public GameLoaderWindow()
+		{
+			super("Please choose a game.");
+			setLayout(new FlowLayout());
+			
+			allPlayers = Player.getPlayersList();
+			allGames = Game.getGamesList();
+			Game games[] = allGames.toArray(new Game[allGames.size()]);
+			
+			selectGame = new JComboBox<>(games);
+			selectGame.setEditable(false);
+			add(selectGame);
+			game = null;
+			
+			HandlerClass handler = new HandlerClass();
+			selectGame.addActionListener(handler);
+		}
+		
+		/**
+		 * Closes the current window, and calls nextWindow() from main, to
+		 * display the next window in the sequence.
+		 * */
+		public void CloseFrame()
+		{
+			this.setVisible(false);
+			Main.this.movement = Main.this.game.reloadGame(Main.this.board);
+			Main.this.chessWindow.setVisible(true);
+			try 
+			{
+				Main.this.graphicsHandler.setGameMode(game.mode);
+				if(game.mode == 1)
+				{
+					if(player2.toString().equals("AI"))
+						Main.this.setHumanPlayerColour(game.colour1);
+					else
+						Main.this.setHumanPlayerColour(game.colour2);
+				}
+			}
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
+			super.dispose();
+		}
+		
+		/**
+		 * If user selects an existing game, it loads the game object
+		 * from the stored file.
+		 * */
+		private class HandlerClass implements ActionListener
+		{
+			public void actionPerformed(ActionEvent event) 
+			{
+				if(Main.this.game != null)
+					return;
+				
+				Main.this.game = (Game) selectGame.getSelectedItem();
+				if(Main.this.game == null)	//not yet selected.
+					return;
+				
+				Main.this.player = Player.getPlayer(allPlayers, game.player1);
+				Main.this.player2 = Player.getPlayer(allPlayers, game.player2);
+				Main.this.gameMode = game.mode;
+				Main.this.colour = game.colour1;
+				Main.this.colour2 = game.colour2;
+				
+				CloseFrame();
+			}
+		}
+	}
 }

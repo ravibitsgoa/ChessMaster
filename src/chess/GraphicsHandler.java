@@ -163,7 +163,7 @@ public class GraphicsHandler extends JPanel
 		if(ai == null)
 			throw new Exception("null AI object in setAI()");
 		this.ai = ai;
-		if(ai.getColour() == Board.White)
+		if(ai.getColour() == board.getCurrentTurn())
 			ai.playNextMove();
 	}
 	

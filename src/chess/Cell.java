@@ -1,9 +1,11 @@
 package chess;
 
+import java.io.Serializable;
+
 /**
  * @author Ravishankar P. Joshi
  * */
-public class Cell 
+public class Cell implements Serializable
 {
 	public final char row;
 	public final char col;

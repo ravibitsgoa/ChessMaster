@@ -140,6 +140,11 @@ public class Board
 		
 	}
 
+	public String getCurrentTurn()
+	{
+		return this.currentPlayerColour;
+	}
+	
 	public void construct(Piece piece, Cell cell) throws Exception
 	{
 		if(piece == null || cell == null)
@@ -178,7 +183,7 @@ public class Board
 	
 	public static String opposite(String colour)
 	{
-		if(colour == White)
+		if(colour.equals(White))
 			return Black;
 		else
 			return White;
@@ -194,6 +199,7 @@ public class Board
 	
 	public boolean isKilled(Piece piece)
 	{
+		//System.out.println(piece + " isKilled");
 		if(piece == null)
 			return true;
 		return killedPieces.contains(piece);

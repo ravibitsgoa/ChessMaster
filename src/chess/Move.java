@@ -1,10 +1,12 @@
 package chess;
 
+import java.io.Serializable;
+
 import piece.King;
 import piece.Pawn;
 import piece.Piece;
 
-public class Move 
+public class Move implements Serializable
 {
 	private final Cell source, destination;
 	private final Piece onSource, onDestination;

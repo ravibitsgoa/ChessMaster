@@ -12,7 +12,7 @@ public class Movement
 	private HashMap<Cell, Piece> onCell;
 	private HashMap<Piece, Cell> cellOf;
 	private HashMap<Piece, ArrayList<Cell> > moves;
-	Stack<Move> pastMoves;
+	private Stack<Move> pastMoves;
 	public static final String castlingMove = "Castling", normalMove= "normal";
 	public static final String promoteMove = "promote";
 	private static final String kingSideCastle = "KSC", queenSideCastle = "QSC";
@@ -36,6 +36,11 @@ public class Movement
 				onCell.put(board.getCellAt(row, col), null);
 			}
 		}
+	}
+	
+	public Stack<Move> getPastMoves()
+	{
+		return this.pastMoves;
 	}
 	
 	/**
@@ -69,6 +74,25 @@ public class Movement
 		}
 	}
 	
+	/**
+	 * Plays given move.
+	 * @return true if given move is valid, false otherwise.
+	 * */
+	public boolean playMove(Move move)
+	{
+		//System.out.println(move+ " movement");
+		if(move == null)
+			return false;
+		//System.out.println(move.getSourcePiece()+ " to " +move.getDestination());
+		//board.print();
+		Cell src = move.getSource(), dest= move.getDestination();
+		src = board.getCellAt(src.row, src.col);	//transform cell to this board.
+		dest = board.getCellAt(dest.row, dest.col);	//ditto
+		Move result = this.moveTo(src, dest);
+		//System.out.println(result+ " movement");
+		return ( result != null);
+	}
+	
 	/** 
 	 * Checks whether the Piece can be moved into cell dest or not.
 	 * @return True if it can be moved to dest, it moves itself, 
@@ -91,9 +115,12 @@ public class Movement
 	
 	public Move moveTo(Cell from, Cell to)
 	{
+		//System.out.println(to + " "+ this.board + " "+ from + " ");
+		//System.out.println(board.isKilled(onCell.get(from)));
 		if(	to == null || this.board == null || 
 			from == null || board.isKilled(onCell.get(from)))
 			return null;
+		//System.out.println(1);
 		Piece pieceToMove = onCell.get(from);
 		
 		if( pieceToMove instanceof Pawn && (to.row == Board.rowMax ||

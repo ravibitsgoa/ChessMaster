@@ -50,6 +50,25 @@ class BoardTest
     }
 
     /**
+     * Checks whether Board's opposite colour test method uses by reference
+     * equality.
+     * 
+     * If so, the test fails. 
+     * Otherwise, if the Board uses .equals method, and returns black for white
+     * and vice-versa, the test passes.
+     * */
+    @Test
+    void oppositeColourTest()
+    {
+    	String whiteColour = new String(Board.White);
+    	String blackColour = new String(Board.Black);
+    	
+    	assertEquals(blackColour, Board.opposite(whiteColour));
+    	assertEquals(whiteColour, Board.opposite(blackColour));
+    	assertEquals(whiteColour, Board.opposite(Board.opposite(whiteColour)));
+    }
+    
+    /**
      * Test method for {@link chess.Board#Board(java.lang.Boolean)}.
      **/
     @Test

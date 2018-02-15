@@ -1,9 +1,11 @@
 package piece;
 
+import java.io.Serializable;
+
 /**
  * @author Ravishankar P. Joshi
  * */
-public abstract class Piece 
+public abstract class Piece implements Serializable
 {
 	public final String colour;
 	
