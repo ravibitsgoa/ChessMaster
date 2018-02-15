@@ -46,7 +46,7 @@ public class Move implements Serializable
     public String toString()
     {
     	String moveString = "";
-		if(moveType == Movement.castlingMove)
+		if( moveType.equals(Movement.castlingMove) )
 		{
 			if(onSource instanceof King)
 			{
@@ -78,7 +78,7 @@ public class Move implements Serializable
 			if(onDestination != null)
 				moveString += "x";	//killing move.
 			moveString+= destination.toString();
-			if(moveType == Movement.promoteMove)
+			if( moveType.equals(Movement.promoteMove) )
 			{
 				moveString+="(Q)";
 			}

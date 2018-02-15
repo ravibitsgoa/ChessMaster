@@ -149,7 +149,7 @@ public class Board
 	{
 		if(piece == null || cell == null)
 			throw new Exception("null exception in add() of board.");
-		if(piece.colour == White)
+		if(piece.colour.equals(White))
 			whitePieces.add(piece);
 		else
 			blackPieces.add(piece);
@@ -175,7 +175,7 @@ public class Board
 	
 	public CopyOnWriteArrayList<Piece> getPieces(String colour)
 	{
-		if(colour == White)
+		if(colour.equals(White))
 			return whitePieces;
 		else
 			return blackPieces;
@@ -323,7 +323,7 @@ public class Board
 
 	public King getKing(String colour)
 	{
-		if(colour == White)
+		if( colour.equals(White) )
 			return whiteKing;
 		else
 			return blackKing;

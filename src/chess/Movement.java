@@ -67,7 +67,7 @@ public class Movement
 		movesCount.put(onSource, movesCount.get(onSource)-1);
 		this.recomputeMoves(onDestination);
 		this.recomputeMoves(onSource);
-		if(lastMove.moveType == castlingMove && onSource instanceof Rook)
+		if(lastMove.moveType.equals(castlingMove) && onSource instanceof Rook)
 		{	//If it was a castling move, and rook was moved,
 			//call undo once more to undo the castling of King too.
 			undoMove();
@@ -377,13 +377,13 @@ public class Movement
 		//The diagonally opposite cells must be occupied by a piece
 		//of the opposite colour, for the pawn to attack it.
 		if(	this.colourAt((char)(currentPos.row + pawn.dir), 
-			(char)(currentPos.col-1)) == Board.opposite(pawn.colour))
+			(char)(currentPos.col-1)).equals( Board.opposite(pawn.colour) ) )
 		{	
 			pawnMoves.add(board.getCellAt((char)(currentPos.row + pawn.dir), 
 				(char)(currentPos.col-1)));
 		}
 		if(	this.colourAt((char)(currentPos.row + pawn.dir), 
-			(char)(currentPos.col+1)) == Board.opposite(pawn.colour))
+			(char)(currentPos.col+1)).equals( Board.opposite(pawn.colour) ) )
 		{	
 			pawnMoves.add(board.getCellAt((char)(currentPos.row + pawn.dir), 
 				(char)(currentPos.col+1)));
@@ -459,7 +459,7 @@ public class Movement
 		if(king == null || board.isKilled(king))
 			return null;
 		char kingRow= cellOf.get(king).row;
-		if(castleSide == Movement.kingSideCastle)
+		if( castleSide.equals(Movement.kingSideCastle) )
 		{
 			return board.getCellAt(kingRow, Board.colMax-1);
 		}
@@ -489,7 +489,7 @@ public class Movement
 			return false;
 		
 		char kingRow= cellOf.get(king).row;
-		if(castleSide == kingSideCastle)
+		if(castleSide.equals(kingSideCastle))
 		{
 			Cell h1orH8 = board.getCellAt(kingRow, Board.colMax);
 			Piece rook = onCell.get(h1orH8);
@@ -574,7 +574,7 @@ public class Movement
 			return false;
 		
 		Piece piece = onCell.get(cell);
-		return (piece != null && piece.getColour() == playerColour);
+		return (piece != null && piece.getColour().equals(playerColour));
 	}
 	
 	/**
@@ -759,14 +759,14 @@ public class Movement
 			row>=Board.rowMin && col>=Board.colMin; row+=rowDir, col+=colDir)
 		{
 			//System.out.println(row+" "+col+" "+this.colourAt(row, col));
-			if(this.colourAt(row, col) == pieceColour)
+			if(this.colourAt(row, col).equals(pieceColour))
 			{	
 				break;
 			}
 			//if this piece is blocked by one of its own colour,
 			//it can't move ahead.
 			
-			else if(this.colourAt(row, col) == Board.opposite(pieceColour))
+			else if(this.colourAt(row, col).equals( Board.opposite(pieceColour) ))
 			{	
 				listOfMoves.add(board.getCellAt(row, col));
 				break;

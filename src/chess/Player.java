@@ -187,7 +187,7 @@ public class Player implements Serializable
 			output.close();
 			File newf = new File(System.getProperty("user.dir")+ File.separator 
 					+ "playerData.dat");
-			if(outputFile.renameTo(newf)==false)
+			if( outputFile.renameTo(newf) == false )
 				System.out.println("File Renameing Unsuccessful");
 		}
 		catch (FileNotFoundException e)

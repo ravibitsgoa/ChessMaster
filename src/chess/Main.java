@@ -485,6 +485,8 @@ public class Main
 				{
 					Main.this.gameLoaderWindow.setVisible(true);
 				}
+				else
+					return;	//nothing changed.
 				CloseFrame();
 			}
 		}

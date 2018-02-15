@@ -7,15 +7,15 @@ import chess.*;
  * */
 public class Pawn extends Piece 
 {	
-	public final short dir;		//direction of movement of the pawn.
+	public final short dir;			//direction of movement of the pawn.
 	//dir = 1 for a white pawn.
 	//dir = -1 for a black pawn.
-	public final Cell orig;	//The original cell of the pawn.
+	public final Cell orig;			//The original cell of the pawn.
 	public Pawn(String col, Cell cell)  throws Exception
 	{	super(col);
-		if(col == Board.White)		//White pawns can move only forward.
+		if(col.equals(Board.White))	//White pawns can move only forward.
 			dir = 1;
-		else					//Black pawns can move only backwards.
+		else						//Black pawns can move only backwards.
 			dir = -1;
 		this.orig = cell;
 	}

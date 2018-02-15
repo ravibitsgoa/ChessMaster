@@ -129,13 +129,13 @@ public class AI
 	{
 		if(depth == 0)
 		{
-			if(playerColour == AIcolour)
+			if(playerColour.equals(AIcolour))
 				return -evaluate(board);
 			else
 				return evaluate(board);
 		}
 		//if it's playing for itself, it will maximize board value (heuristic).
-		else if(playerColour == this.AIcolour)
+		else if(playerColour.equals(this.AIcolour))
 		{	
 			Move move = null;
 			CopyOnWriteArrayList<Piece> ownPieces = board.getPieces(playerColour);
@@ -160,7 +160,7 @@ public class AI
 							Board.opposite(playerColour), alpha, beta);
 					//System.out.printf("%d ", value);
 					nodeCount++;
-					if(tempMove.moveType == Movement.castlingMove)
+					if(tempMove.moveType.equals(Movement.castlingMove))
 					{	
 						value+= 50;
 					}
@@ -210,7 +210,7 @@ public class AI
 					nodeCount++;
 					//if(move == null)
 					//	move = tempMove;
-					if(tempMove.moveType == Movement.castlingMove)
+					if(tempMove.moveType.equals(Movement.castlingMove))
 					{	
 						value-= 50;
 					}

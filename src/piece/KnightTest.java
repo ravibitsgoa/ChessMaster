@@ -157,7 +157,7 @@ class KnightTest
 			//Creating a white bishop on c2, so that white knight can't attack it.
 			for(Cell c: validCells)
 			{	
-				if(c==c2)
+				if(c.equals(c2))
 					assertFalse(movement.canMoveTo(knight, c), 
 						"A white knight can't attack a white bishop");
 				else
@@ -177,7 +177,7 @@ class KnightTest
 			//Creating a black bishop on c2, so that a white knight can attack it.
 			for(Cell c: validCells)
 			{	
-				if(c==c2)
+				if(c.equals(c2))
 					assertTrue(movement.canMoveTo(knight, c), 
 						"A white knight can attack a black bishop");
 				else
