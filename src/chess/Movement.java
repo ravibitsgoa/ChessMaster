@@ -376,14 +376,16 @@ public class Movement
 		//Case 2: killing move.
 		//The diagonally opposite cells must be occupied by a piece
 		//of the opposite colour, for the pawn to attack it.
-		if(	this.colourAt((char)(currentPos.row + pawn.dir), 
-			(char)(currentPos.col-1)).equals( Board.opposite(pawn.colour) ) )
+		if(	Board.opposite(pawn.colour).equals(
+			this.colourAt((char)(currentPos.row + pawn.dir), 
+			(char)(currentPos.col-1))) )
 		{	
 			pawnMoves.add(board.getCellAt((char)(currentPos.row + pawn.dir), 
 				(char)(currentPos.col-1)));
 		}
-		if(	this.colourAt((char)(currentPos.row + pawn.dir), 
-			(char)(currentPos.col+1)).equals( Board.opposite(pawn.colour) ) )
+		if(	Board.opposite(pawn.colour).equals(
+			this.colourAt((char)(currentPos.row + pawn.dir), 
+			(char)(currentPos.col+1))) )
 		{	
 			pawnMoves.add(board.getCellAt((char)(currentPos.row + pawn.dir), 
 				(char)(currentPos.col+1)));
@@ -456,7 +458,7 @@ public class Movement
 	
 	private Cell getCastlingMove(King king, String castleSide) 
 	{
-		if(king == null || board.isKilled(king))
+		if(king == null || board.isKilled(king) || castleSide == null)
 			return null;
 		char kingRow= cellOf.get(king).row;
 		if( castleSide.equals(Movement.kingSideCastle) )
@@ -482,7 +484,8 @@ public class Movement
 	 * */
 	private boolean canCastle(King king, String castleSide) 
 	{
-		if(king == null || board.isKilled(king) || movesCount.get(king)!=0)
+		if(king == null || board.isKilled(king) || movesCount.get(king)!=0
+			|| castleSide == null)
 			return false;
 		
 		if(isUnderCheck(king.colour))
@@ -759,14 +762,14 @@ public class Movement
 			row>=Board.rowMin && col>=Board.colMin; row+=rowDir, col+=colDir)
 		{
 			//System.out.println(row+" "+col+" "+this.colourAt(row, col));
-			if(this.colourAt(row, col).equals(pieceColour))
+			if(pieceColour.equals(this.colourAt(row, col)))
 			{	
 				break;
 			}
 			//if this piece is blocked by one of its own colour,
 			//it can't move ahead.
 			
-			else if(this.colourAt(row, col).equals( Board.opposite(pieceColour) ))
+			else if(Board.opposite(pieceColour).equals(this.colourAt(row, col)))
 			{	
 				listOfMoves.add(board.getCellAt(row, col));
 				break;

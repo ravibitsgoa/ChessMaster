@@ -3,10 +3,16 @@
  */
 package chess;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 /**
@@ -19,7 +25,7 @@ public class Main
 	private GameModeWindow gameModeWindow;
 	private SelectPlayerWindow selectPlayerWindow;
 	private SelectColourWindow selectColourWindow;
-	private JFrame chessWindow;
+	private ChessWindow chessWindow;
 	private Player player, player2;
 	private String colour, colour2;
 	private GraphicsHandler graphicsHandler;
@@ -54,55 +60,14 @@ public class Main
 		movement = board.getMovement();
 		board.print();
 		
-		chessWindow = new JFrame("chess");
+		chessWindow = new ChessWindow();
 		chessWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		graphicsHandler= new GraphicsHandler(board, 50, 50, 75, 75, 1);
 		chessWindow.add(graphicsHandler);
-		chessWindow.addWindowListener(
-			new WindowAdapter() 
-			{
-				public void windowClosing(WindowEvent e) 
-				{
-					if(game == null)
-					{
-						try 
-						{
-							//System.out.print(player+" "+player2+" ");
-							//System.out.print(colour+" "+colour2+"\n");
-							
-							game = new Game(gameMode, player.toString(), 
-								player2.toString(),	colour, colour2, 
-								board.getCurrentTurn());
-						} 
-						catch (Exception e1) 
-						{
-							e1.printStackTrace();
-						}
-					}
-					
-					game.storeMoves(movement, board.getCurrentTurn());	
-					//store all moves.
-					game.storeGame();			//store game object into file.
-					
-					if(board.isCheckMate(colour))
-					{	
-						player2.won();
-						player.lost();
-					}
-					else if(board.isCheckMate(colour2))
-					{	player.won();
-						player2.lost();
-					}
-					
-					player.gamePlayed();
-					player.storePlayer();
-				    player2.gamePlayed();
-				    player2.storePlayer();
-				}
-			}
-		);
-		chessWindow.setSize(700, 700);
+		
+		chessWindow.setSize(800, 800);
 		chessWindow.setVisible(false);
+		
 	}
 
 	public static void main(String args[])
@@ -194,6 +159,95 @@ public class Main
 			windowList = arr;
 		}	
 		windowList[0].setVisible(true);
+	}
+	
+	private class ChessWindow extends JFrame
+	{
+		public ChessWindow()
+		{
+			//Setting toolbar of chessWindow:
+			JToolBar toolbar = new JToolBar("Menu");
+			
+			JButton undoButton = new JButton(getImage(20, 20, "undo.png"));
+	        undoButton.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                //JOptionPane.showMessageDialog(ChessWindow.this, "undo clicked");
+	                Main.this.movement.undoMove();
+	                Main.this.movement.undoMove();
+	                //calls undo twice to clear last move of opponent and own.
+	                Main.this.graphicsHandler.repaint();
+	            }
+	        });
+	        toolbar.add(undoButton);
+	        
+	        this.getContentPane().add(toolbar, BorderLayout.PAGE_START);
+	        
+	        this.addWindowListener(new ClosingHandler());
+	    		
+		}
+		
+		private ImageIcon getImage(int height, int width, String path)
+		{
+			BufferedImage img = null;
+			
+			try 
+			{
+				img = ImageIO.read(this.getClass().getResource(path));
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+				System.out.println("Exception while getting "+path+" icon"
+						+ " in ChessWindow class.");
+			}
+			
+			Image icon = img.getScaledInstance(height, width, Image.SCALE_SMOOTH);
+			//Scale the icon to the given size.
+			
+			return new ImageIcon(icon);
+		}
+		
+		private class ClosingHandler extends WindowAdapter
+		{
+			public void windowClosing(WindowEvent e) 
+			{
+				if(Main.this.game == null)
+				{
+					try 
+					{
+						//System.out.print(player+" "+player2+" ");
+						//System.out.print(colour+" "+colour2+"\n");
+							
+						game = new Game(gameMode, player.toString(), 
+								player2.toString(),	colour, colour2, 
+								board.getCurrentTurn());
+					} 
+					catch (Exception e1) 
+					{
+						e1.printStackTrace();
+					}
+				}
+					
+				game.storeMoves(movement, board.getCurrentTurn());	
+				//store all moves.
+				game.storeGame();			//store game object into file.
+				
+				if(board.isCheckMate(colour))
+				{	
+					player2.won();
+					player.lost();
+				}
+				else if(board.isCheckMate(colour2))
+				{	player.won();
+					player2.lost();
+				}
+				
+				player.gamePlayed();
+				player.storePlayer();
+			    player2.gamePlayed();
+			    player2.storePlayer();
+			}
+		}
 	}
 	
 	/**
