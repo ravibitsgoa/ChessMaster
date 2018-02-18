@@ -61,6 +61,13 @@ public class Movement
 
 		board.reincarnate(onDestination);
 		
+		if(lastMove.moveType.equals(promoteMove))
+		{
+			//reincarnate and demote the promoted pawn.
+			board.reincarnate(onSource);
+			board.kill(lastMove.getQueen());
+		}
+		
 		this.put(onDestination, destination);
 		this.put(onSource, source);
 		//System.out.println("Undo called :| ");
@@ -78,7 +85,7 @@ public class Movement
 	 * Plays given move.
 	 * @return true if given move is valid, false otherwise.
 	 * */
-	public boolean playMove(Move move)
+	/*public boolean playMove(Move move)
 	{
 		//System.out.println(move+ " movement");
 		if(move == null)
@@ -91,7 +98,7 @@ public class Movement
 		Move result = this.moveTo(src, dest);
 		//System.out.println(result+ " movement");
 		return ( result != null);
-	}
+	}*/
 	
 	/** 
 	 * Checks whether the Piece can be moved into cell dest or not.
@@ -113,6 +120,21 @@ public class Movement
 		return this.moveTo(cellOf.get(ownPiece), dest);
 	}
 	
+	public boolean playMove(String from, String to) 
+	{
+		if(from == null || to == null || from.length() != 2 || to.length() != 2)
+			return false;
+		Cell fromCell = board.getCellAt(from.charAt(1), from.charAt(0));
+		Cell toCell = board.getCellAt(to.charAt(1), to.charAt(0));
+		//System.out.println("from: "+fromCell + " to: "+toCell);
+		Move result = this.moveTo(fromCell, toCell);
+		
+		if(result != null)		//since the game is getting loaded, 
+			board.flipTurn();	//we need to flip turns manually.
+		
+		return (result != null);
+	}
+	
 	public Move moveTo(Cell from, Cell to)
 	{
 		//System.out.println(to + " "+ this.board + " "+ from + " ");
@@ -126,13 +148,19 @@ public class Movement
 		if( pieceToMove instanceof Pawn && (to.row == Board.rowMax ||
 			to.row == Board.rowMin)	&& canMoveTo(pieceToMove, to) )
 		{	//If it's a pawn promote move.
-			return this.promotePawn((Pawn)pieceToMove, from, to);
+			Move move = this.promotePawn((Pawn)pieceToMove, from, to);
+			if(move != null)
+			{	return move;
+			}	
 		}
 		
 		if( pieceToMove instanceof King && canMoveTo(pieceToMove, to) 
 			&& Math.abs(to.col-from.col)==2)
 		{	//if king is moving by 2 cells, it's a castling move.
-			return castle((King)pieceToMove, to);
+			Move move =  castle((King)pieceToMove, to);
+			if(move != null)
+			{	return move;
+			}
 		}
 		
 		if(canMoveTo(pieceToMove, to))
@@ -149,6 +177,7 @@ public class Movement
 			movesCount.put(pieceToMove, movesCount.get(pieceToMove)+1);
 			//increment by 1 the count of moves of this piece.
 			//this.recomputeMoves(pieceToMove);//find all moves reachable from here.
+			
 			return move;
 		}
 		else
@@ -207,14 +236,19 @@ public class Movement
 		//Note the current move.
 		
 		//Kill the pawn which is to be promoted.
-		onCell.put(from, null);	//empty the current position.
+		onCell.put(from, null);			//empty the current position.
+		cellOf.put(pieceToMove, null);	//cell of the pawn is now null.
 		//If destination cell contains anything,
 		//make it empty.
 		board.kill(onCell.get(to));
 		//movesCount.remove(pieceToMove);	//pawn is now to be destructed.
 		try 
 		{
-			board.promotePawn((Pawn)pieceToMove, new Queen(pieceToMove.colour), to);
+			Queen newQueen = new Queen(pieceToMove.colour);
+			board.promotePawn((Pawn)pieceToMove, newQueen, to);
+			move.setQueen(newQueen);
+			onCell.put(to, newQueen);
+			cellOf.put(newQueen, to);
 		} 
 		catch (Exception e) 
 		{

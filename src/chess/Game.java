@@ -19,7 +19,7 @@ public class Game implements Serializable
 	private static final long serialVersionUID = -456686249905185825L;
 	public final String player1, player2, colour1, colour2;
 	public final Integer mode;
-	private ArrayList<Move> allMoves;
+	private ArrayList<String[]> allMoves;
 	private final long startTime;
 	private String toPlay;
 	
@@ -212,26 +212,31 @@ public class Game implements Serializable
 	 * Stores move stack into ArrayList of moves of the game, so that
 	 * reloading the game becomes easy.
 	 * */
-	public void storeMoves(Movement movement, String toPlay)
+	public void storeMoves(Movement movement)
 	{
 		Stack<Move> moves = movement.getPastMoves();
+		toPlay = Board.White;
 		allMoves = new ArrayList<>();	//this has to be emptied.
 		for(int i=0; i<moves.size(); i++)
 		{
-			allMoves.add(moves.get(i));
+			String mov[] = new String[2];
+			mov[0] = moves.get(i).getSource().toString();
+			mov[1] = moves.get(i).getDestination().toString();
+			//System.out.println(mov[0]+" "+mov[1]);
+			allMoves.add(mov);
+			toPlay = Board.opposite(toPlay);
 		}
-		this.toPlay = toPlay;
 		//converting stack to ArrayList.
 	}
 	
 	public Movement reloadGame(Board board)
 	{
 		Movement movement = board.getMovement();
-		for(Move move : allMoves)
+		for(String[] move : allMoves)
 		{
-			//System.out.println(move);
+			//System.out.println(move[0] + " " + move[1]);
 			//board.print();
-			movement.playMove(move);
+			movement.playMove(move[0], move[1]);
 		}
 		return movement;
 	}

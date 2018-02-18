@@ -5,12 +5,14 @@ import java.io.Serializable;
 import piece.King;
 import piece.Pawn;
 import piece.Piece;
+import piece.Queen;
 
 public class Move implements Serializable
 {
 	private final Cell source, destination;
 	private final Piece onSource, onDestination;
 	public final String moveType;
+	private Queen newQueen;
 	
     public Move( Cell source, Cell destination, Piece onSource, 
     			 Piece onDestination, String moveType) 
@@ -20,8 +22,21 @@ public class Move implements Serializable
         this.onSource = onSource;
         this.onDestination = onDestination;
         this.moveType = moveType;
+        this.newQueen = null;
     }
 
+    public void setQueen(Queen queen) throws Exception
+    {
+    	if(this.moveType == Movement.promoteMove)
+    		this.newQueen = queen;
+    	else
+    		throw new Exception ("cannot set queen in "+this.moveType);
+    }
+    
+    public Queen getQueen()
+    {
+    	return this.newQueen;
+    }
     public Cell getSource() 
     {
         return source;

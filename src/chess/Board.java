@@ -145,6 +145,11 @@ public class Board
 		return this.currentPlayerColour;
 	}
 	
+	public void flipTurn()
+	{
+		this.currentPlayerColour = opposite(currentPlayerColour);
+	}
+	
 	public void construct(Piece piece, Cell cell) throws Exception
 	{
 		if(piece == null || cell == null)
@@ -307,11 +312,12 @@ public class Board
 					Move temp = movement.moveTo(selectedCell, thisCell);
 					if(temp != null)
 						moveString = temp.toString();
+					
 				}
 				if(moveString != null)//the player has made a move.
 				{
 					move = true;
-					currentPlayerColour = opposite(currentPlayerColour);
+					this.flipTurn();
 					System.out.println(moveString);					
 				}
 				return move;

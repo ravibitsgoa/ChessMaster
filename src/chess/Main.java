@@ -9,7 +9,6 @@ import java.awt.Image;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -163,6 +162,8 @@ public class Main
 	
 	private class ChessWindow extends JFrame
 	{
+		private static final long serialVersionUID = 1L;
+
 		public ChessWindow()
 		{
 			//Setting toolbar of chessWindow:
@@ -228,7 +229,7 @@ public class Main
 					}
 				}
 					
-				game.storeMoves(movement, board.getCurrentTurn());	
+				game.storeMoves(movement);	
 				//store all moves.
 				game.storeGame();			//store game object into file.
 				
