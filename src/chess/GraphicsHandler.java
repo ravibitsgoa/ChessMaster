@@ -27,13 +27,21 @@ import piece.Piece;
 public class GraphicsHandler extends JPanel
 {
 	private static final long serialVersionUID = 1L;
-	private Board board;
+	private final Board board;
 	private final int x0, y0, rowLen, colLen, border;
 	private final Color HIGHLIGHT, NEXTMOVE;
-	private MouseHandler mouseHandler;
+	private final MouseHandler mouseHandler;
 	private AI ai;
 	private int gameMode;
 	
+	/**
+	 * Sets starting point of graphics as (x, y).
+	 * (Window before it will remain blank.)
+	 * Sets row-length and column length and border width.
+	 * Sets board.
+	 * Sets colour of a cell for highlight and next move.
+	 * Adds a mouse event handler for the graphics.
+	 * */
 	public GraphicsHandler(	Board b, int x, int y, int rowLen, 
 							int colLen, int border)
 	{
@@ -50,6 +58,12 @@ public class GraphicsHandler extends JPanel
 		this.addMouseListener(mouseHandler);
 	}
 	
+	/**
+	 * Draws the board and shows pieces, row and column number/letters.
+	 * Marks highlighted cell with HIGHLIGHT colour and next move cell
+	 * with NEXTMOVE colour.
+	 * Paints alternate cell WHITE and GRAY colour.
+	 * */
 	@Override
 	public void paintComponent(Graphics graphics)
 	{
@@ -138,7 +152,12 @@ public class GraphicsHandler extends JPanel
 			}
 		}
 	}
-
+	
+	/**
+	 * Shows a message in a dialog box notifying that given player
+	 * has lost the game.
+	 * e.g. "White, you lost the game :'( "
+	 * */
 	private void checkMate(String playerColour)
 	{
 		JFrame message = new JFrame("Sorry !!");
@@ -150,6 +169,7 @@ public class GraphicsHandler extends JPanel
 	/**
 	 * Sets the gameMode to 1 if it's player vs AI.
 	 * Sets it to two if it's between two human players.
+	 * @throws invalid game mode exception
 	 * */
 	public void setGameMode(int mode) throws Exception
 	{
@@ -158,6 +178,11 @@ public class GraphicsHandler extends JPanel
 		this.gameMode = mode;
 	}
 	
+	/**
+	 * Sets AI.
+	 * If AI is to play next, it lets AI play.
+	 * @throws null AI exception
+	 * */
 	public void setAI(AI ai) throws Exception
 	{
 		if(ai == null)
@@ -167,6 +192,11 @@ public class GraphicsHandler extends JPanel
 			ai.playNextMove();
 	}
 	
+	/**
+	 * Shows a message in a dialog box warning the given player
+	 * that it is under check.
+	 * e.g. "White, you are given a check! :O"
+	 * */
 	public void check(String playerColour)
 	{
 		JFrame message = new JFrame("Check !!");
@@ -176,6 +206,7 @@ public class GraphicsHandler extends JPanel
 	}
 	
 	/**
+	 * Finds the board cell at (x,y) coordinates of graphics.
 	 * Calls board.clicked() with the row and column of the clicked cell.
 	 * Redraws all the graphics of the window.
 	 * Checks whether the game has ended, and shows a message if that is true.

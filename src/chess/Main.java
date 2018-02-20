@@ -36,9 +36,10 @@ public class Main
 	private JFrame[] windowList;
 	
 	/**
-	 * Creates gameModeWindow, a new board, chessWindow.
-	 * Launches gameModeWindow.
-	 * On closing of the chessWindow, updates the statistics of the player(s).
+	 * Creates welcomeWindow, gameLoaderWindow, gameModeWindow,
+	 * a new board, chessWindow, and graphics handler object.
+	 * 
+	 * Launches the welcomeWindow having options new game and load game
 	 * */
 	
 	public Main()
@@ -160,6 +161,19 @@ public class Main
 		windowList[0].setVisible(true);
 	}
 	
+	/**
+	 * On closing of the chessWindow, updates the statistics of the player(s),
+	 * and saves game statistics.
+	 * (If game is new, creates new game object. 
+	 * Calls storeMoves() and storeGame() of the game object.)
+	 * 
+	 * Displays a toolbar containing undo button.	
+	 * On clicking undo button, undoes last opponent move and last own move,
+	 * And, lets the current player play again.
+	 * 
+	 * TODO: add more buttons and corresponding features.
+	 * 
+	 * */
 	private class ChessWindow extends JFrame
 	{
 		private static final long serialVersionUID = 1L;
@@ -253,7 +267,7 @@ public class Main
 	
 	/**
 	 * This window has relevance only when game mode is 1 player.
-	 * Lets the user select its colour. 
+	 * Lets the user select his/her colour. 
 	 * Sets the AI colour to opposite of the player colour.
 	 * */
 	private class SelectColourWindow extends JFrame
@@ -446,14 +460,18 @@ public class Main
 			setLayout(new FlowLayout());
 			
 			ButtonGroup group = new ButtonGroup();
+			JRadioButton zeroPlayer = new JRadioButton("Zero player mode");
 			JRadioButton singlePlayer = new JRadioButton("Single player mode");
 			JRadioButton multiPlayer = new JRadioButton("Multi player mode");
+			add(zeroPlayer);
 			add(singlePlayer);
 			add(multiPlayer);
 			
+			group.add(zeroPlayer);
 			group.add(singlePlayer);
 			group.add(multiPlayer);
 			
+			zeroPlayer.addItemListener(new HandlerClass(0));;
 			singlePlayer.addItemListener(new HandlerClass(1));
 			multiPlayer.addItemListener(new HandlerClass(2));
 		}
@@ -547,6 +565,11 @@ public class Main
 		}
 	}
 
+	/**
+	 * If user chooses to load a previous game,
+	 * displays all the previously stored games.
+	 * (Sorted by time of creating the game object.)
+	 * */
 	private class GameLoaderWindow extends JFrame
 	{
 		private static final long serialVersionUID = 1L;
@@ -573,8 +596,9 @@ public class Main
 		}
 		
 		/**
-		 * Closes the current window, and calls nextWindow() from main, to
-		 * display the next window in the sequence.
+		 * Closes the current window, reloads the game, 
+		 * makes chessWindow visible, and sets game mode to whatever it was.
+		 * If game was one player, sets human colour to what it should be.
 		 * */
 		public void CloseFrame()
 		{
@@ -600,7 +624,7 @@ public class Main
 		}
 		
 		/**
-		 * If user selects an existing game, it loads the game object
+		 * If user selects a game, it loads the game object
 		 * from the stored file.
 		 * */
 		private class HandlerClass implements ActionListener

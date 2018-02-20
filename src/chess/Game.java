@@ -23,6 +23,18 @@ public class Game implements Serializable
 	private final long startTime;
 	private String toPlay;
 	
+	/**
+	 * Sets game mode (1 or 2), names of the players*, colours of the players,
+	 * and the player who is about to play.
+	 * 
+	 * Stores the startTime of the game as the time of creation of this object.
+	 * (It is useful in identifying a unique game while loading / storing.)
+	 * 
+	 * * : in case of a single player game, "AI" is added as player2.
+	 * @throws null player exception
+	 * @throws invalid colour exception
+	 * @throws invalid game mode exception.
+	 * */
 	public Game(int mode, String player1, String player2, 
 			String colour1, String colour2, String toPlay) throws Exception
 	{
@@ -48,11 +60,21 @@ public class Game implements Serializable
 		this.toPlay = toPlay;
 	}
 	
+	/**
+	 * @return player1's name vs player2's name @ starting time.
+	 * e.g. Ravi vs Anish @ 1231546546
+	 * */
+	@Override
 	public String toString()
 	{
 		return player1 + " vs " + player2 + " @ "+ startTime;
 	}
 	
+	/**
+	 * In the following code, two games that have same
+	 * players and start time, are assumed to be same and stored only once
+	 * in the game statistics file (gameData.dat).
+	 * */
 	/*
 	@Override
 	public int hashCode()
@@ -69,7 +91,7 @@ public class Game implements Serializable
 	}*/
 	
 	/**
-	 * Fetches previous games from a file named gameData.dat
+	 * Fetches previous games from a file named gameData.dat as an ArrayList.
 	 * */
 	public static ArrayList<Game> getGamesList()         
 	{
@@ -121,7 +143,10 @@ public class Game implements Serializable
 	
 	/**
 	 * Stores the the current game at the end.
-	 **/
+	 * If current one is a new game, it stores it, otherwise, if
+	 * custom hashCode method is enabled, it removes the old copy and 
+	 * stores new copy.
+	 * */
 	public void storeGame()
 	{
 		ObjectInputStream input = null;
@@ -229,6 +254,12 @@ public class Game implements Serializable
 		//converting stack to ArrayList.
 	}
 	
+	/**
+	 * Plays moves sequentially from an (assumed) starting board from 
+	 * its own move list, so that the players can continue the game.
+	 * Also, the player who was to play while saving the game will get 
+	 * to play after reloading.
+	 * */
 	public Movement reloadGame(Board board)
 	{
 		Movement movement = board.getMovement();
