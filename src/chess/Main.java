@@ -460,18 +460,18 @@ public class Main
 			setLayout(new FlowLayout());
 			
 			ButtonGroup group = new ButtonGroup();
-			JRadioButton zeroPlayer = new JRadioButton("Zero player mode");
+			//JRadioButton zeroPlayer = new JRadioButton("Zero player mode");
 			JRadioButton singlePlayer = new JRadioButton("Single player mode");
 			JRadioButton multiPlayer = new JRadioButton("Multi player mode");
-			add(zeroPlayer);
+			//add(zeroPlayer);
 			add(singlePlayer);
 			add(multiPlayer);
 			
-			group.add(zeroPlayer);
+			//group.add(zeroPlayer);
 			group.add(singlePlayer);
 			group.add(multiPlayer);
 			
-			zeroPlayer.addItemListener(new HandlerClass(0));;
+			//zeroPlayer.addItemListener(new HandlerClass(0));;
 			singlePlayer.addItemListener(new HandlerClass(1));
 			multiPlayer.addItemListener(new HandlerClass(2));
 		}

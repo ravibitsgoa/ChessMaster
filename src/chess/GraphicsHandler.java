@@ -8,7 +8,6 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -33,6 +32,7 @@ public class GraphicsHandler extends JPanel
 	private final MouseHandler mouseHandler;
 	private AI ai;
 	private int gameMode;
+	private boolean gameComplete;
 	
 	/**
 	 * Sets starting point of graphics as (x, y).
@@ -53,6 +53,7 @@ public class GraphicsHandler extends JPanel
 		HIGHLIGHT = Color.YELLOW;
 		NEXTMOVE = Color.orange;
 		this.border = border;
+		this.gameComplete = false;
 		
 		mouseHandler = new MouseHandler();
 		this.addMouseListener(mouseHandler);
@@ -96,7 +97,7 @@ public class GraphicsHandler extends JPanel
 				//Draw the border of the cell.
 				
 				//paint the cell LIGHT_GRAY if it's even numbered.
-				if((i+j) % 2 ==0)
+				if((i+j) % 2 ==1)
 				{	graphics.setColor(Color.LIGHT_GRAY);
 					graphics.fillRect(x+border, y+border, colLen-border,
 						rowLen-border);
@@ -188,7 +189,9 @@ public class GraphicsHandler extends JPanel
 		if(ai == null)
 			throw new Exception("null AI object in setAI()");
 		this.ai = ai;
-		if( ai.getColour().equals( board.getCurrentTurn() ) )
+		if( ai.getColour().equals( board.getCurrentTurn() ) && 
+			!board.isCheckMate(ai.getColour()) &&
+			!board.isCheckMate(Board.opposite(ai.getColour())))
 			ai.playNextMove();
 	}
 	
@@ -214,6 +217,9 @@ public class GraphicsHandler extends JPanel
 	 * */
 	private void clicked(int x, int y)
 	{
+		if(this.gameComplete)	//if game is complete, don't let anyone play.
+			return;
+		
 		int col = (x-x0) / rowLen;
 		int row = (y-y0) / colLen;
 		
@@ -228,11 +234,15 @@ public class GraphicsHandler extends JPanel
 		}
 		
 		if(board.isCheckMate(Board.White))
-			this.checkMate(Board.White);
+		{	this.checkMate(Board.White);
+			this.gameComplete = true;
+		}
 		else if(moveHappened && board.isUnderCheck(Board.White))
 			this.check(Board.White);
 		if(board.isCheckMate(Board.Black))
-			this.checkMate(Board.Black);
+		{	this.checkMate(Board.Black);
+			this.gameComplete = true;
+		}
 		else if(moveHappened && board.isUnderCheck(Board.Black))
 			this.check(Board.Black);
 	}

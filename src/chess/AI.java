@@ -147,7 +147,8 @@ public class AI
 				
 				ArrayList<Cell> moves = movement.getAllMoves(ownPiece);
 				for(Cell dest: moves)
-				{
+				{	
+					nodeCount++;
 					Move tempMove = movement.moveTo(ownPiece, dest);
 					//System.out.println(ownPiece+" "+moves+" "+tempMove+" "+dest);
 					if(tempMove == null)
@@ -159,7 +160,6 @@ public class AI
 					int value = minimax(depth-1, board, 
 							Board.opposite(playerColour), alpha, beta);
 					//System.out.printf("%d ", value);
-					nodeCount++;
 					if(tempMove.moveType.equals(Movement.castlingMove))
 					{	
 						value+= 50;
@@ -188,7 +188,7 @@ public class AI
 		//for the other player, it will minimize the value.
 		else
 		{
-			Move move = null;
+			//Move move = null;
 			CopyOnWriteArrayList<Piece> oppPieces = board.getPieces(playerColour);
 			
 			for(Piece oppPiece: oppPieces)
@@ -199,6 +199,7 @@ public class AI
 				ArrayList<Cell> moves = movement.getAllMoves(oppPiece);
 				for(Cell dest: moves)
 				{
+					nodeCount++;
 					Move tempMove = movement.moveTo(oppPiece, dest);
 					//System.out.println(oppPiece+" "+moves+" "+tempMove+" "+dest);
 					if(tempMove == null)
@@ -207,7 +208,6 @@ public class AI
 					}
 					int value = minimax(depth-1, board, Board.opposite(playerColour), 
 							alpha, beta);
-					nodeCount++;
 					//if(move == null)
 					//	move = tempMove;
 					if(tempMove.moveType.equals(Movement.castlingMove))
@@ -217,7 +217,7 @@ public class AI
 					if(beta > value)
 					{
 						beta = value;
-						move = tempMove;
+						//move = tempMove;
 					}
 					movement.undoMove();
 
@@ -247,7 +247,7 @@ public class AI
 		long stopTime = System.nanoTime();
 		System.out.println((stopTime-startTime)/(1e9)+ " second(s)");	
 		//Prints the number of seconds AI took for thinking.
-		
+		System.gc();
 		return bestMove;
 	}
 	
